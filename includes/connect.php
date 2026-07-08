@@ -155,31 +155,29 @@ function getEnvVar($key) {
             // Kontroller om tabellen eksisterer i databasen
             if ($this->tableExists($table))
             {
-                foreach($data as $key => $value)
-                {
-                    // Omdan alle specialkarakterer til html-entities. Anvendes primært til at undgå problemer med " og ' - som giver problemer både i SQL-databasen men også når de skal indsættes i HTML-koden igen efter at være hentet fra databasen
-                    $data[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
-                }
-                // Opret felter til INSERT statement ved at udtrække array-index og anvende dem som felter og herefter udtrække værdierne fra arrayet og bruge dem som felt-værdier. Dette kræver, at HTML formularfelterne hedder det samme som felterne i databasen.
-                $fields = implode(',',array_keys($data));
-                // Værdier skal i SQL-sætningen overføres i anførselstegn. Tilføj anførselstegn i begyndelsen og brug '.' som opdeler, så alle værdier sættes i anførelsestegn. For eksempel: 'name'.'type'.'height' etc.
-                $values = "'" . implode("','",$data) . "'";
+                // Definer dine felter
+                $fields = array_keys($data);
+                $columnString = implode(", ", $fields);
+    
+                // Lav placeholders (f.eks. :navn, :email)
+                // Vi mapper array-nøgler til :key format
+                $placeholders = ":" . implode(", :", $fields);
 
-                // Indsæt variabler med feltnavne og værdier i INSERT statement
-                $sqlInsert = "INSERT INTO {$table} ({$fields}) VALUE ({$values})";
+                // Byg SQL
+                $sql = "INSERT INTO {$table} ({$columnString}) VALUES ({$placeholders})";
 
-                // Hvis SQL-query lykkes returner TRUE ellers udskriv fejl og returner FALSE
-                if($this->connection->query($sqlInsert))
-                {
-                    return true;
+                try {
+                    $stmt = $this->connection->prepare($sql);
                     
-                }
-                else
-                {
-                    echo $this->connection->error;
+                    // Udfør ved at sende $data direkte ind.
+                    // PDO sørger nu for at "escape" alt indhold sikkert.
+                    return $stmt->execute($data);
+                    
+                } catch (PDOException $e) {
+                    error_log("Database fejl: " . $e->getMessage());
                     return false;
                 }
-            }
+            }    
             else
             {
                 echo("Tabel eksisterer ikke");
