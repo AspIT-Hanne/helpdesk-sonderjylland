@@ -1,3 +1,5 @@
+// Separation of concerns: API-filen get_settings.js håndterer data hentet fra databasen - mellemmand mellem frontend og backend (get_settings.php). indstillinger.js håndterer frontend.
+
 import { fetchSettings } from '../api/get_settings.js';
 
 const TAB_LABELS = {
