@@ -8,50 +8,7 @@
   <link rel="stylesheet" href="css/indstillinger.css">
 </head>
 <body>
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar__header">
-      <img src="assets/logo.svg" alt="AspIT" class="sidebar__logo">
-      <button class="sidebar__close" id="sidebar-close" aria-label="Luk menu">&times;</button>
-    </div>
-    <ul class="sidebar__nav">
-      <li>
-        <a href="index.html" class="sidebar__item">
-          <img src="assets/house.svg" alt="" class="sidebar__icon">
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="sager.html" class="sidebar__item">
-          <img src="assets/file.svg" alt="" class="sidebar__icon">
-          Sager
-        </a>
-      </li>
-      <li>
-        <a href="sagstavle.html" class="sidebar__item">
-          <img src="assets/board.svg" alt="" class="sidebar__icon">
-          Sagstavle
-        </a>
-      </li>
-      <li>
-        <a href="brugere.html" class="sidebar__item">
-          <img src="assets/users.svg" alt="" class="sidebar__icon">
-          Brugere
-        </a>
-      </li>
-      <li>
-        <a href="opret-sag.html" class="sidebar__item sidebar__item--cta">
-          <img src="assets/plus.svg" alt="" class="sidebar__icon">
-          Opret Sag
-        </a>
-      </li>
-      <li>
-        <a href="indstillinger.html" class="sidebar__item sidebar__item--active">
-          <img src="assets/settings.svg" alt="" class="sidebar__icon">
-          Indstillinger
-        </a>
-      </li>
-    </ul>
-  </nav>
+  <?php include "includes/sidebar.php"; ?>
 
   <div class="overlay" id="overlay"></div>
 

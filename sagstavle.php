@@ -11,7 +11,7 @@
   <div class="kanban-page">
     <header class="kanban-header">
       <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
-      <a href="index.html" class="kanban-header__back" aria-label="Til Dashboard">
+      <a href="index.php" class="kanban-header__back" aria-label="Til Dashboard">
         <img src="assets/house.svg" alt="" class="kanban-header__icon">
       </a>
     </header>
