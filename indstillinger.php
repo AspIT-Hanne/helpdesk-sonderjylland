@@ -1,3 +1,5 @@
+<?php include "includes/phpheader.php"; ?>
+
 <!DOCTYPE html>
 <html lang="da">
 <head>
