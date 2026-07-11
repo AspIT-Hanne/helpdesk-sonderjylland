@@ -1,13 +1,20 @@
 <?php
-function getEnvVar($key) {
-    $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos($line, $key) === 0) {
-            return substr($line, strpos($line, '=') + 1);
+    function getEnvVar($key) {
+        $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        // Læser .env filen linje for linje og ignorerer tomme linjer og linjeskift
+        // file(): åbner en .env-fil og omdanner den til et array, hvor hver linje er et element.
+        foreach ($lines as $line) {
+            if (strpos($line, '=') !== false && strpos($line, $key) === 0) {
+            // Tjekker om linjen indeholder et lighedstegn, og om den starter med vores søge-nøgle
+            // strpos($line, $key) === 0: sikrer, at den kun kigger på linjer, der starter præcis med din nøgle (f.eks. DB_HOST=...).
+                return substr($line, strpos($line, '=') + 1);
+                // Hvis et match findes, returneres alt indhold efter lighedstegnet som værdien
+                // substr(): Når linjen er fundet, "skærer" den alt teksten før lighedstegnet væk, så du kun får selve værdien tilbage (f.eks. localhost i stedet for DB_HOST=localhost).
+            }
         }
+        return null;
+        // Returnerer null, hvis nøglen ikke blev fundet i filen
     }
-    return null;
-}
 
     // Klasse til DB forbindelse og CRUD funktionalitet
     
