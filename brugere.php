@@ -1,4 +1,11 @@
-<?php include "includes/phpheader.php"; ?>
+<?php 
+
+  include "api/get_users.php";
+
+  $data = getUserData();
+?>
+
+
 
 <!DOCTYPE html>
 <html lang="da">
@@ -57,90 +64,27 @@
             </tr>
           </thead>
           <tbody id="user-table-body">
-            <tr class="data-table__row" data-user-id="1" data-name="Jens Clausen" data-email="jens.clausen@skole.dk" data-role="Admin" data-status="active">
-              <td class="data-table__cell">Jens Clausen</td>
-              <td class="data-table__cell">jens.clausen@skole.dk</td>
-              <td class="data-table__cell">Admin</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:active">Aktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Jens Clausen">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Jens Clausen">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-user-id="2" data-name="Malene Gydesen" data-email="malene.gydesen@skole.dk" data-role="Admin" data-status="active">
-              <td class="data-table__cell">Malene Gydesen</td>
-              <td class="data-table__cell">malene.gydesen@skole.dk</td>
-              <td class="data-table__cell">Admin</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:active">Aktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Malene Gydesen">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Malene Gydesen">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-user-id="3" data-name="Daniel Weiss" data-email="daniel.weiss@skole.dk" data-role="Tekniker" data-status="active">
-              <td class="data-table__cell">Daniel Weiss</td>
-              <td class="data-table__cell">daniel.weiss@skole.dk</td>
-              <td class="data-table__cell">Tekniker</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:active">Aktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Daniel Weiss">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Daniel Weiss">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-user-id="4" data-name="Karin Weber" data-email="karin.weber@skole.dk" data-role="Tekniker" data-status="inactive">
-              <td class="data-table__cell">Karin Weber</td>
-              <td class="data-table__cell">karin.weber@skole.dk</td>
-              <td class="data-table__cell">Tekniker</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:inactive">Inaktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Karin Weber">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Karin Weber">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-user-id="5" data-name="Hanne Lund" data-email="hanne.lund@skole.dk" data-role="Læserettigheder" data-status="active">
-              <td class="data-table__cell">Hanne Lund</td>
-              <td class="data-table__cell">hanne.lund@skole.dk</td>
-              <td class="data-table__cell">Læserettigheder</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:active">Aktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Hanne Lund">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Hanne Lund">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-user-id="6" data-name="Jonas Greve" data-email="jonas.greve@skole.dk" data-role="Tekniker" data-status="active">
-              <td class="data-table__cell">Jonas Greve</td>
-              <td class="data-table__cell">jonas.greve@skole.dk</td>
-              <td class="data-table__cell">Tekniker</td>
-              <td class="data-table__cell"><span class="badge" data-badge="user-status:active">Aktiv</span></td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér Jonas Greve">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet Jonas Greve">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
+           
+            <?php 
+              foreach($data as $user)
+                {
+                  echo "<tr class='data-table__row' data-user-id='{$user['id']}' data-name='{$user['username']}' data-email='{$user['email']}' data-role='{$user['role_name']}' data-status='{$user['status_name']}'>";
+                    echo "<td class='data-table__cell'>{$user['username']}</td>";
+                    echo "<td class='data-table__cell'>{$user['email']}</td>";
+                    echo "<td class='data-table__cell'>{$user['role_name']}</td>";
+                    echo "<td class='data-table__cell'><span class='badge' data-badge='user-status:{$user['status_name']}'>{$user['status_name']}</span></td>";
+                    echo "<td class='data-table__cell'>";
+                    echo "<button type='button' class='action-btn' aria-label='Redigér Jens Clausen'>
+                            <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
+                          </button>";
+                    echo "<button type='button' class='action-btn action-btn--danger'' aria-label='Slet Jens Clausen'>
+                            <img src='assets/trash.svg' alt='' class='action-btn__icon'>
+                          </button>";
+                    echo "</td>";
+                  echo "</tr>";
+
+            }?>
+
           </tbody>
         </table>
       </div>

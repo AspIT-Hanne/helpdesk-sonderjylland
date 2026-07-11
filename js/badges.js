@@ -11,8 +11,8 @@ const BADGE_COLORS = {
   'priority:high':   { bg: '#ffdad6', text: '#ba1a1a' },
   'priority:medium': { bg: '#fef3c7', text: '#92400e' },
   'priority:low':    { bg: '#e0f2fe', text: '#075985' },
-  'user-status:active':   { bg: '#b0efde', text: '#316f61' },
-  'user-status:inactive': { bg: '#fef3c7', text: '#92400e' },
+  'user-status:Aktiv':   { bg: '#b0efde', text: '#316f61' },
+  'user-status:Inaktiv': { bg: '#fef3c7', text: '#92400e' },
   'sagstavle:category': { bg: '#ebeeed', text: '#404847' }
 };
 

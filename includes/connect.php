@@ -21,8 +21,6 @@
             }
         }
 
-        // DEBUG: Hvis vi når hertil, findes nøglen ikke i filen
-        //die("FEJL: Nøglen '" . $key . "' blev ikke fundet i .env filen.");
         return null;
         // Returnerer null, hvis nøglen ikke blev fundet i filen
     }
@@ -84,10 +82,6 @@
                 // Opretter en ny PDO-instans (forbindelsen)
                 // @new bruges for at undertrykke default fejlmeddelelser
                 $this->connection = @new PDO($dsn, $user, $pass, $options);
-                
-                // Valgfrit: Output for at bekræfte forbindelse. Når du er sikker på, at det virker, kan du fjerne denne linje.
-                // echo "Forbindelse oprettet med succes!";
-
                 
             } catch (\PDOException $e) {
                 // Fanger kun PDO Exceptions
@@ -165,6 +159,18 @@
                  $dataResult = $this->getData($table, "*", null, $sqlWhere, $sortBy);
 
                  return $dataResult;
+             }
+         }
+
+         // Metode til at hente data med inner joins
+         public function getDataWithJoins($table, $rows, $join)
+         {
+            if ($this->tableExists($table))
+             {
+                // Kald den private metode getData for at hente de ønskede data fra det overførte tabelnavn og joins
+                $dataResult = $this->getData($table, $rows, $join);
+
+                return $dataResult;
              }
          }
 
@@ -335,7 +341,7 @@
                 // Hvis JOIN er defineret, tilføj den til SQL statement
                 if ($join != null)
                 {
-                    $selectQuery .= " JOIN {$join}";
+                    $selectQuery .= " {$join}";
                 }
 
                 // Hvis WHERE er defineret, tilføj den til SQL statement
