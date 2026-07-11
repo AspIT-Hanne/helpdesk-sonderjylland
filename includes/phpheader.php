@@ -1,6 +1,6 @@
 <?php
 
-    include "includes/connect.php";
+    include realpath(__DIR__ . '/..') . "/includes/connect.php";
 
     if (session_status() === PHP_SESSION_NONE) 
     {

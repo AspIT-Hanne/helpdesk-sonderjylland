@@ -58,7 +58,7 @@
           <input type="text" id="create-settings-name" class="form-field">
         </div>
         <div class="form-group" id="create-settings-code-group">
-          <label for="create-settings-code" class="form-group__label">Kode</label>
+          <label for="create-settings-code" class="form-group__label">Beskrivelse</label>
           <input type="text" id="create-settings-code" class="form-field" placeholder="f.eks. t1, t2...">
         </div>
         <div class="form-group">
@@ -89,7 +89,7 @@
           <input type="text" id="edit-settings-name" class="form-field">
         </div>
         <div class="form-group" id="edit-settings-code-group">
-          <label for="edit-settings-code" class="form-group__label">Kode</label>
+          <label for="edit-settings-code" class="form-group__label">Beskrivelse</label>
           <input type="text" id="edit-settings-code" class="form-field">
         </div>
         <div class="form-group">
@@ -122,6 +122,6 @@
 
   <script src="js/shared.js"></script>
   <script src="js/badges.js"></script>
-  <script src="js/indstillinger.js"></script>
+  <script type="module" src="js/indstillinger.js"></script>
 </body>
 </html>

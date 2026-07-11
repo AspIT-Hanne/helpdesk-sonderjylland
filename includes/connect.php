@@ -1,17 +1,28 @@
 <?php
     function getEnvVar($key) {
-        $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    // __DIR__ refererer til mappen, hvor connect.php ligger.
+    $envPath = realpath(__DIR__ . '/..') . '/.env'; 
+
+    if (!file_exists($envPath)) {
+       return null;
+    }  
+    
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         // Læser .env filen linje for linje og ignorerer tomme linjer og linjeskift
         // file(): åbner en .env-fil og omdanner den til et array, hvor hver linje er et element.
         foreach ($lines as $line) {
+            $line = trim($line);
             if (strpos($line, '=') !== false && strpos($line, $key) === 0) {
             // Tjekker om linjen indeholder et lighedstegn, og om den starter med vores søge-nøgle
             // strpos($line, $key) === 0: sikrer, at den kun kigger på linjer, der starter præcis med din nøgle (f.eks. DB_HOST=...).
-                return substr($line, strpos($line, '=') + 1);
+                return trim(substr($line, strpos($line, '=') + 1));
                 // Hvis et match findes, returneres alt indhold efter lighedstegnet som værdien
                 // substr(): Når linjen er fundet, "skærer" den alt teksten før lighedstegnet væk, så du kun får selve værdien tilbage (f.eks. localhost i stedet for DB_HOST=localhost).
             }
         }
+
+        // DEBUG: Hvis vi når hertil, findes nøglen ikke i filen
+        //die("FEJL: Nøglen '" . $key . "' blev ikke fundet i .env filen.");
         return null;
         // Returnerer null, hvis nøglen ikke blev fundet i filen
     }
@@ -76,6 +87,7 @@
                 
                 // Valgfrit: Output for at bekræfte forbindelse. Når du er sikker på, at det virker, kan du fjerne denne linje.
                 // echo "Forbindelse oprettet med succes!";
+
                 
             } catch (\PDOException $e) {
                 // Fanger kun PDO Exceptions

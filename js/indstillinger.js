@@ -1,38 +1,39 @@
-const settingsData = {
-  types: [
-    { id: 1, name: 'T1', code: 't1', color: COLOR_PALETTE.red },
-    { id: 2, name: 'T2', code: 't2', color: COLOR_PALETTE.green },
-    { id: 3, name: 'T3', code: 't3', color: COLOR_PALETTE.amber },
-    { id: 4, name: 'T4', code: 't4', color: COLOR_PALETTE.blue },
-    { id: 5, name: 'Andet', code: 'other', color: COLOR_PALETTE.gray }
-  ],
-  statuses: [
-    { id: 1, name: 'Ikke Startet', color: COLOR_PALETTE.gray },
-    { id: 2, name: 'Åben', color: COLOR_PALETTE.green },
-    { id: 3, name: 'Afventer', color: COLOR_PALETTE.amber },
-    { id: 4, name: 'Løst', color: COLOR_PALETTE.orange }
-  ],
-  priorities: [
-    { id: 1, name: 'Høj', color: COLOR_PALETTE.red },
-    { id: 2, name: 'Mellem', color: COLOR_PALETTE.amber },
-    { id: 3, name: 'Lav', color: COLOR_PALETTE.green }
-  ],
-  roles: [
-    { id: 1, name: 'Admin', color: COLOR_PALETTE.purple },
-    { id: 2, name: 'Tekniker', color: COLOR_PALETTE.teal },
-    { id: 3, name: 'Læserettigheder', color: COLOR_PALETTE.blue },
-    { id: 4, name: 'Bruger', color: COLOR_PALETTE.gray }
-  ]
-};
+import { fetchSettings } from '../api/get_settings.js';
 
 const TAB_LABELS = {
-  types: { singular: 'Type', tabLabel: 'Typer', hasCode: true },
-  statuses: { singular: 'Status', tabLabel: 'Statusser', hasCode: false },
-  priorities: { singular: 'Prioritet', tabLabel: 'Prioriteter', hasCode: false },
-  roles: { singular: 'Rolle', tabLabel: 'Roller', hasCode: false }
+  types: { singular: 'Type', tabLabel: 'Typer', hasDesc: true },
+  statuses: { singular: 'Status', tabLabel: 'Statusser', hasDesc: true },
+  priorities: { singular: 'Prioritet', tabLabel: 'Prioriteter', hasDesc: false },
+  roles: { singular: 'Rolle', tabLabel: 'Roller', hasDesc: true }
 };
 
 let activeKey = 'types';
+let settingsData = {};
+
+function init() {
+  updateAddButtonLabel();
+  renderTab();
+  initTabs();
+  initSettingsFilters();
+  initSettingsActions();
+  initCreateModal();
+  initEditModal();
+  initDeleteModal();
+  initAddButton();
+}
+
+// Din nye init-logik
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Vi kalder funktionen, som du har importeret
+        settingsData = await fetchSettings(); 
+        
+        // Nu kalder vi resten af appen
+        init(); 
+    } catch (error) {
+        console.error("Fejl:", error);
+    }
+});
 
 function escapeHtml(str) {
   return String(str)
@@ -49,7 +50,7 @@ function renderTab() {
   const meta = TAB_LABELS[activeKey];
 
   const headers = ['Farve', 'Navn'];
-  if (meta.hasCode) headers.push('Kode');
+  if (meta.hasDesc) headers.push('Beskrivelse');
   headers.push('Handlinger');
 
   const headHtml = `<thead class="data-table__head"><tr class="data-table__row">` +
@@ -57,12 +58,13 @@ function renderTab() {
     `</tr></thead>`;
 
   const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => {
+    console.log(item);
     const cells = [
       `<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
       `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
     ];
-    if (meta.hasCode) {
-      cells.push(`<td class="data-table__cell">${escapeHtml(item.code || '')}</td>`);
+    if (meta.hasDesc) {
+      cells.push(`<td class="data-table__cell">${escapeHtml(item.description || '')}</td>`);
     }
     cells.push(
       `<td class="data-table__cell">` +
@@ -215,7 +217,7 @@ function openEditModal(id) {
   if (title) title.textContent = `Redigér ${meta.singular}`;
   if (idInput) idInput.value = `#${item.id}`;
   if (nameInput) nameInput.value = item.name;
-  if (codeGroup) codeGroup.style.display = meta.hasCode ? '' : 'none';
+  if (codeGroup) codeGroup.style.display = meta.hasDesc ? '' : 'none';
   if (codeInput) codeInput.value = item.code || '';
   modal.setAttribute('data-edit-id', String(id));
   renderColorPicker('edit-settings-color-picker', item.color);
@@ -244,7 +246,7 @@ function handleEditSubmit() {
     return;
   }
   item.name = nameInput.value.trim();
-  if (TAB_LABELS[activeKey].hasCode) {
+  if (TAB_LABELS[activeKey].hasDesc) {
     const codeInput = document.getElementById('edit-settings-code');
     item.code = codeInput ? codeInput.value.trim() : '';
   }
@@ -281,7 +283,7 @@ function openCreateModal() {
   const codeInput = document.getElementById('create-settings-code');
   if (title) title.textContent = `Tilføj ${meta.singular}`;
   if (nameInput) nameInput.value = '';
-  if (codeGroup) codeGroup.style.display = meta.hasCode ? '' : 'none';
+  if (codeGroup) codeGroup.style.display = meta.hasDesc ? '' : 'none';
   if (codeInput) codeInput.value = '';
   renderColorPicker('create-settings-color-picker', COLOR_PALETTE.red);
   modal.classList.add('modal--open');
@@ -306,7 +308,7 @@ function handleCreateSubmit() {
   const items = settingsData[activeKey];
   const newId = items.length ? Math.max(...items.map((i) => i.id)) + 1 : 1;
   const entry = { id: newId, name: nameInput.value.trim(), color: getSelectedColor('create-settings-color-picker') || COLOR_PALETTE.red };
-  if (meta.hasCode) {
+  if (meta.hasDesc) {
     const codeInput = document.getElementById('create-settings-code');
     entry.code = codeInput ? codeInput.value.trim() : '';
   }
@@ -339,14 +341,4 @@ function initAddButton() {
   btn.addEventListener('click', openCreateModal);
 }
 
-(function init() {
-  updateAddButtonLabel();
-  renderTab();
-  initTabs();
-  initSettingsFilters();
-  initSettingsActions();
-  initCreateModal();
-  initEditModal();
-  initDeleteModal();
-  initAddButton();
-})();
+
