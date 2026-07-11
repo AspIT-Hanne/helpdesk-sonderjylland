@@ -22,13 +22,13 @@ function init() {
   initAddButton();
 }
 
-// Din nye init-logik
+// Vent til at hele siden er loaded og så hent data med fetchSettings
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Vi kalder funktionen, som du har importeret
+        // Vent på at data hentes       
         settingsData = await fetchSettings(); 
         
-        // Nu kalder vi resten af appen
+        // Kald resten af funktionerne, når settingsData er hentet
         init(); 
     } catch (error) {
         console.error("Fejl:", error);
@@ -58,7 +58,13 @@ function renderTab() {
     `</tr></thead>`;
 
   const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => {
-    console.log(item);
+    
+    // Første gang hvert item bliver hentet fra settingsData, erstattes farven fra databasen med farven fra variablen COLOR_PALETTE (fra badges.js)
+    if(!item.color.hasOwnProperty("bg"))
+    {
+      item.color = COLOR_PALETTE[item.color];
+    }
+
     const cells = [
       `<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
       `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
