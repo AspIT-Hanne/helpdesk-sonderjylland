@@ -205,7 +205,6 @@
             }    
             else
             {
-                echo("Tabel eksisterer ikke");
                 return false;
             }
         }

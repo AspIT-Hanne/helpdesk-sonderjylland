@@ -1,10 +1,10 @@
 <?php 
-// Tving PHP til at vise fejlen i loggen og ikke på skærmen
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/php_error.log');
-
-require_once('../includes/phpheader.php');
+// Output buffer start. Opsamler al output, som phpheader (og connect, som includes i phpheader) måtte generere.
+// Udfordringen er, at når jeg bruger header() i linje 9, så må der ikke have været noget output først, så for at undgå det, 
+// bruger jeg en output buffer, som opsamler det hele og så sletter det i linje 7.
+ob_start();
+    require_once('../includes/phpheader.php');
+ob_end_clean();
 
 header('Content-Type: application/json');
 
