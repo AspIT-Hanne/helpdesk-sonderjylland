@@ -138,22 +138,22 @@ body {
     flex-shrink: 0;
 }
 
-.kanban-column__header--open {
+.kanban-column__header--Ikke-startet {
     background-color: var(--color-primary-container);
     color: var(--color-on-primary);
 }
 
-.kanban-column__header--progress {
+.kanban-column__header--Åben {
     background-color: var(--color-secondary);
     color: var(--color-on-primary);
 }
 
-.kanban-column__header--pending {
+.kanban-column__header--Afventer {
     background-color: var(--color-accent);
     color: var(--color-on-primary);
 }
 
-.kanban-column__header--resolved {
+.kanban-column__header--Løst {
     background-color: var(--color-muted-bg);
     color: var(--color-on-surface);
 }

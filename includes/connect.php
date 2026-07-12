@@ -174,6 +174,21 @@
              }
          }
 
+         // Metode til at hente alle posts fra en tabel som opfylder en bestemt værdi i det overførte felt og sorteret efter et bestemt felt. Anvendes til at hente alle events fra en bestemt uge sorteret efter starttidspunkt
+         public function getDataByFieldSortedWithJoins($table, $rows, $join, $fieldname, $fielddata, $sortBy)
+         {
+             if ($this->tableExists($table))
+             {
+                 // Opret WHERE-statement med det overførte felt og den overførte værdi
+                 $sqlWhere = "$fieldname = '$fielddata'";
+ 
+                 // Kald den private metode getData for at hente data med de overførte værdier i det overførte felt og sorteret efter det ønskede felt
+                 $dataResult = $this->getData($table, $rows, $join, $sqlWhere, $sortBy);
+
+                 return $dataResult;
+             }
+         }
+
         // Metode til at oprette ny post/indsætte data i tabel. $data=array() argumentet opretter et tomt array, som kan bruges som default hvis metoden ikke får et array af data overført
         public function insertData($table, $data=array())
         {

@@ -1,4 +1,11 @@
-<?php include "includes/phpheader.php"; ?>
+<?php 
+  include "api/get_tickets.php";
+
+  $data = getTicketData(); 
+  
+  $status = getStatus();
+  
+  ?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -35,10 +42,12 @@
         <label for="filter-status" class="filter-bar__label">Status</label>
         <select id="filter-status" class="form-field filter-bar__select">
           <option value="">Alle</option>
-          <option value="not-started">Ikke Startet</option>
-          <option value="open">Åben</option>
-          <option value="pending">Afventer</option>
-          <option value="resolved">Løst</option>
+           <?php 
+              foreach($status as $thisstatus)
+                {
+                  echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+                }
+            ?>
         </select>
       </div>
       <button class="btn btn--primary" id="add-sag-btn">Tilføj Sag</button>
@@ -61,132 +70,29 @@
             </tr>
           </thead>
           <tbody id="sager-table-body">
-            <tr class="data-table__row" data-ticket-id="247" data-title="Projektør virker ikke i lokale 101" data-type="t2" data-location="Lokale 101" data-status="open" data-priority="high" data-assigned="Jens Clausen" data-created-date="2026-05-21">
-              <td class="data-table__cell">#247</td>
-              <td class="data-table__cell">Projektør virker ikke i lokale 101</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t2">T2</span></td>
-              <td class="data-table__cell">Lokale 101</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:open">Åben</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:high">Høj</span></td>
-              <td class="data-table__cell">Jens Clausen</td>
-              <td class="data-table__cell">2026-05-21</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 247">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 247">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="246" data-title="Elever har login-problemer" data-type="t1" data-location="Serverrum" data-status="pending" data-priority="medium" data-assigned="Malene Gydesen" data-created-date="2026-05-21">
-              <td class="data-table__cell">#246</td>
-              <td class="data-table__cell">Elever har login-problemer</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t1">T1</span></td>
-              <td class="data-table__cell">Serverrum</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:pending">Afventer</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:medium">Mellem</span></td>
-              <td class="data-table__cell">Malene Gydesen</td>
-              <td class="data-table__cell">2026-05-21</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 246">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 246">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="245" data-title="WiFi-forbindelse afbryder ofte" data-type="t3" data-location="Bygning C" data-status="open" data-priority="low" data-assigned="Daniel Weiss" data-created-date="2026-05-20">
-              <td class="data-table__cell">#245</td>
-              <td class="data-table__cell">WiFi-forbindelse afbryder ofte</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t3">T3</span></td>
-              <td class="data-table__cell">Bygning C</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:open">Åben</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:low">Lav</span></td>
-              <td class="data-table__cell">Daniel Weiss</td>
-              <td class="data-table__cell">2026-05-20</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 245">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 245">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="244" data-title="Anmodning om software-installation" data-type="t4" data-location="IT-Kontor" data-status="resolved" data-priority="low" data-assigned="Jens Clausen" data-created-date="2026-05-20">
-              <td class="data-table__cell">#244</td>
-              <td class="data-table__cell">Anmodning om software-installation</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t4">T4</span></td>
-              <td class="data-table__cell">IT-Kontor</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:resolved">Løst</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:low">Lav</span></td>
-              <td class="data-table__cell">Jens Clausen</td>
-              <td class="data-table__cell">2026-05-20</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 244">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 244">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="243" data-title="Papirstop i printer - Kontoret" data-type="other" data-location="Kontoret" data-status="resolved" data-priority="medium" data-assigned="Malene Gydesen" data-created-date="2026-05-19">
-              <td class="data-table__cell">#243</td>
-              <td class="data-table__cell">Papirstop i printer - Kontoret</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:other">Andet</span></td>
-              <td class="data-table__cell">Kontoret</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:resolved">Løst</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:medium">Mellem</span></td>
-              <td class="data-table__cell">Malene Gydesen</td>
-              <td class="data-table__cell">2026-05-19</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 243">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 243">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="242" data-title="Email synkroniserer ikke på mobil" data-type="t1" data-location="Bygning A" data-status="open" data-priority="medium" data-assigned="Daniel Weiss" data-created-date="2026-05-19">
-              <td class="data-table__cell">#242</td>
-              <td class="data-table__cell">Email synkroniserer ikke på mobil</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t1">T1</span></td>
-              <td class="data-table__cell">Bygning A</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:open">Åben</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:medium">Mellem</span></td>
-              <td class="data-table__cell">Daniel Weiss</td>
-              <td class="data-table__cell">2026-05-19</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 242">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 242">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="241" data-title="Tastatur skal udskiftes" data-type="t2" data-location="Lokale 205" data-status="pending" data-priority="low" data-assigned="Karin Weber" data-created-date="2026-05-18">
-              <td class="data-table__cell">#241</td>
-              <td class="data-table__cell">Tastatur skal udskiftes</td>
-              <td class="data-table__cell"><span class="badge" data-badge="type:t2">T2</span></td>
-              <td class="data-table__cell">Lokale 205</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:pending">Afventer</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:low">Lav</span></td>
-              <td class="data-table__cell">Karin Weber</td>
-              <td class="data-table__cell">2026-05-18</td>
-              <td class="data-table__cell">
-                <button type="button" class="action-btn" aria-label="Redigér sag 241">
-                  <img src="assets/pencil.svg" alt="" class="action-btn__icon">
-                </button>
-                <button type="button" class="action-btn action-btn--danger" aria-label="Slet sag 241">
-                  <img src="assets/trash.svg" alt="" class="action-btn__icon">
-                </button>
-              </td>
-            </tr>
+            <?php  
+            foreach($data as $ticket)
+            {
+              echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}'>";
+              echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
+              echo "<td class='data-table__cell'>{$ticket['title']}</td>";
+              echo "<td class='data-table__cell'><span class='badge' data-badge='type:{$ticket['category_name']}'>{$ticket['category_name']}</span></td>";
+              echo "<td class='data-table__cell'>{$ticket['location']}</td>";
+              echo "<td class='data-table__cell'><span class='badge' data-badge='status:{$ticket['status_name']}'>{$ticket['status_name']}</span></td>";
+              echo "<td class='data-table__cell'><span class='priority' data-badge='priority:{$ticket['priority_name']}'>{$ticket['priority_name']}</span></td>";
+              echo "<td class='data-table__cell'>{$ticket['assignedTo_name']}</td>";
+              echo "<td class='data-table__cell'>" . date_format(new DateTime($ticket['created_at']), "d-m-y") . "</td>";
+              echo "<td class='data-table__cell'>
+                      <button type='button' class='action-btn' aria-label='Redigér sag {$ticket['id']}'>
+                        <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
+                      </button>
+                      <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag {$ticket['id']}'>
+                        <img src='assets/trash.svg' alt='' class='action-btn__icon'>
+                      </button>
+                    </td>
+                </tr>";
+            }
+            ?>
           </tbody>
         </table>
       </div>
