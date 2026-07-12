@@ -1,4 +1,13 @@
-<?php include "includes/phpheader.php"; ?>
+<?php 
+  include "api/get_tickets.php";
+
+  $data = getTicketData(); 
+  
+  $technicians = getTechnicians();
+  
+  $status = getStatus();
+  
+  ?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -56,22 +65,24 @@
           <label for="filter-status" class="filter-bar__label">Status</label>
           <select id="filter-status" class="form-field filter-bar__select">
             <option value="">Alle</option>
-            <option value="not-started">Ikke Startet</option>
-            <option value="open">Åben</option>
-            <option value="pending">Afventer</option>
-            <option value="resolved">Løst</option>
+            <?php 
+              foreach($status as $thisstatus)
+                {
+                  echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="filter-bar__group">
           <label for="filter-assigned" class="filter-bar__label">Tildelt</label>
           <select id="filter-assigned" class="form-field filter-bar__select">
             <option value="">Alle</option>
-            <option value="Jens Clausen">Jens Clausen</option>
-            <option value="Malene Gydesen">Malene Gydesen</option>
-            <option value="Daniel Weiss">Daniel Weiss</option>
-            <option value="Jonas Greve">Jonas Greve</option>
-            <option value="Karin Weber">Karin Weber</option>
-            <option value="Hanne Lund">Hanne Lund</option>
+            <?php 
+              foreach($technicians as $technician)
+                {
+                  echo "<option value='{$technician['username']}'>{$technician['username']}</option>";
+                }
+            ?>
           </select>
         </div>
         <button class="btn btn--secondary filter-bar__reset">Nulstil</button>
@@ -90,51 +101,21 @@
             </tr>
           </thead>
           <tbody id="ticket-table-body">
-            <tr class="data-table__row" data-ticket-id="247" data-description="" data-title="Projektør virker ikke i lokale 101" data-type="t2" data-location="Lokale 101" data-status="open" data-priority="high" data-assigned="Jens Clausen" data-created-date="2026-05-21" role="button" tabindex="0">
-              <td class="data-table__cell">#247</td>
-              <td class="data-table__cell">Projektør virker ikke i lokale 101</td>
-              <td class="data-table__cell">Lokale 101</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:open">Åben</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:high">Høj</span></td>
-              <td class="data-table__cell">Jens Clausen</td>
-              <td class="data-table__cell">2026-05-21</td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="246" data-description="" data-title="Elever har login-problemer" data-type="t1" data-location="Serverrum" data-status="pending" data-priority="medium" data-assigned="Malene Gydesen" data-created-date="2026-05-21" role="button" tabindex="0">
-              <td class="data-table__cell">#246</td>
-              <td class="data-table__cell">Elever har login-problemer</td>
-              <td class="data-table__cell">Serverrum</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:pending">Afventer</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:medium">Mellem</span></td>
-              <td class="data-table__cell">Malene Gydesen</td>
-              <td class="data-table__cell">2026-05-21</td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="245" data-description="" data-title="WiFi-forbindelse afbryder ofte" data-type="t3" data-location="Bygning C" data-status="not-started" data-priority="low" data-assigned="Daniel Weiss" data-created-date="2026-05-20" role="button" tabindex="0">
-              <td class="data-table__cell">#245</td>
-              <td class="data-table__cell">WiFi-forbindelse afbryder ofte</td>
-              <td class="data-table__cell">Bygning C</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:open">Åben</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:low">Lav</span></td>
-              <td class="data-table__cell">Daniel Weiss</td>
-              <td class="data-table__cell">2026-05-20</td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="244" data-description="" data-title="Anmodning om software-installation" data-type="t4" data-location="IT-Kontor" data-status="resolved" data-priority="low" data-assigned="Jens Clausen" data-created-date="2026-05-20" role="button" tabindex="0">
-              <td class="data-table__cell">#244</td>
-              <td class="data-table__cell">Anmodning om software-installation</td>
-              <td class="data-table__cell">IT-Kontor</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:resolved">Løst</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:low">Lav</span></td>
-              <td class="data-table__cell">Jens Clausen</td>
-              <td class="data-table__cell">2026-05-20</td>
-            </tr>
-            <tr class="data-table__row" data-ticket-id="243" data-description="" data-title="Papirstop i printer - Kontoret" data-type="other" data-location="Kontoret" data-status="resolved" data-priority="medium" data-assigned="Malene Gydesen" data-created-date="2026-05-19" role="button" tabindex="0">
-              <td class="data-table__cell">#243</td>
-              <td class="data-table__cell">Papirstop i printer - Kontoret</td>
-              <td class="data-table__cell">Kontoret</td>
-              <td class="data-table__cell"><span class="badge" data-badge="status:resolved">Løst</span></td>
-              <td class="data-table__cell"><span class="priority" data-badge="priority:medium">Mellem</span></td>
-              <td class="data-table__cell">Malene Gydesen</td>
-              <td class="data-table__cell">2026-05-19</td>
-            </tr>
+          <?php  
+            foreach($data as $ticket)
+            {
+                  echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}' role='button' tabindex='0'>";
+                    echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
+                    echo "<td class='data-table__cell'>{$ticket['title']}</td>";
+                    echo "<td class='data-table__cell'>{$ticket['location']}</td>";
+                    echo "<td class='data-table__cell'><span class='badge' data-badge='status:{$ticket['status_name']}'>{$ticket['status_name']}</span></td>";
+                    echo "<td class='data-table__cell'><span class='priority' data-badge='priority:{$ticket['priority_name']}'>{$ticket['priority_name']}</span></td>";
+                    echo "<td class='data-table__cell'>{$ticket['assignedTo_name']}</td>";
+                    echo "<td class='data-table__cell'>" . date_format(new DateTime($ticket['created_at']), "d-m-y") . "</td>";
+                echo "</tr>";
+            }
+            ?>
+           
           </tbody>
         </table>
       </div>
