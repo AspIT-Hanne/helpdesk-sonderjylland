@@ -1,4 +1,7 @@
 <?php 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Hent den rå JSON-data fra request kroppen
 $json = file_get_contents('php://input');
@@ -7,21 +10,21 @@ $json = file_get_contents('php://input');
 $transferdata = json_decode($json, true);
 
 // Hent værdierne ud fra det dekodede array
+$id = $transferdata['id'] ?? '';
 $username = $transferdata['name'] ?? '';
-$password = $transferdata['password'] ?? '';
 $email = $transferdata['email'] ?? '';
 $role = $transferdata['role'] ?? '';
+$status = $transferdata['status'] ?? '';
 
-addUser($username, $password, $email, $role);
+updateUser($id, $username, $email, $role, $status);
 
 
 
-function addUser($username, $password, $email, $role)
+function updateUser($id, $username, $email, $role, $status)
 {
     global $dbcon;
     require_once __DIR__ . '/../includes/phpheader.php';
 
-    $table = "users";
 
     try {
         $userrole = $dbcon->getDataByField('userRole', 'name', $role);
@@ -37,27 +40,39 @@ function addUser($username, $password, $email, $role)
     }
 
     try {
+        $userstatus = $dbcon->getDataByField('userStatus', 'name', $status);
+        if (!$userstatus) {
+            throw new Exception("Brugerstatus blev ikke fundet i databasen.");
+        }
+        $userStatus_id = $userstatus['id'];
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        exit;
+    }
 
-        // Hash passwordet før det gemmes i databasen
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    try {
+        $table = "users";
         
         $data = [
             'username' => $username,
-            'password' => $hashedPassword,
             'email' => $email,
             'userRole_id' => $userRole_id,
-            'userStatus_id' => 1
+            'userStatus_id' => $userStatus_id
         ];
 
-        $result = $dbcon->insertData($table, $data);
+        $result = $dbcon->updateData($table, $id, $data);
         
         // Send true eller resultatet tilbage som JSON til JavaScript
         echo json_encode($result);
 
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['success' => $e->getMessage(), 'error' => $e->getMessage()]);
-                echo "PHP Fejl: " . $e->getMessage();
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+         ]);
         exit;
     }
 

@@ -241,8 +241,9 @@
             // Kontroller om tabellen eksisterer i databasen
             if($this->tableExists($table))
             {
+               
                 // Opret array $newValues til at overføre de nye data til
-                $newValues = array();
+                $newValues = array();  
 
                 // Opret WHERE statement (se linje 52 for forklaring)
                 $sqlWhere = $this->getTableID($table) . " = '" . $ID . "'";
@@ -260,22 +261,25 @@
 
                 // Opret UPDATE statement med værdierne fra $newValueString og WHERE kriteriet
                 $sqlUpdate = "UPDATE {$table} SET {$newValueString} WHERE {$sqlWhere}";
-                
-                // Kør SQL-query. Hvis SQL-query lykkes returner TRUE ellers udskriv fejl og returner FALSE
-                if($this->connection->query($sqlUpdate))
+
+                try
                 {
+                    $stmt = $this->connection->prepare($sqlUpdate);
+
+                    $stmt->execute();
+
                     return true;
                 }
-                else
-                {
-                    echo $this->connection->error;
-                    return false;
+                catch (PDOException $e) {
+                    // Her fanger vi fejl fra prepare() og execute()
+                    throw new Exception("Database fejl ved opdatering: " . $e->getMessage());
                 }
             }
             else
             {
+                 
                 // Hvis tabellen ikke eksisterer
-                return false;
+                throw new Exception("Tabellen '{$table}'' eksisterer ikke.");
             }
         }
 
@@ -417,9 +421,19 @@
             // Hent alle felter/kolonner fra tabel for at kunne finde navnet på ID-feltet (altid første felt i en tabel)
             $result = $this->connection->query("SHOW COLUMNS FROM {$table}");
 
-            // Hent den første række fra de hentede felter og læg det i et associative array. Dette array kommer til at indeholde alle informationer om det første felt: navn, datatype, autotæller osv. Evt. print_r arrayet og sammenlign med tabelvisning fra phpmyadmin
-            $dbFields = $result->fetch_row();
+            // Ved at sende fejlen som en exception sikrer vi, at vi får en ordentlig fejlmeddelelse og ikke bare returneret "false"
+            if (!$result) {
+                throw new Exception("Kunne ikke køre SHOW COLUMNS for tabellen '{$table}'.");
+            }
 
+            // Hent den første række fra de hentede felter og læg det i et associative array. Dette array kommer til at indeholde alle informationer om det første felt: navn, datatype, autotæller osv. Evt. print_r arrayet og sammenlign med tabelvisning fra phpmyadmin
+            $dbFields = $result->fetch(PDO::FETCH_NUM);
+
+            // Tjek om vi rent faktisk fik et felt tilbage
+            if (!$dbFields || !isset($dbFields[0])) {
+                throw new Exception("Ingen kolonner fundet i tabellen '{$table}'.");
+            }
+            
             // Returner det første index i arrayet med felt-informationer. Første index indeholder altid feltets navn, som så kan bruges til at oprette SQL WHERE statement: (WHERE) ID FIELDNAME = $ID (hvor navnet på denne tabels ID-felt skal bruges til at finde en bestemt post)
             return $dbFields[0];
         }

@@ -1,4 +1,5 @@
 import { addUser } from '../api/add_user.js';
+import { updateUser } from '../api/update_user.js';
 
 function initUserFilters() {
   const searchInput = document.getElementById('user-search');
@@ -176,9 +177,13 @@ function initUserModal() {
 
 async function handleUpdateUserSubmit() {
 
+  const id = document.getElementById('user-modal-id');
   const name = document.getElementById('user-modal-name');
   const email = document.getElementById('user-modal-email');
   const role = document.getElementById('user-modal-role');
+  
+  const statusInput = document.getElementById('user-modal-status');
+  const status = statusInput.checked ? "Aktiv" : "Inaktiv";
 
   if (name && !name.value.trim()) {
     alert('Navn er et påkrævet felt.');
@@ -192,15 +197,18 @@ async function handleUpdateUserSubmit() {
     return;
   }
 
-   // Brug af den importerede addUser funktion
-  const result = await addUser(name.value, email.value, role.value, password.value)
+   // Brug af den importerede updateUser funktion
+  const result = await updateUser(id.value, name.value, email.value, role.value, status)
     .then(result => {
       if (result === true) {
-          alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
-          closeCreateUserModal();
-          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
-      } else {
-        alert('Der opstod en fejl ved oprettelse af brugeren i databasen.');
+          alert(`Bruger opdateret:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}\nStatus: ${status ? status : ''}`);
+          closeUserModal();
+          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man kan se ændringerne?
+      }
+      else
+      {
+        console.log("API result: " + result);
+        alert('Der opstod en fejl ved ændring af brugeren i databasen.');
       }
     })
     .catch(error => {

@@ -1,13 +1,18 @@
-export async function addUser(name, email, role, password) {
+export async function updateUser(rawid, name, email, role, status) {
+    const id = parseInt(rawid.replace('#', ''), 10);
+    
     const userData = {
+        id: id,
         name: name,
         email: email,
         role: role,
-        password: password
+        status: status
     };
 
+    console.log(userData);
+
     try {
-        const response = await fetch('api/add_user.php', {
+        const response = await fetch('api/update_user.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -21,11 +26,11 @@ export async function addUser(name, email, role, password) {
         }
 
         const result = await response.json();
+                console.log('API result: ' + result);
         return result;
 
     } catch (error) {
-        console.error('Fejl i addUser API-kald:', error);
-        // Returner false (eller kast fejlen videre), så din handleCreateUserSubmit ved det gik galt
+        console.error('Fejl i updateUser API-kald:', error);
         return false;
     }
 }
