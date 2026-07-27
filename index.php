@@ -1,11 +1,22 @@
 <?php 
-  include "api/get_tickets.php";
+  include_once __DIR__ . '/includes/phpheader.php'; 
 
-  $data = getTicketData(); 
-  
-  $technicians = getTechnicians();
-  
-  $status = getStatus();
+  if (!isset($_SESSION['logged_in'])) {
+      header('Location: login.php');
+      exit;
+  }
+  else
+  {
+
+    include "api/get_tickets.php";
+
+    $data = getTicketData(); 
+    
+    $technicians = getTechnicians();
+    
+    $status = getStatus();
+  }
+
   
   ?>
 

@@ -366,6 +366,27 @@
             }
         }
 
+        public function verifyLogin($username, $password)
+        {
+            $where = "username = '" . $username . "'";
+
+            try {
+                $user = $this->getData('users', '*', '' , $where);
+            } 
+            catch (Exception $error){
+                throw new Exception("Brugeren $username eksisterer ikke.");
+            }
+
+            if(password_verify($password, $user[0]['password']))
+            {
+                return $user[0]['id'];
+            }
+            else
+            {
+                throw new Exception("Password er forkert.");
+            }
+        }
+
         // Generisk privat funktion til at hente data fra tabel. Kan kun kaldes fra klassen og ikke fra andre php-sider
         private function getData($table, $rows = '*', $join = null, $where = null, $order = null, $limit = null)
         {
@@ -411,7 +432,7 @@
                 catch (PDOException $e) {
                     // Her fanger vi fejl fra både execute() OG fetchAll()
                     error_log("Database fejl: " . $e->getMessage());
-                    return ["No data was found"];
+                    throw new Exception("Ingen data fundet." . $e->getMessage());
                 }
 
                 
@@ -419,7 +440,7 @@
             else
             {
                 // Stop script og udskriv fejlmeddelelse
-                die("Table does not exist in database");
+               throw new Exception("Tabellen $table eksisterer ikke.");
             }
             
         }
@@ -472,4 +493,3 @@
         }
     }
 ?>
-

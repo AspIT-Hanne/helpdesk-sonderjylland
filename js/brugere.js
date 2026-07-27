@@ -312,7 +312,6 @@ async function handleCreateUserSubmit() {
           setTimeout(() => {
             location.reload();
           }, 2000);
-          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
       } else {
         showBottomMessage('Der opstod en fejl ved oprettelse af brugeren i databasen.' + result.error, 'error');
       }

@@ -248,6 +248,9 @@
             <option value="Hanne Lund">Hanne Lund</option>
           </select>
         </div>
+         <div class="form-group">
+          <input type="text" id="sager-create-created" class="form-field" hidden disabled>
+        </div>
         <div class="form-group">
           <label for="sager-create-date" class="form-group__label">Oprettelsesdato</label>
           <input type="text" id="sager-create-date" class="form-field" disabled>
@@ -262,6 +265,6 @@
 
   <script src="js/shared.js"></script>
   <script src="js/badges.js"></script>
-  <script src="js/sager.js"></script>
+  <script src="js/sager.js" type="module"></script>
 </body>
 </html>

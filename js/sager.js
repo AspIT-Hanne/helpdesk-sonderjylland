@@ -165,7 +165,7 @@ function openCreateSagModal() {
   if (typeSelect) typeSelect.value = '';
   if (descriptionInput) descriptionInput.value = '';
   if (locationInput) locationInput.value = '';
-  if (statusSelect) statusSelect.value = 'not-started';
+  if (statusSelect) statusSelect.value = 'ikke-startet';
   if (prioritySelect) prioritySelect.value = 'medium';
   if (assignedSelect) assignedSelect.value = '';
   if (dateInput) {
@@ -184,29 +184,45 @@ function closeCreateSagModal() {
   document.body.classList.remove('modal-open');
 }
 
-function handleCreateSagSubmit() {
+async function handleCreateSagSubmit() {
   const title = document.getElementById('sager-create-title');
   const type = document.getElementById('sager-create-type');
 
   if (title && !title.value.trim()) {
-    alert('Titel er et påkrævet felt.');
+    showBottomMessage('Titel er et påkrævet felt.', 'warning');
     title.focus();
     return;
   }
 
   if (type && !type.value.trim()) {
-    alert('Type er et påkrævet felt.');
+    showBottomMessage('Type er et påkrævet felt.', 'warning');
     type.focus();
     return;
   }
 
+  const description = document.getElementById('sager-create-description');
   const location = document.getElementById('sager-create-location');
   const status = document.getElementById('sager-create-status');
   const priority = document.getElementById('sager-create-priority');
   const assigned = document.getElementById('sager-create-assigned');
+  const created = document.getElementById('sager-create-created');
 
-  alert(`Sag oprettet:\nTitel: ${title ? title.value : ''}\nType: ${type ? type.value : ''}\nLokation: ${location ? location.value : ''}\nStatus: ${status ? status.options[status.selectedIndex].text : ''}\nPrioritet: ${priority ? priority.options[priority.selectedIndex].text : ''}\nTildelt: ${assigned ? assigned.options[assigned.selectedIndex].text : ''}`);
-  closeCreateSagModal();
+   // Brug af den importerede addUser funktion
+    const result = await addTicket(title.value, description.value, location.value, type.value, priority.value, assigned.value, status.value)
+      .then(result => {
+        if (result === true) {
+            closeCreateSagModal();
+            showBottomMessage(`Sag ${title.value} oprettet`, 'success');
+            setTimeout(() => {
+              location.reload();
+            }, 2000);
+        } else {
+          showBottomMessage('Der opstod en fejl ved oprettelse af sagen.' + result.error, 'error');
+        }
+      })
+      .catch(error => {
+        showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+      });
 }
 
 function initCreateSagModal() {
