@@ -1,3 +1,5 @@
+import { addUser } from '../api/add_user.js';
+
 function initUserFilters() {
   const searchInput = document.getElementById('user-search');
   const roleSelect = document.getElementById('filter-role');
@@ -123,12 +125,15 @@ function openUserModal(userId) {
     if (emailInput) emailInput.value = row.dataset.email || '';
     if (passwordInput) passwordInput.value = '';
     if (roleSelect) roleSelect.value = row.dataset.role || '';
-    if (statusInput) statusInput.checked = row.dataset.status === 'active';
-    if (statusLabel) statusLabel.textContent = row.dataset.status === 'active' ? 'Aktiv' : 'Inaktiv';
+    if (statusInput) statusInput.checked = row.dataset.status === 'Aktiv';
+    if (statusLabel) statusLabel.textContent = row.dataset.status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
   }
 
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
+
+  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
+  if (saveBtn) saveBtn.addEventListener('click', handleUpdateUserSubmit);
 }
 
 function closeUserModal() {
@@ -169,6 +174,41 @@ function initUserModal() {
   });
 }
 
+async function handleUpdateUserSubmit() {
+
+  const name = document.getElementById('user-modal-name');
+  const email = document.getElementById('user-modal-email');
+  const role = document.getElementById('user-modal-role');
+
+  if (name && !name.value.trim()) {
+    alert('Navn er et påkrævet felt.');
+    name.focus();
+    return;
+  }
+
+  if (email && !email.value.trim()) {
+    alert('E-mail er et påkrævet felt.');
+    email.focus();
+    return;
+  }
+
+   // Brug af den importerede addUser funktion
+  const result = await addUser(name.value, email.value, role.value, password.value)
+    .then(result => {
+      if (result === true) {
+          alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
+          closeCreateUserModal();
+          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
+      } else {
+        alert('Der opstod en fejl ved oprettelse af brugeren i databasen.');
+      }
+    })
+    .catch(error => {
+      console.error('Fejl:', error);
+      alert('Der opstod en uventet fejl.');
+    });
+}
+
 function openCreateUserModal() {
   const modal = document.getElementById('user-create-modal');
   if (!modal) return;
@@ -200,7 +240,7 @@ function closeCreateUserModal() {
   document.body.classList.remove('modal-open');
 }
 
-function handleCreateUserSubmit() {
+async function handleCreateUserSubmit() {
   const password = document.getElementById('create-user-modal-password');
   const confirm = document.getElementById('create-user-modal-password-confirm');
 
@@ -232,8 +272,21 @@ function handleCreateUserSubmit() {
     return;
   }
 
-  alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
-  closeCreateUserModal();
+   // Brug af den importerede addUser funktion
+  const result = await addUser(name.value, email.value, role.value, password.value)
+    .then(result => {
+      if (result === true) {
+          alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
+          closeCreateUserModal();
+          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
+      } else {
+        alert('Der opstod en fejl ved oprettelse af brugeren i databasen.');
+      }
+    })
+    .catch(error => {
+      console.error('Fejl:', error);
+      alert('Der opstod en uventet fejl.');
+    });
 }
 
 function initCreateUserModal() {

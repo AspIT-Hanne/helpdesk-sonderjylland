@@ -131,9 +131,19 @@
                  // Kald den private metode getData for at hente data med de overførte værdier i det overførte felt
                  $dataResult = $this->getData($table, "*", null, $sqlWhere);
  
-                 // Se forklaring i linje 58
-                 return $dataResult[0];
+                 // Tjek om vi rent faktisk fik et resultat tilbage!
+                if (!empty($dataResult) && isset($dataResult[0])) {
+                    //Se forklaring i linje 58    
+                    return $dataResult[0];
+                }
+    
+                // Hvis intet blev fundet, returnerer vi f.eks. null eller kaster en fejl
+                return null;
              }
+             else
+            {
+                throw new Exception("Tabellen '{$table}'' eksisterer ikke.");
+            }
          }
 
         public function getSortedData($table, $sortBy)
@@ -215,12 +225,13 @@
                     
                 } catch (PDOException $e) {
                     error_log("Database fejl: " . $e->getMessage());
-                    return false;
+                    return $e->getMessage();
                 }
             }    
             else
             {
-                return false;
+                throw new Exception("Tabellen '{$table}'' eksisterer ikke.");
+                //return false;
             }
         }
 

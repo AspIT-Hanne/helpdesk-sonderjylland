@@ -3,6 +3,8 @@
   include "api/get_users.php";
 
   $data = getUserData();
+
+  $userroles = getUserRoles();
 ?>
 
 
@@ -42,10 +44,12 @@
         <label for="filter-role" class="filter-bar__label">Rolle</label>
         <select id="filter-role" class="form-field filter-bar__select">
           <option value="">Alle</option>
-          <option value="Admin">Admin</option>
-          <option value="Tekniker">Tekniker</option>
-          <option value="Læserettigheder">Læserettigheder</option>
-          <option value="Bruger">Bruger</option>
+            <?php 
+              foreach($userroles as $thisrole)
+                {
+                  echo "<option value='{$thisrole['name']}'>{$thisrole['name']}</option>";
+                }
+            ?>
         </select>
       </div>
       <button class="btn btn--primary" id="add-user-btn">Tilføj Bruger</button>
@@ -111,16 +115,14 @@
           <input type="text" id="user-modal-email" class="form-field">
         </div>
         <div class="form-group">
-          <label for="user-modal-password" class="form-group__label">Adgangskode</label>
-          <input type="password" id="user-modal-password" class="form-field">
-        </div>
-        <div class="form-group">
           <label for="user-modal-role" class="form-group__label">Rolle</label>
           <select id="user-modal-role" class="form-field">
-            <option value="Admin">Admin</option>
-            <option value="Tekniker">Tekniker</option>
-            <option value="Læserettigheder">Læserettigheder</option>
-            <option value="Bruger">Bruger</option>
+            <?php 
+              foreach($userroles as $thisrole)
+                {
+                  echo "<option value='{$thisrole['name']}'>{$thisrole['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -136,6 +138,7 @@
       </div>
       <footer class="modal__footer">
         <button class="btn btn--secondary" id="user-modal-cancel">Annullér</button>
+        <button class="btn btn--tertiary" id="user-modal-reset-password">Ændre password</button>
         <button class="btn btn--primary">Gem ændringer</button>
       </footer>
     </div>
@@ -209,6 +212,6 @@
 
   <script src="js/shared.js"></script>
   <script src="js/badges.js"></script>
-  <script src="js/brugere.js"></script>
+  <script src="js/brugere.js" type="module"></script>
 </body>
 </html>

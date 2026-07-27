@@ -23,5 +23,22 @@ function getUserData()
 
 }
 
+function getUserRoles()
+{
+    global $dbcon;
+    require_once __DIR__ . '/../includes/phpheader.php';
+
+    try {
+        $table = "userRole";
+
+        $result = $dbcon->getAllData($table);
+
+        return $result;
+    } catch (Exception $e) {
+        die($e->getMessage());
+    }
+
+}
+
 
 ?>
