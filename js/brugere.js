@@ -1,5 +1,6 @@
 import { addUser } from '../api/add_user.js';
 import { updateUser } from '../api/update_user.js';
+import { deleteUser } from '../api/delete_user.js';
 
 function initUserFilters() {
   const searchInput = document.getElementById('user-search');
@@ -38,6 +39,7 @@ function initUserActions() {
     if (!btn) return;
 
     const row = btn.closest('.data-table__row');
+    console.log(row);
     if (!row) return;
 
     if (btn.classList.contains('action-btn--danger')) {
@@ -59,6 +61,7 @@ function openDeleteUserModal(row) {
   if (message) message.textContent = `Er du sikker på, at du vil slette ${name}? Denne handling kan ikke fortrydes.`;
 
   modal.setAttribute('data-delete-user-id', row.dataset.userId);
+  modal.setAttribute('data-delete-user-name', name);
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
 }
@@ -68,17 +71,37 @@ function closeDeleteUserModal() {
   if (!modal) return;
   modal.classList.remove('modal--open');
   modal.removeAttribute('data-delete-user-id');
+    modal.removeAttribute('data-delete-user-name');
   document.body.classList.remove('modal-open');
+  location.reload();
 }
 
-function confirmDeleteUser() {
+async function confirmDeleteUser() {
   const modal = document.getElementById('user-delete-modal');
   if (!modal) return;
 
   const userId = modal.getAttribute('data-delete-user-id');
-  const row = document.querySelector(`tr[data-user-id="${userId}"]`);
-  if (row) row.remove();
+  const userName = modal.getAttribute('data-delete-user-name');
 
+   // const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+  // if (row) row.remove();
+  const result = await deleteUser(userId)
+      .then(result => {
+        if (result === true) {
+            alert(`${userName} er blevet slettet.`);
+            closeUserModal();
+            location.reload();
+            // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man kan se ændringerne?
+        }
+        else
+        {
+          alert('Der opstod en fejl ved sletning af brugeren i databasen: \n' + result.error);
+        }
+      })
+      .catch(error => {
+        console.error('Fejl:', error);
+        alert('Der opstod en uventet fejl.');
+      });
   closeDeleteUserModal();
 }
 
@@ -203,6 +226,7 @@ async function handleUpdateUserSubmit() {
       if (result === true) {
           alert(`Bruger opdateret:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}\nStatus: ${status ? status : ''}`);
           closeUserModal();
+          location.reload();
           // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man kan se ændringerne?
       }
       else
@@ -246,6 +270,7 @@ function closeCreateUserModal() {
   if (!modal) return;
   modal.classList.remove('modal--open');
   document.body.classList.remove('modal-open');
+   location.reload();
 }
 
 async function handleCreateUserSubmit() {
@@ -286,6 +311,7 @@ async function handleCreateUserSubmit() {
       if (result === true) {
           alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
           closeCreateUserModal();
+          location.reload();
           // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
       } else {
         alert('Der opstod en fejl ved oprettelse af brugeren i databasen.');

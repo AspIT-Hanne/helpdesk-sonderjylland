@@ -295,21 +295,30 @@
                 // Opret DELETE statement
                 $sqlDelete = "DELETE FROM {$table} WHERE {$sqlWhere}";
                 
-                // Kør SQL-query. Hvis SQL-query lykkes returner TRUE ellers udskriv fejl og returner FALSE
-                if($this->connection->query($sqlDelete))
+                try
                 {
+                    // Forbered og eksekvér SQL Delete statement med PDO
+                    $stmt = $this->connection->prepare($sqlDelete);
+
+                    $stmt->execute();
+
+                    // Returner true ved succes
                     return true;
                 }
-                else
-                {
-                    echo $this->connection->error;
-                    return false;
+                catch (PDOException $e) {
+                    
+                    // Hvis brugeren har sager i systemet, kan vedkommende ikke slettes. Det giver en SQL fejl 23000, fordi der er fremmednøgler, som forhindrer den sletning
+                    if ($e->getCode() == '23000') {
+                        throw new Exception("Brugeren kan ikke slettes, fordi vedkommende har oprettet sager i systemet.");
+                    }
+                    // Kast en Exception i stedet for at returnere false. Fanges af try/catch, som har kaldt denne funktion
+                    throw new Exception("Database fejl ved sletning: " . $e->getMessage());
                 }
             }
             else
             {
-                // Hvis tabellen ikke eksisterer
-                return false;
+                // Hvis tabellen ikke eksisterer.  Fanges af try/catch, som har kaldt denne funktion
+                throw new Exception("Tabellen '{$table}' eksisterer ikke.");
             }
         }
 
@@ -444,11 +453,15 @@
             // Hent alle tabelnavne fra databasen
             $result = $this->connection->query("SHOW TABLES");
 
-            // Læg de hentede tabelnavne i et multidimensionelt associative array med tabelnavne på index 0
-            $dbTables = $result->fetchAll();
+            if ($result === false) {
+                throw new Exception("Kunne ikke køre SHOW TABLES.");
+            }
+
+            // Hent alle tabeller som et fladt array (PDO::FETCH_COLUMN henter kolonne nr. 0 direkte)
+            $dbTables = $result->fetchAll(PDO::FETCH_COLUMN);
 
             // Hvis tabelnavnet findes i kolonne 0 (tabelnavne) af alle tabelinformationer
-            if(in_array($table, array_column($dbTables, "Tables_in_helpdesk_sonderjylland")))
+            if (in_array($table, $dbTables))
             {
                 return true;
             }

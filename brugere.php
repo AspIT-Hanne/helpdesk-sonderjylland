@@ -78,10 +78,10 @@
                     echo "<td class='data-table__cell'>{$user['role_name']}</td>";
                     echo "<td class='data-table__cell'><span class='badge' data-badge='user-status:{$user['status_name']}'>{$user['status_name']}</span></td>";
                     echo "<td class='data-table__cell'>";
-                    echo "<button type='button' class='action-btn' aria-label='Redigér Jens Clausen'>
+                    echo "<button type='button' class='action-btn' aria-label='Redigér {$user['username']}'>
                             <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
                           </button>";
-                    echo "<button type='button' class='action-btn action-btn--danger'' aria-label='Slet Jens Clausen'>
+                    echo "<button type='button' class='action-btn action-btn--danger'' aria-label='Slet {$user['username']}'>
                             <img src='assets/trash.svg' alt='' class='action-btn__icon'>
                           </button>";
                     echo "</td>";
