@@ -39,7 +39,6 @@ function initUserActions() {
     if (!btn) return;
 
     const row = btn.closest('.data-table__row');
-    console.log(row);
     if (!row) return;
 
     if (btn.classList.contains('action-btn--danger')) {
@@ -73,7 +72,6 @@ function closeDeleteUserModal() {
   modal.removeAttribute('data-delete-user-id');
     modal.removeAttribute('data-delete-user-name');
   document.body.classList.remove('modal-open');
-  location.reload();
 }
 
 async function confirmDeleteUser() {
@@ -88,19 +86,20 @@ async function confirmDeleteUser() {
   const result = await deleteUser(userId)
       .then(result => {
         if (result === true) {
-            alert(`${userName} er blevet slettet.`);
-            closeUserModal();
-            location.reload();
-            // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man kan se ændringerne?
+            closeDeleteUserModal();
+            showBottomMessage(`${userName} er blevet slettet.`, 'success');
+            
+            setTimeout(() => {
+              location.reload();
+            }, 2000);
         }
         else
         {
-          alert('Der opstod en fejl ved sletning af brugeren i databasen: \n' + result.error);
+          showBottomMessage('Der opstod en fejl ved sletning af brugeren i databasen: ' + result.error, 'error');
         }
       })
       .catch(error => {
-        console.error('Fejl:', error);
-        alert('Der opstod en uventet fejl.');
+        showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
       });
   closeDeleteUserModal();
 }
@@ -209,13 +208,13 @@ async function handleUpdateUserSubmit() {
   const status = statusInput.checked ? "Aktiv" : "Inaktiv";
 
   if (name && !name.value.trim()) {
-    alert('Navn er et påkrævet felt.');
+    showBottomMessage('Navn er et påkrævet felt.', 'warning');
     name.focus();
     return;
   }
 
   if (email && !email.value.trim()) {
-    alert('E-mail er et påkrævet felt.');
+    showBottomMessage('E-mail er et påkrævet felt.', 'warning');
     email.focus();
     return;
   }
@@ -224,20 +223,19 @@ async function handleUpdateUserSubmit() {
   const result = await updateUser(id.value, name.value, email.value, role.value, status)
     .then(result => {
       if (result === true) {
-          alert(`Bruger opdateret:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}\nStatus: ${status ? status : ''}`);
           closeUserModal();
-          location.reload();
-          // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man kan se ændringerne?
+          showBottomMessage(`Bruger ${name.value} opdateret`, 'success');
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
       }
       else
       {
-        console.log("API result: " + result);
-        alert('Der opstod en fejl ved ændring af brugeren i databasen.');
+        showBottomMessage('Der opstod en fejl ved ændring af brugeren i databasen.' + result.error, 'error');
       }
     })
     .catch(error => {
-      console.error('Fejl:', error);
-      alert('Der opstod en uventet fejl.');
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
     });
 }
 
@@ -278,13 +276,13 @@ async function handleCreateUserSubmit() {
   const confirm = document.getElementById('create-user-modal-password-confirm');
 
   if (password && confirm && password.value !== confirm.value) {
-    alert('Adgangskoderne er ikke ens. Tast venligst samme adgangskode i begge felter.');
+    showBottomMessage('Adgangskoderne er ikke ens. Tast venligst samme adgangskode i begge felter.', 'warning');
     confirm.focus();
     return;
   }
 
   if (password && password.value.length < 1) {
-    alert('Adgangskoden må ikke være tom.');
+    showBottomMessage('Adgangskoden må ikke være tom.', 'warning');
     password.focus();
     return;
   }
@@ -294,13 +292,13 @@ async function handleCreateUserSubmit() {
   const role = document.getElementById('create-user-modal-role');
 
   if (name && !name.value.trim()) {
-    alert('Navn er et påkrævet felt.');
+    showBottomMessage('Navn er et påkrævet felt.', 'warning');
     name.focus();
     return;
   }
 
   if (email && !email.value.trim()) {
-    alert('E-mail er et påkrævet felt.');
+    showBottomMessage('E-mail er et påkrævet felt.', 'warning');
     email.focus();
     return;
   }
@@ -309,17 +307,18 @@ async function handleCreateUserSubmit() {
   const result = await addUser(name.value, email.value, role.value, password.value)
     .then(result => {
       if (result === true) {
-          alert(`Bruger oprettet:\nNavn: ${name ? name.value : ''}\nEmail: ${email ? email.value : ''}\nRolle: ${role ? role.value : ''}`);
           closeCreateUserModal();
-          location.reload();
+          showBottomMessage(`Bruger ${name.value} opdateret`, 'success');
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
           // Jonas kan du tilføje en funktionalitet, som indlæser alle brugere igen, så man også kan se den nyeste bruger?
       } else {
-        alert('Der opstod en fejl ved oprettelse af brugeren i databasen.');
+        showBottomMessage('Der opstod en fejl ved oprettelse af brugeren i databasen.' + result.error, 'error');
       }
     })
     .catch(error => {
-      console.error('Fejl:', error);
-      alert('Der opstod en uventet fejl.');
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
     });
 }
 
