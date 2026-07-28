@@ -1,3 +1,5 @@
+import { updateTicket } from '../api/update_ticket.js';
+
 function openModal(ticketId) {
   const modal = document.getElementById('edit-modal');
   const idDisplay = document.getElementById('modal-id');
@@ -11,6 +13,7 @@ function openModal(ticketId) {
   const createdDateDisplay = document.getElementById('modal-created-date');
 
   const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+
   if (row) {
     if (idDisplay) idDisplay.value = `#${ticketId}`;
     if (titleInput) titleInput.value = row.dataset.title || '';
@@ -20,7 +23,20 @@ function openModal(ticketId) {
     if (statusSelect) statusSelect.value = row.dataset.status || '';
     if (prioritySelect) prioritySelect.value = row.dataset.priority || '';
     if (assignedSelect) assignedSelect.value = row.dataset.assigned || '';
-    if (createdDateDisplay) createdDateDisplay.value = row.dataset.createdDate || '';
+    if (createdDateDisplay && row.dataset.createdDate) {
+      // Udvælg dato-delen (fjern tiden hvis den er der)
+      const datePart = row.dataset.createdDate.split(' ')[0]; // Giver '2026-07-28'
+      
+      // Del op i år, måned og dag, og vend dem om til '28-07-2026'
+      const parts = datePart.split('-');
+      if (parts.length === 3) {
+        createdDateDisplay.value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      } else {
+        createdDateDisplay.value = datePart;
+      }
+    } else if (createdDateDisplay) {
+      createdDateDisplay.value = '';
+    }
   }
 
   modal.setAttribute('data-current-ticket-id', ticketId);
@@ -62,11 +78,13 @@ function initModal() {
   const closeBtn = document.getElementById('modal-close');
   const cancelBtn = document.getElementById('modal-cancel');
   const modal = document.getElementById('edit-modal');
+  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
 
   if (!modal) return;
 
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+  if (saveBtn) saveBtn.addEventListener('click', handleUpdateSagSubmit);
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
@@ -79,6 +97,48 @@ function initModal() {
       closeModal();
     }
   });
+}
+
+async function handleUpdateSagSubmit() {
+
+  const id = document.getElementById('modal-id');
+  const title = document.getElementById('modal-title');
+  const type = document.getElementById('modal-type');
+  const description = document.getElementById('modal-description');
+  const place = document.getElementById('modal-location');
+  const status = document.getElementById('modal-status');
+  const priority = document.getElementById('modal-priority');
+  const assigned = document.getElementById('modal-assigned');
+  
+  if (title && !title.value.trim()) {
+    showBottomMessage('Titel er et påkrævet felt.', 'warning');
+    name.focus();
+    return;
+  }
+
+  if (type && !type.value.trim()) {
+    showBottomMessage('Type er et påkrævet felt.', 'warning');
+    type.focus();
+    return;
+  }
+
+  const result = await updateTicket(id.value, title.value, type.value, description.value, place.value, status.value, priority.value, assigned.value)
+    .then(result => {
+      if (result === true) {
+          closeModal();
+          showBottomMessage(`Sag ${title.value} opdateret`, 'success');
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+      }
+      else
+      {
+        showBottomMessage('Der opstod en fejl ved ændring af sagen i databasen.' + result.error, 'error');
+      }
+    })
+    .catch(error => {
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    });
 }
 
 function updateDashboardStats() {

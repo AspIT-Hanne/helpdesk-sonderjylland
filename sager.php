@@ -83,10 +83,10 @@
               echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}'>";
               echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
               echo "<td class='data-table__cell'>{$ticket['title']}</td>";
-              echo "<td class='data-table__cell'><span class='badge' data-badge='type:{$ticket['category_name']}'>{$ticket['category_name']}</span></td>";
+              echo "<td class='data-table__cell'><span class='badge' data-badge='type:{$ticket['category_name']}' data-badge-color='{$ticket['category_color']}'>{$ticket['category_name']}</span></td>";
               echo "<td class='data-table__cell'>{$ticket['location']}</td>";
-              echo "<td class='data-table__cell'><span class='badge' data-badge='status:{$ticket['status_name']}'>{$ticket['status_name']}</span></td>";
-              echo "<td class='data-table__cell'><span class='priority' data-badge='priority:{$ticket['priority_name']}'>{$ticket['priority_name']}</span></td>";
+              echo "<td class='data-table__cell'><span class='badge' data-badge='status:{$ticket['status_name']}' data-badge-color='{$ticket['status_color']}'>{$ticket['status_name']}</span></td>";
+              echo "<td class='data-table__cell'><span class='priority' data-badge='priority:{$ticket['priority_name']}' data-badge-color='{$ticket['priority_color']}'>{$ticket['priority_name']}</span></td>";
               echo "<td class='data-table__cell'>{$ticket['assignedTo_name']}</td>";
               echo "<td class='data-table__cell'>" . date_format(new DateTime($ticket['created_at']), "d-m-y") . "</td>";
               echo "<td class='data-table__cell'>

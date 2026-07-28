@@ -75,8 +75,8 @@
                   echo "<tr class='data-table__row' data-user-id='{$user['id']}' data-name='{$user['username']}' data-email='{$user['email']}' data-role='{$user['role_name']}' data-status='{$user['status_name']}'>";
                     echo "<td class='data-table__cell'>{$user['username']}</td>";
                     echo "<td class='data-table__cell'>{$user['email']}</td>";
-                    echo "<td class='data-table__cell'>{$user['role_name']}</td>";
-                    echo "<td class='data-table__cell'><span class='badge' data-badge='user-status:{$user['status_name']}'>{$user['status_name']}</span></td>";
+                    echo "<td class='data-table__cell'><span class='badge' data-badge='user-role:{$user['role_name']}' data-badge-color='{$user['role_color']}'>{$user['role_name']}</span></td>";
+                    echo "<td class='data-table__cell'><span class='badge' data-badge='user-status:{$user['status_name']}' data-badge-color='{$user['status_color']}'>{$user['status_name']}</span></td>";
                     echo "<td class='data-table__cell'>";
                     echo "<button type='button' class='action-btn' aria-label='Redigér {$user['username']}'>
                             <img src='assets/pencil.svg' alt='' class='action-btn__icon'>

@@ -61,15 +61,16 @@ function renderTab() {
     `</tr></thead>`;
 
   const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => {
-    
+    console.log(item);
     // Første gang hvert item bliver hentet fra settingsData, erstattes farven fra databasen med farven fra variablen COLOR_PALETTE (fra badges.js)
-    if(!item.color.hasOwnProperty("bg"))
-    {
-      item.color = COLOR_PALETTE[item.color];
-    }
+    // if(!item.color.hasOwnProperty("bg"))
+    // {
+    //   item.color = COLOR_PALETTE[item.color];
+    // }
 
     const cells = [
-      `<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
+      `<td class="data-table__cell"><span class="badge" data-badge="${item.name}" data-badge-color="${item.color}">${escapeHtml(item.name)}</span></td>`,
+      //`<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
       `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
     ];
     if (meta.hasDesc) {
@@ -305,8 +306,8 @@ try {
         
         // Hent data igen uden at loade siden om (activeKey bevares automatisk!)
         settingsData = await fetchSettings();
+        // Indlæs de nye data 
         renderTab();
-        // Husk evt. at genopfriske din UI/tabel her, f.eks. renderTable();
     } else {
         showBottomMessage('Der opstod en fejl ved ændring af sagen i databasen: ' + (result.error || ''), 'error');
     }

@@ -29,12 +29,10 @@ const COLOR_PALETTE = {
 
 function applyBadges(root = document) {
   root.querySelectorAll('[data-badge], [data-badge-bg]').forEach((el) => {
-    const color = (el.dataset.badgeBg && el.dataset.badgeFg)
-      ? { bg: el.dataset.badgeBg, text: el.dataset.badgeFg }
-      : BADGE_COLORS[el.dataset.badge];
+    const color = el.getAttribute('data-badge-color');
     if (!color) return;
-    el.style.backgroundColor = color.bg;
-    el.style.color = color.text;
+    el.style.backgroundColor = COLOR_PALETTE[color].bg;
+    el.style.color = COLOR_PALETTE[color].text;
   });
 }
 

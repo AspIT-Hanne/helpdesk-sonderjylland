@@ -17,7 +17,9 @@
 <body>
   <div class="kanban-page">
     <header class="kanban-header">
-      <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
+      <a href="index.php" class="kanban-header__back" aria-label="Til Dashboard">
+        <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
+      </a>
       <a href="index.php" class="kanban-header__back" aria-label="Til Dashboard">
         <img src="assets/house.svg" alt="" class="kanban-header__icon">
       </a>
@@ -61,9 +63,9 @@
                       <h3 class="kanban-card__title"><?= $thisTicket['title']; ?></h3>
                       <div class="kanban-card__meta">
                         <span class="kanban-card__author"><?= $thisTicket['createdBy_name']; ?></span>
-                        <span class="priority" data-badge="priority:<?= $thisTicket['priority_name']; ?>"><?= $thisTicket['priority_name']; ?></span>
+                        <span class="priority" data-badge="priority:<?= $thisTicket['priority_name']; ?>" data-badge-color="<?= $thisTicket['priority_color']; ?>"><?= $thisTicket['priority_name']; ?></span>
                       </div>
-                      <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>"><?= $thisTicket['category_name']; ?></span>
+                      <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>" data-badge-color="<?= $thisTicket['category_color']; ?>"><?= $thisTicket['category_name']; ?></span>
                     </article>
               <?php } ?>
               </div>
