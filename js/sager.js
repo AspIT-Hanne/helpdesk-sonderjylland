@@ -1,4 +1,5 @@
 import { addTicket } from '../api/add_ticket.js';
+import { deleteTicket } from '../api/delete_ticket.js';
 
 function initSagerFilters() {
   const searchInput = document.getElementById('sager-search');
@@ -116,6 +117,7 @@ function openSagerDeleteModal(row) {
   if (message) message.textContent = `Er du sikker på, at du vil slette "${title}"? Denne handling kan ikke fortrydes.`;
 
   modal.setAttribute('data-delete-ticket-id', row.dataset.ticketId);
+  modal.setAttribute('data-delete-ticket-title', title);
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
 }
@@ -128,13 +130,32 @@ function closeSagerDeleteModal() {
   document.body.classList.remove('modal-open');
 }
 
-function confirmSagerDelete() {
+async function confirmSagerDelete() {
   const modal = document.getElementById('sager-delete-modal');
   if (!modal) return;
 
   const ticketId = modal.getAttribute('data-delete-ticket-id');
-  const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
-  if (row) row.remove();
+  const title = modal.getAttribute('data-delete-ticket-title');
+
+  const result = await deleteTicket(ticketId)
+        .then(result => {
+          if (result === true) {
+              closeSagerDeleteModal();
+              showBottomMessage(`${title} er blevet slettet.`, 'success');
+              
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+          }
+          else
+          {
+            showBottomMessage('Der opstod en fejl ved sletning af sagen i databasen: ' + result.error, 'error');
+          }
+        })
+        .catch(error => {
+          showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+        });
+    closeSagerDeleteModal();
 
   closeSagerDeleteModal();
 }
