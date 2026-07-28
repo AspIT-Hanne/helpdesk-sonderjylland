@@ -184,6 +184,17 @@
              }
          }
 
+         public function getDataWithJoinsWhere($table, $rows, $join, $where)
+         {
+            if ($this->tableExists($table))
+             {
+                // Kald den private metode getData for at hente de ønskede data fra det overførte tabelnavn og joins
+                $dataResult = $this->getData($table, $rows, $join, $where);
+
+                return $dataResult;
+             }
+         }
+
          // Metode til at hente alle posts fra en tabel som opfylder en bestemt værdi i det overførte felt og sorteret efter et bestemt felt. Anvendes til at hente alle events fra en bestemt uge sorteret efter starttidspunkt
          public function getDataByFieldSortedWithJoins($table, $rows, $join, $fieldname, $fielddata, $sortBy)
          {

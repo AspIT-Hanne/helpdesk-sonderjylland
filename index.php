@@ -10,7 +10,7 @@
 
     include "api/get_tickets.php";
 
-    $data = getTicketData(); 
+    $data = getMyTicketData(); 
     
     $technicians = getTechnicians();
     

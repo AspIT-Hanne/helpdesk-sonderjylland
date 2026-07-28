@@ -27,6 +27,31 @@
 
     }
 
+    function getMyTicketData()
+    {
+        global $dbcon;
+        
+        try {
+            // Saml data med joins fra de forskellige tabeller
+            
+            $table = "tickets";
+            $rows = "tickets.*, ticketCategory.name AS category_name, ticketStatus.name AS status_name, ticketPriority.name AS priority_name, users1.username AS assignedTo_name, users2.username AS createdBy_name";
+            $join = "LEFT JOIN ticketCategory ON tickets.ticketCategory_id = ticketCategory.id 
+                    LEFT JOIN ticketPriority ON tickets.ticketPriority_id = ticketPriority.id
+                    LEFT JOIN ticketStatus ON tickets.ticketStatus_id = ticketStatus.id
+                    LEFT JOIN users users1 ON tickets.assigned_to = users1.id
+                    LEFT JOIN users users2 ON tickets.created_by = users2.id";
+            $where = "(tickets.created_by = {$_SESSION['userid']} OR tickets.assigned_to = {$_SESSION['userid']}) AND tickets.ticketStatus_id != 4";
+
+            $result = $dbcon->getDataWithJoinsWhere($table, $rows, $join, $where);
+            
+            return $result;
+
+        } catch (Exception $e) {
+            throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
+        }
+    }
+
     // Hent brugere med rolle tekniker eller admin til at filtrere sager på forsiden
     function getTechnicians()
     {
