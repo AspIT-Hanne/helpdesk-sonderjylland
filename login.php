@@ -14,10 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userid = $dbcon->verifyLogin($username, $password);
 
             if ($userid) {
-                // Login succesfuldt: Sæt sessionen
+                 // Login succesfuldt: Hent brugerdata (vi skal primært bruge rollen til at sætte tilladelser) og sæt sessionen
+                $userdata = $dbcon->getDataByID('users', $userid);
+               
                 $_SESSION['logged_in'] = true;
                 $_SESSION['userid'] = $userid;
                 $_SESSION['username'] = $username;
+                $_SESSION['userRole_id'] = $userdata['userRole_id'];
                 
                 // Send brugeren videre til forsiden
                 header('Location: index.php');
@@ -51,21 +54,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-    <div class="login-container">
-        <h2>Log ind</h2>
+    <?php include "includes/sidebar.php"; ?>
 
-        <form action="login.php" method="POST">
-            <div class="form-group">
-                <label for="username">Brugernavn</label>
-                <input type="text" id="username" name="username">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Adgangskode</label>
-                <input type="password" id="password" name="password">
-            </div>
+    <main class="main">
+        <div class="mobile-header">
+            <button class="hamburger" id="hamburger" aria-label="Åbn menu">
+                <img src="assets/menu.svg" alt="" class="hamburger__icon">
+            </button>
+        </div>
 
-            <button type="submit">Log ind</button>
+        <header class="page-header">
+            <h1 class="page-header__title">Login til AspIT Demo Help Desk - Sønderjylland</h1>
+            <p class="page-header__subtitle">For at få adgang til sager, skal du logge ind her.</p>
+        </header>
+
+         <section class="card">
+            <form id="login-form" method="post">
+                <div class="form-group">
+                    <label for="login-username" class="form-group__label">Brugernavn</label>
+                    <input type="text" id="login-username" name="username" class="form-field" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-group__label">Adgangskode</label>
+                    <input type="password" id="login-password" name="password" class="form-field" required>
+                </div>
+
+                <button type="submit" class="btn btn--primary">Log ind</button>
         </form>
     </div>
     

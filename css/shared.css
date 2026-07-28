@@ -179,7 +179,7 @@ body.modal-open {
     transition: background-color 0.2s ease;
 }
 
-.sidebar__item:hover {
+.sidebar__item:hover{
     background-color: var(--color-secondary);
 }
 
@@ -207,9 +207,37 @@ body.modal-open {
     filter: brightness(0) invert(1);
 }
 
+.sidebar__nav:first-of-type li:has(.sidebar__item):last-of-type
+{
+    border-bottom: 1px solid var(--color-on-primary-container);
+}
+
+.sidebar__nav:last-of-type li:first-of-type
+{
+    padding: 0 var(--space-lg) var(--space-md) var(--space-lg);
+}
+
+.sidebar__logout a
+{
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.sidebar__login__item:hover
+{
+    background: none;
+}
+
 .hamburger__icon {
     width: 24px;
     height: 24px;
+}
+
+/* Styles to hide items depending on userrole */
+.hidden
+{
+    display: none;
 }
 
 /* Overlay */

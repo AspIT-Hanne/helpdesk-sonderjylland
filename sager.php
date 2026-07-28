@@ -2,9 +2,16 @@
   include "api/get_tickets.php";
 
   $data = getTicketData(); 
-  
+    
+  $technicians = getTechnicians();
+    
   $status = getStatus();
+
+  $priorities = getPriority();
+
+  $categories = getCategory();
   
+  $users = getUsers();
   ?>
 
 <!DOCTYPE html>
@@ -117,11 +124,13 @@
         <div class="form-group">
           <label for="sager-modal-type" class="form-group__label">Type</label>
           <select id="sager-modal-type" class="form-field">
-            <option value="t1">T1</option>
-            <option value="t2">T2</option>
-            <option value="t3">T3</option>
-            <option value="t4">T4</option>
-            <option value="other">Andet</option>
+           <option value="">Vælg en kategori</option>
+            <?php 
+              foreach($categories as $category)
+                {
+                  echo "<option value='{$category['name']}'>{$category['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -135,30 +144,35 @@
         <div class="form-group">
           <label for="sager-modal-status" class="form-group__label">Status</label>
           <select id="sager-modal-status" class="form-field">
-            <option value="not-started">Ikke Startet</option>
-            <option value="open">Åben</option>
-            <option value="pending">Afventer</option>
-            <option value="resolved">Løst</option>
+            <?php 
+              foreach($status as $thisstatus)
+                {
+                  echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
           <label for="sager-modal-priority" class="form-group__label">Prioritet</label>
           <select id="sager-modal-priority" class="form-field">
-            <option value="high">Høj</option>
-            <option value="medium">Mellem</option>
-            <option value="low">Lav</option>
+            <?php 
+              foreach($priorities as $priority)
+                {
+                  echo "<option value='{$priority['name']}'>{$priority['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
           <label for="sager-modal-assigned" class="form-group__label">Tildelt Medarbejder</label>
           <select id="sager-modal-assigned" class="form-field">
             <option value="">Vælg tekniker</option>
-            <option value="Jens Clausen">Jens Clausen</option>
-            <option value="Malene Gydesen">Malene Gydesen</option>
-            <option value="Daniel Weiss">Daniel Weiss</option>
-            <option value="Jonas Greve">Jonas Greve</option>
-            <option value="Karin Weber">Karin Weber</option>
-            <option value="Hanne Lund">Hanne Lund</option>
+            <?php 
+              foreach($technicians as $technician)
+                {
+                  echo "<option value='{$technician['username']}'>{$technician['username']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -204,11 +218,12 @@
           <label for="sager-create-type" class="form-group__label">Type</label>
           <select id="sager-create-type" class="form-field" required>
             <option value="">Vælg en kategori</option>
-            <option value="t1">T1</option>
-            <option value="t2">T2</option>
-            <option value="t3">T3</option>
-            <option value="t4">T4</option>
-            <option value="other">Andet</option>
+            <?php 
+              foreach($categories as $category)
+                {
+                  echo "<option value='{$category['name']}'>{$category['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -222,30 +237,51 @@
         <div class="form-group">
           <label for="sager-create-status" class="form-group__label">Status</label>
           <select id="sager-create-status" class="form-field">
-            <option value="not-started" selected>Ikke Startet</option>
-            <option value="open">Åben</option>
-            <option value="pending">Afventer</option>
-            <option value="resolved">Løst</option>
+            <?php 
+              foreach($status as $thisstatus)
+                {
+                  echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
           <label for="sager-create-priority" class="form-group__label">Prioritet</label>
           <select id="sager-create-priority" class="form-field">
-            <option value="high">Høj</option>
-            <option value="medium" selected>Mellem</option>
-            <option value="low">Lav</option>
+            <?php 
+              foreach($priorities as $priority)
+                {
+                  echo "<option value='{$priority['name']}'>{$priority['name']}</option>";
+                }
+            ?>
           </select>
+        </div>
+        <div class="form-group">
+          <input type="checkbox" class="show__users" id="chk-show-users">
+          <label for="chk-show-users">Opret sag for bruger</label>
+          <div class="created__by">
+            <label for="sager-create-createdby" class="form-group__label">Sag oprettes for</label>
+            <select id="sager-create-createdby" class="form-field">
+              <option value="">Vælg bruger</option>
+              <?php 
+                foreach($users as $user)
+                  {
+                    echo "<option value='{$user['username']}'>{$user['username']}</option>";
+                  }
+              ?>
+            </select>
+          </div>
         </div>
         <div class="form-group">
           <label for="sager-create-assigned" class="form-group__label">Tildelt Medarbejder</label>
           <select id="sager-create-assigned" class="form-field">
-            <option value="">Vælg modtager</option>
-            <option value="Jens Clausen">Jens Clausen</option>
-            <option value="Malene Gydesen">Malene Gydesen</option>
-            <option value="Daniel Weiss">Daniel Weiss</option>
-            <option value="Jonas Greve">Jonas Greve</option>
-            <option value="Karin Weber">Karin Weber</option>
-            <option value="Hanne Lund">Hanne Lund</option>
+            <option value="">Vælg tekniker</option>
+            <?php 
+              foreach($technicians as $technician)
+                {
+                  echo "<option value='{$technician['username']}'>{$technician['username']}</option>";
+                }
+            ?>
           </select>
         </div>
          <div class="form-group">

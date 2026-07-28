@@ -22,7 +22,7 @@
             return $result;
 
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
         }
 
     }
@@ -44,7 +44,7 @@
 
             return array_merge($result1, $result2);
         } catch (Exception $e) {
-            die($e->getMessage());
+             throw new Exception("Der blev ikke fundet nogle teknikere." . $e->getMessage());
         }
     }
 
@@ -60,7 +60,7 @@
 
                 return $result;
             } catch (Exception $e) {
-                die($e->getMessage());
+                 throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
             }
     }
 
@@ -86,8 +86,56 @@
         }
         catch (Exception $e)
         {
-            die($e->getMessage());
+             throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
         }
+    }
+
+    // Hent prioriteringer
+    function getPriority()
+    {
+        global $dbcon;
+        
+        try {
+                $table = "ticketPriority";
+
+                $result = $dbcon->getAllData($table);
+
+                return $result;
+            } catch (Exception $e) {
+                 throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
+            }
+    }
+
+      // Hent sagskategorier
+    function getCategory()
+    {
+        global $dbcon;
+        
+        try {
+                $table = "ticketCategory";
+
+                $result = $dbcon->getAllData($table);
+
+                return $result;
+            } catch (Exception $e) {
+                 throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
+            }
+    }
+
+       // Hent sagskategorier
+    function getUsers()
+    {
+        global $dbcon;
+        
+        try {
+                $table = "users";
+
+                $result = $dbcon->getAllData($table);
+
+                return $result;
+            } catch (Exception $e) {
+                 throw new Exception("Der blev ikke fundet nogle data." . $e->getMessage());
+            }
     }
 
 

@@ -1,5 +1,6 @@
 import { addUser } from '../api/add_user.js';
 import { updateUser } from '../api/update_user.js';
+import { changePassword } from '../api/update_user.js';
 import { deleteUser } from '../api/delete_user.js';
 
 function initUserFilters() {
@@ -157,6 +158,9 @@ function openUserModal(userId) {
 
   const saveBtn = modal.querySelector('.modal__footer .btn--primary');
   if (saveBtn) saveBtn.addEventListener('click', handleUpdateUserSubmit);
+
+  const chpassBtn = modal.querySelector('.modal__footer .btn--tertiary');
+  if (chpassBtn) chpassBtn.addEventListener('click', () => openChangePasswordModal(idInput.value));
 }
 
 function closeUserModal() {
@@ -269,6 +273,7 @@ function closeCreateUserModal() {
   modal.classList.remove('modal--open');
   document.body.classList.remove('modal-open');
    location.reload();
+
 }
 
 async function handleCreateUserSubmit() {
@@ -344,15 +349,102 @@ function initCreateUserModal() {
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
-      closeCreateUserModal();
+      closeChangePasswordModal();
     }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
-      closeCreateUserModal();
+      closeChangePasswordModal();
     }
   });
+}
+
+function openChangePasswordModal(id) {
+  const modal = document.getElementById('change-password-modal');
+  if (!modal) return;
+
+  const userid = parseInt(id.replace('#', ''), 10);
+  
+  modal.setAttribute('data-user-id', parseInt(userid));
+  
+  const passwordInput = document.getElementById('change-password-modal-password');
+  const confirmInput = document.getElementById('change-password-modal-password-confirm');
+
+  if (passwordInput) passwordInput.value = '';  
+  if (confirmInput) confirmInput.value = '';
+
+  modal.classList.add('modal--open');
+  document.body.classList.add('modal-open');
+}
+
+function closeChangePasswordModal() {
+  const modal = document.getElementById('change-password-modal');
+  if (!modal) return;
+  modal.classList.remove('modal--open');
+  document.body.classList.remove('modal-open');
+ 
+}
+
+function initChangePasswordModal() {
+  const closeBtn = document.getElementById('change-password-modal-close');
+  const cancelBtn = document.getElementById('change-password-modal-cancel');
+  const modal = document.getElementById('change-password-modal');
+
+  if (!modal) return;
+
+  if (closeBtn) closeBtn.addEventListener('click', closeChangePasswordModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeChangePasswordModal);
+
+  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
+  if (saveBtn) saveBtn.addEventListener('click', handleChangePasswordSubmit);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.classList.contains('modal')) {
+      closeChangePasswordModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeChangePasswordModal();
+    }
+  });
+}
+
+async function handleChangePasswordSubmit() {
+  const modal = document.getElementById('change-password-modal');
+
+  const userid = modal.getAttribute('data-user-id');
+  
+  const password = document.getElementById('change-password-modal-password');
+  const confirm = document.getElementById('change-password-modal-password-confirm');
+
+  if (password && confirm && password.value !== confirm.value) {
+    showBottomMessage('Adgangskoderne er ikke ens. Tast venligst samme adgangskode i begge felter.', 'warning');
+    confirm.focus();
+    return;
+  }
+
+  if (password && password.value.length < 1) {
+    showBottomMessage('Adgangskoden må ikke være tom.', 'warning');
+    password.focus();
+    return;
+  }
+
+   // Brug af den importerede addUser funktion
+  const result = await changePassword(password.value, userid)
+    .then(result => {
+      if (result === true) {
+          closeChangePasswordModal();
+          showBottomMessage(`Password opdateret`, 'success');
+      } else {
+        showBottomMessage('Der opstod en fejl ved ændring af password.' + result.error, 'error');
+      }
+    })
+    .catch(error => {
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    });
 }
 
 function initAddUserButton() {
@@ -367,5 +459,6 @@ function initAddUserButton() {
   initUserModal();
   initCreateUserModal();
   initDeleteUserModal();
+  initChangePasswordModal();
   initAddUserButton();
 })();

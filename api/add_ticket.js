@@ -1,10 +1,11 @@
-export async function addTicket(title, description, location, type, priority, assigned, status) {
+export async function addTicket(title, description, location, type, priority, createdby, assigned, status) {
     const userData = {
         title: title,
         description: description,
         location: location,
         type: type,
         priority: priority,
+        createdby: createdby,
         assigned: assigned,
         status: status
     };

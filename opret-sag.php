@@ -1,4 +1,19 @@
-<?php include "includes/phpheader.php"; ?>
+<?php 
+  include "includes/phpheader.php"; 
+  include "api/get_tickets.php";
+
+  $data = getTicketData(); 
+    
+  $technicians = getTechnicians();
+    
+  $status = getStatus();
+
+  $priorities = getPriority();
+
+  $categories = getCategory();
+
+  $users = getUsers();
+?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -23,7 +38,7 @@
 
     <header class="page-header">
       <h1 class="page-header__title">Opret Ny Sag</h1>
-      <p class="page-header__subtitle">Opret en ny support-sag på vegne af en bruger.</p>
+      <p class="page-header__subtitle">Opret en ny support-sag</p>
     </header>
 
     <section class="card">
@@ -36,11 +51,12 @@
           <label for="create-type" class="form-group__label">Type</label>
           <select id="create-type" class="form-field" required>
             <option value="">Vælg en kategori</option>
-            <option value="t1">T1</option>
-            <option value="t2">T2</option>
-            <option value="t3">T3</option>
-            <option value="t4">T4</option>
-            <option value="other">Andet</option>
+            <?php 
+              foreach($categories as $category)
+                {
+                  echo "<option value='{$category['name']}'>{$category['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -54,30 +70,51 @@
         <div class="form-group">
           <label for="create-status" class="form-group__label">Status</label>
           <select id="create-status" class="form-field">
-            <option value="not-started" selected>Ikke Startet</option>
-            <option value="open">Åben</option>
-            <option value="pending">Afventer</option>
-            <option value="resolved">Løst</option>
+            <?php 
+              foreach($status as $thisstatus)
+                {
+                  echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
           <label for="create-priority" class="form-group__label">Prioritet</label>
           <select id="create-priority" class="form-field">
-            <option value="high">Høj</option>
-            <option value="medium" selected>Mellem</option>
-            <option value="low">Lav</option>
+            <?php 
+              foreach($priorities as $priority)
+                {
+                  echo "<option value='{$priority['name']}'>{$priority['name']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
-          <label for="create-assigned" class="form-group__label">Tildelt Medarbejder</label>
+          <input type="checkbox" class="show__users" id="chk-show-users">
+          <label for="chk-show-users">Opret sag for bruger</label>
+          <div class="created__by">
+            <label for="create-createdby" class="form-group__label">Sag oprettes for</label>
+            <select id="create-createdby" class="form-field">
+              <option value="">Vælg bruger</option>
+              <?php 
+                foreach($users as $user)
+                  {
+                    echo "<option value='{$user['username']}'>{$user['username']}</option>";
+                  }
+              ?>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="create-assigned" class="form-group__label">Tildel Medarbejder</label>
           <select id="create-assigned" class="form-field">
-            <option value="">Vælg modtager</option>
-            <option value="Jens Clausen">Jens Clausen</option>
-            <option value="Malene Gydesen">Malene Gydesen</option>
-            <option value="Daniel Weiss">Daniel Weiss</option>
-            <option value="Jonas Greve">Jonas Greve</option>
-            <option value="Karin Weber">Karin Weber</option>
-            <option value="Hanne Lund">Hanne Lund</option>
+            <option value="">Vælg tekniker</option>
+            <?php 
+              foreach($technicians as $technician)
+                {
+                  echo "<option value='{$technician['username']}'>{$technician['username']}</option>";
+                }
+            ?>
           </select>
         </div>
         <div class="form-group">
@@ -85,14 +122,14 @@
           <input type="text" id="create-date" class="form-field" disabled>
         </div>
         <div class="form-group">
-          <button type="submit" class="btn btn--primary">Opret Sag</button>
-          <button type="reset" class="btn btn--secondary">Annullēr</button>
+          <button type="button" class="btn btn--primary" id="add-sag-btn">Opret Sag</button>
+          <button type="button" class="btn btn--secondary">Annullēr</button>
         </div>
       </form>
     </section>
   </main>
 
   <script src="js/shared.js"></script>
-  <script src="js/opret-sag.js"></script>
+  <script src="js/opret-sag.js" type="module"></script>
 </body>
 </html>

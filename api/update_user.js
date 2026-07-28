@@ -9,8 +9,6 @@ export async function updateUser(rawid, name, email, role, status) {
         status: status
     };
 
-    console.log(userData);
-
     try {
         const response = await fetch('api/update_user.php', {
             method: 'POST',
@@ -31,6 +29,38 @@ export async function updateUser(rawid, name, email, role, status) {
 
     } catch (error) {
         console.error('Fejl i updateUser API-kald:', error);
+        return false;
+    }
+}
+
+export async function changePassword(password, id) {
+    
+    const userData = {
+        id: parseInt(id),
+        password: password
+    };
+
+    console.log(userData);
+
+    try {
+        const response = await fetch('api/change_password.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+        // Tjek om HTTP-statuskoden er ok (f.eks. 200 OK)
+        if (!response.ok) {
+            throw new Error(`HTTP fejl! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result;
+
+    } catch (error) {
+        console.error('Fejl i changePassword API-kald:', error);
         return false;
     }
 }

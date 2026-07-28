@@ -1,3 +1,5 @@
+import { addTicket } from '../api/add_ticket.js';
+
 function initSagerFilters() {
   const searchInput = document.getElementById('sager-search');
   const statusSelect = document.getElementById('filter-status');
@@ -51,7 +53,21 @@ function openSagerEditModal(ticketId) {
     if (statusSelect) statusSelect.value = row.dataset.status || '';
     if (prioritySelect) prioritySelect.value = row.dataset.priority || '';
     if (assignedSelect) assignedSelect.value = row.dataset.assigned || '';
-    if (createdDateInput) createdDateInput.value = row.dataset.createdDate || '';
+    if (createdDateInput && row.dataset.createdDate) {
+      // Udvælg dato-delen (fjern tiden hvis den er der)
+      const datePart = row.dataset.createdDate.split(' ')[0]; // Giver '2026-07-28'
+      
+      // Del op i år, måned og dag, og vend dem om til '28-07-2026'
+      const parts = datePart.split('-');
+      if (parts.length === 3) {
+        createdDateInput.value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      } else {
+        createdDateInput.value = datePart;
+      }
+    } else if (createdDateInput) {
+      createdDateInput.value = '';
+    }
+  
   }
 
   modal.setAttribute('data-current-ticket-id', ticketId);
@@ -165,11 +181,12 @@ function openCreateSagModal() {
   if (typeSelect) typeSelect.value = '';
   if (descriptionInput) descriptionInput.value = '';
   if (locationInput) locationInput.value = '';
-  if (statusSelect) statusSelect.value = 'ikke-startet';
-  if (prioritySelect) prioritySelect.value = 'medium';
+  if (statusSelect) statusSelect.value = 'Ikke-startet';
+  if (prioritySelect) prioritySelect.value = 'Medium';
   if (assignedSelect) assignedSelect.value = '';
   if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
+    const [year, month, day] = new Date().toISOString().split('T')[0].split('-');
+    const today = `${day}-${month}-${year}`;
     dateInput.value = today;
   }
 
@@ -201,19 +218,30 @@ async function handleCreateSagSubmit() {
   }
 
   const description = document.getElementById('sager-create-description');
-  const location = document.getElementById('sager-create-location');
-  const status = document.getElementById('sager-create-status');
-  const priority = document.getElementById('sager-create-priority');
+  const place = document.getElementById('sager-create-location');
+  const statusInput = document.getElementById('sager-create-status');
+  // Sikrer at der står noget brugbart i status også selvom brugeren ikke har valgt noget
+  const status = statusInput ? (statusInput.value || 'Ikke-startet') : 'Ikke-startet';
+  
+  const priorityInput = document.getElementById('sager-create-priority');
+  // Sikrer at der står noget brugbart i priority også selvom brugeren ikke har valgt noget
+  const priority = priorityInput ? (priorityInput.value || 'Medium') : 'Medium';
+  
   const assigned = document.getElementById('sager-create-assigned');
   const created = document.getElementById('sager-create-created');
 
-   // Brug af den importerede addUser funktion
-    const result = await addTicket(title.value, description.value, location.value, type.value, priority.value, assigned.value, status.value)
+  console.log(created.value);
+
+   // Brug af den importerede addTicket funktion
+    const result = await addTicket(title.value, description.value, place.value, type.value, priority, created.value, assigned.value, status)
       .then(result => {
         if (result === true) {
+          console.log("1. Kom ind i if-sætning");
             closeCreateSagModal();
             showBottomMessage(`Sag ${title.value} oprettet`, 'success');
+            console.log("2. sætter timer til genindlæsning");
             setTimeout(() => {
+              console.log("3. genindlæser nu");
               location.reload();
             }, 2000);
         } else {

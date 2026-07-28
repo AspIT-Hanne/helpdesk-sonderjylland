@@ -210,6 +210,29 @@
     </div>
   </div>
 
+  <div class="modal" id="change-password-modal" role="dialog" data-user-id="" aria-modal="true" aria-labelledby="change-password-modal-title-heading">
+    <div class="modal__container">
+      <header class="modal__header">
+        <h2 class="modal__title" id="change-password-modal-title-heading">Ændre password</h2>
+        <button class="modal__close" id="change-password-modal-close" aria-label="Luk">&times;</button>
+      </header>
+      <div class="modal__body">
+        <div class="form-group">
+          <label for="change-password-modal-password" class="form-group__label">Ny adgangskode</label>
+          <input type="password" id="change-password-modal-password" class="form-field">
+        </div>
+        <div class="form-group">
+          <label for="change-password-modal-password-confirm" class="form-group__label">Bekræft ny adgangskode</label>
+          <input type="password" id="change-password-modal-password-confirm" class="form-field">
+        </div>
+      </div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary" id="change-password-modal-cancel">Annullér</button>
+        <button class="btn btn--primary">Gem ændringer</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="js/shared.js"></script>
   <script src="js/badges.js"></script>
   <script src="js/brugere.js" type="module"></script>

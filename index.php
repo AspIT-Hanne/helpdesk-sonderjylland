@@ -43,7 +43,7 @@
 
     <header class="page-header">
       <h1 class="page-header__title">Dashboard</h1>
-      <p class="page-header__subtitle">Velkommen tilbage! Her er en oversigt over dine support-sager.</p>
+      <p class="page-header__subtitle">Velkommen, <?= $_SESSION['username']; ?>! Her er en oversigt over dine support-sager.</p>
     </header>
 
     <!--

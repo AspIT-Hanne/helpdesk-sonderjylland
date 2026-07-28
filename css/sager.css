@@ -1,2 +1,12 @@
 /* Sager-specific styles */
-/* Currently empty - all styles are shared in main.css */
+
+.created__by
+{
+    display: none;
+    margin: var(--space-lg) 0;
+}
+
+.show__users:checked ~.created__by
+{
+    display: block;
+}
