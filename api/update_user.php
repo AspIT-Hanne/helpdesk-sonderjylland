@@ -16,11 +16,11 @@ $email = $transferdata['email'] ?? '';
 $role = $transferdata['role'] ?? '';
 $status = $transferdata['status'] ?? '';
 
-updateUser($id, $username, $email, $role, $status);
+updateTicket($id, $username, $email, $role, $status);
 
 
 
-function updateUser($id, $username, $email, $role, $status)
+function updateTicket($id, $username, $email, $role, $status)
 {
     global $dbcon;
     require_once __DIR__ . '/../includes/phpheader.php';

@@ -262,8 +262,11 @@
                 // Gennemløb $_POST data for at opsætte dem i det rigtige format - fx. name = "Rose" og overfør dem til $newValues med hvert datasæt af index og værdi på hver sit index i arrayet - fx. $newValues[name] = "Rose"
                 foreach($data as $key=>$value)
                 {
+                    // Sikrer at værdien er en streng (hvis den er null eller tom, bliver den til '')
+                    $safeValue = (string)($value ?? '');
+                    
                     // Se forklaring i linje 113
-                    $trimmedValue = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE);
+                    $trimmedValue = htmlspecialchars($safeValue, ENT_QUOTES | ENT_SUBSTITUTE);
                     $newValues[] = $key . ' = "' .$trimmedValue . '"';
                 }
 

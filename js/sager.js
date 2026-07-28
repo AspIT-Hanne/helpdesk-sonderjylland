@@ -1,5 +1,6 @@
 import { addTicket } from '../api/add_ticket.js';
 import { deleteTicket } from '../api/delete_ticket.js';
+import { updateTicket } from '../api/update_ticket.js';
 
 function initSagerFilters() {
   const searchInput = document.getElementById('sager-search');
@@ -88,11 +89,13 @@ function initSagerEditModal() {
   const closeBtn = document.getElementById('sager-modal-close');
   const cancelBtn = document.getElementById('sager-modal-cancel');
   const modal = document.getElementById('sager-edit-modal');
+  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
 
   if (!modal) return;
 
   if (closeBtn) closeBtn.addEventListener('click', closeSagerEditModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeSagerEditModal);
+  if (saveBtn) saveBtn.addEventListener('click', handleUpdateSagSubmit);
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
@@ -105,6 +108,48 @@ function initSagerEditModal() {
       closeSagerEditModal();
     }
   });
+}
+
+async function handleUpdateSagSubmit() {
+
+  const id = document.getElementById('sager-modal-id');
+  const title = document.getElementById('sager-modal-title');
+  const type = document.getElementById('sager-modal-type');
+  const description = document.getElementById('sager-modal-description');
+  const place = document.getElementById('sager-modal-location');
+  const status = document.getElementById('sager-modal-status');
+  const priority = document.getElementById('sager-modal-priority');
+  const assigned = document.getElementById('sager-modal-assigned');
+  
+  if (title && !title.value.trim()) {
+    showBottomMessage('Titel er et påkrævet felt.', 'warning');
+    name.focus();
+    return;
+  }
+
+  if (type && !type.value.trim()) {
+    showBottomMessage('Type er et påkrævet felt.', 'warning');
+    type.focus();
+    return;
+  }
+
+  const result = await updateTicket(id.value, title.value, type.value, description.value, place.value, status.value, priority.value, assigned.value)
+    .then(result => {
+      if (result === true) {
+          closeSagerEditModal();
+          showBottomMessage(`Sag ${title.value} opdateret`, 'success');
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+      }
+      else
+      {
+        showBottomMessage('Der opstod en fejl ved ændring af sagen i databasen.' + result.error, 'error');
+      }
+    })
+    .catch(error => {
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    });
 }
 
 function openSagerDeleteModal(row) {
