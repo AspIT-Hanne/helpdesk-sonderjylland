@@ -2,7 +2,7 @@ const BADGE_COLORS = {
   'status:Åben':        { bg: '#b0efde', text: '#316f61' },
   'status:Afventer':    { bg: '#fef3c7', text: '#92400e' },
   'status:Løst':        { bg: '#d1d9d8', text: '#2b685b' },
-  'status:Ikke startet':{ bg: '#ebeeed', text: '#404847' },
+  'status:Ikke-startet':{ bg: '#ebeeed', text: '#404847' },
   'type:T1':            { bg: '#ffdad6', text: '#ba1a1a' },
   'type:T2':            { bg: '#b0efde', text: '#316f61' },
   'type:T3':            { bg: '#fef3c7', text: '#92400e' },

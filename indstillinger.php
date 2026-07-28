@@ -57,9 +57,9 @@
           <label for="create-settings-name" class="form-group__label">Navn</label>
           <input type="text" id="create-settings-name" class="form-field">
         </div>
-        <div class="form-group" id="create-settings-code-group">
-          <label for="create-settings-code" class="form-group__label">Beskrivelse</label>
-          <input type="text" id="create-settings-code" class="form-field" placeholder="f.eks. t1, t2...">
+        <div class="form-group" id="create-settings-desc-group">
+          <label for="create-settings-desc" class="form-group__label">Beskrivelse</label>
+          <input type="text" id="create-settings-desc" class="form-field" placeholder="f.eks. t1, t2...">
         </div>
         <div class="form-group">
           <label class="form-group__label">Farve</label>
@@ -88,9 +88,9 @@
           <label for="edit-settings-name" class="form-group__label">Navn</label>
           <input type="text" id="edit-settings-name" class="form-field">
         </div>
-        <div class="form-group" id="edit-settings-code-group">
-          <label for="edit-settings-code" class="form-group__label">Beskrivelse</label>
-          <input type="text" id="edit-settings-code" class="form-field">
+        <div class="form-group" id="edit-settings-desc-group">
+          <label for="edit-settings-desc" class="form-group__label">Beskrivelse</label>
+          <input type="text" id="edit-settings-desc" class="form-field">
         </div>
         <div class="form-group">
           <label class="form-group__label">Farve</label>

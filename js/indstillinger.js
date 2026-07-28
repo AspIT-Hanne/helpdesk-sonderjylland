@@ -1,6 +1,7 @@
 // Separation of concerns: API-filen get_settings.js håndterer data hentet fra databasen - mellemmand mellem frontend og backend (get_settings.php). indstillinger.js håndterer frontend.
 
 import { fetchSettings } from '../api/get_settings.js';
+import { updateSettings } from '../api/update_settings.js';
 
 const TAB_LABELS = {
   types: { singular: 'Type', tabLabel: 'Typer', hasDesc: true },
@@ -220,13 +221,13 @@ function openEditModal(id) {
   const title = document.getElementById('settings-edit-modal-title');
   const idInput = document.getElementById('edit-settings-id');
   const nameInput = document.getElementById('edit-settings-name');
-  const codeGroup = document.getElementById('edit-settings-code-group');
-  const codeInput = document.getElementById('edit-settings-code');
+  const descGroup = document.getElementById('edit-settings-desc-group');
+  const descInput = document.getElementById('edit-settings-desc');
   if (title) title.textContent = `Redigér ${meta.singular}`;
   if (idInput) idInput.value = `#${item.id}`;
   if (nameInput) nameInput.value = item.name;
-  if (codeGroup) codeGroup.style.display = meta.hasDesc ? '' : 'none';
-  if (codeInput) codeInput.value = item.code || '';
+  if (descGroup) descGroup.style.display = meta.hasDesc ? '' : 'none';
+  if (descInput) descInput.value = item.desc || '';
   modal.setAttribute('data-edit-id', String(id));
   renderColorPicker('edit-settings-color-picker', item.color);
   modal.classList.add('modal--open');
@@ -241,27 +242,81 @@ function closeEditModal() {
   document.body.classList.remove('modal-open');
 }
 
-function handleEditSubmit() {
+async function handleEditSubmit() {
   const modal = document.getElementById('settings-edit-modal');
+  
   if (!modal) return;
+  
   const id = Number(modal.getAttribute('data-edit-id'));
   const item = settingsData[activeKey].find((i) => i.id === id);
+  
   if (!item) return;
+  
   const nameInput = document.getElementById('edit-settings-name');
+  
   if (!nameInput || !nameInput.value.trim()) {
     alert('Navn er et påkrævet felt.');
     nameInput.focus();
     return;
   }
+
+  console.log(TAB_LABELS[activeKey].singular);
+  
   item.name = nameInput.value.trim();
+  
   if (TAB_LABELS[activeKey].hasDesc) {
-    const codeInput = document.getElementById('edit-settings-code');
-    item.code = codeInput ? codeInput.value.trim() : '';
+    const descInput = document.getElementById('edit-settings-desc');
+    item.desc = descInput ? descInput.value.trim() : '';
   }
+
+  let table;
+
+  switch (TAB_LABELS[activeKey].singular) {
+    case "Type":
+      table = "ticketCategory";
+      break;
+    
+    case "Status":
+      table = "ticketStatus";
+      break;
+    
+    case "Prioritet":
+      table = "ticketPriority";
+      break;
+    
+    case "Rolle":
+      table = "userRole";
+      break;
+  
+  }
+
+
+  
   item.color = getSelectedColor('edit-settings-color-picker') || COLOR_PALETTE.red;
+  // Da item.color er et array fra COLOR_PALETTE i badges, skal vi have fundet det tilhørende navn, som skal gemmes i databasen.
+  const colorName = Object.entries(COLOR_PALETTE).find(([key, value]) => value.bg === item.color.bg)?.[0];
+  
+try {
+    const result = await updateSettings(table, id, item.name, item.desc, colorName);
+    
+    if (result === true) {
+        closeEditModal();
+        showBottomMessage(TAB_LABELS[activeKey].singular + ' er opdateret', 'success');
+        
+        // Hent data igen uden at loade siden om (activeKey bevares automatisk!)
+        settingsData = await fetchSettings();
+        renderTab();
+        // Husk evt. at genopfriske din UI/tabel her, f.eks. renderTable();
+    } else {
+        showBottomMessage('Der opstod en fejl ved ændring af sagen i databasen: ' + (result.error || ''), 'error');
+    }
+} catch (error) {
+    showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
+}
+
   closeEditModal();
-  renderTab();
-  alert(`${TAB_LABELS[activeKey].singular} opdateret:\nNavn: ${item.name}`);
+  
+  
 }
 
 function initEditModal() {
@@ -287,12 +342,12 @@ function openCreateModal() {
   const meta = TAB_LABELS[activeKey];
   const title = document.getElementById('settings-create-modal-title');
   const nameInput = document.getElementById('create-settings-name');
-  const codeGroup = document.getElementById('create-settings-code-group');
-  const codeInput = document.getElementById('create-settings-code');
+  const descGroup = document.getElementById('create-settings-desc-group');
+  const descInput = document.getElementById('create-settings-desc');
   if (title) title.textContent = `Tilføj ${meta.singular}`;
   if (nameInput) nameInput.value = '';
-  if (codeGroup) codeGroup.style.display = meta.hasDesc ? '' : 'none';
-  if (codeInput) codeInput.value = '';
+  if (descGroup) descGroup.style.display = meta.hasDesc ? '' : 'none';
+  if (descInput) descInput.value = '';
   renderColorPicker('create-settings-color-picker', COLOR_PALETTE.red);
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
@@ -317,8 +372,8 @@ function handleCreateSubmit() {
   const newId = items.length ? Math.max(...items.map((i) => i.id)) + 1 : 1;
   const entry = { id: newId, name: nameInput.value.trim(), color: getSelectedColor('create-settings-color-picker') || COLOR_PALETTE.red };
   if (meta.hasDesc) {
-    const codeInput = document.getElementById('create-settings-code');
-    entry.code = codeInput ? codeInput.value.trim() : '';
+    const descInput = document.getElementById('create-settings-desc');
+    entry.desc = descInput ? descInput.value.trim() : '';
   }
   items.push(entry);
   closeCreateModal();
