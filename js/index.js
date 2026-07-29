@@ -9,10 +9,13 @@ function openModal(ticketId) {
   const locationInput = document.getElementById('modal-location');
   const statusSelect = document.getElementById('modal-status');
   const prioritySelect = document.getElementById('modal-priority');
+  const createdBySelect = document.getElementById('modal-created-by');
   const assignedSelect = document.getElementById('modal-assigned');
   const createdDateDisplay = document.getElementById('modal-created-date');
 
   const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+
+  console.log(row.dataset);
 
   if (row) {
     if (idDisplay) idDisplay.value = `#${ticketId}`;
@@ -22,6 +25,7 @@ function openModal(ticketId) {
     if (locationInput) locationInput.value = row.dataset.location || '';
     if (statusSelect) statusSelect.value = row.dataset.status || '';
     if (prioritySelect) prioritySelect.value = row.dataset.priority || '';
+    if (createdBySelect) createdBySelect.value = row.dataset.createdBy || '';
     if (assignedSelect) assignedSelect.value = row.dataset.assigned || '';
     if (createdDateDisplay && row.dataset.createdDate) {
       // Udvælg dato-delen (fjern tiden hvis den er der)

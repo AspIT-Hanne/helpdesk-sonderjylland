@@ -7,11 +7,18 @@ function initCreateDate() {
   const [year, month, day] = new Date().toISOString().split('T')[0].split('-');
   const today = `${day}-${month}-${year}`;
   createdDateInput.value = today;
+
+  const priorities = document.getElementById('create-priority');
+  Array.from(priorities.options).forEach(option => {
+      if (option.value === 'Medium') {
+          option.selected = true;
+      }
+  });
 }
 
 async function handleCreateSagSubmit() {
   const title = document.getElementById('create-title');
-  const type = document.getElementById('create-type');
+  const typeInput = document.getElementById('create-type');
 
   if (title && !title.value.trim()) {
     showBottomMessage('Titel er et påkrævet felt.', 'warning');
@@ -19,19 +26,22 @@ async function handleCreateSagSubmit() {
     return;
   }
 
-  if (type && !type.value.trim()) {
+  if (typeInput && !typeInput.value.trim()) {
     showBottomMessage('Type er et påkrævet felt.', 'warning');
     type.focus();
     return;
   }
 
+  // Sikrer at der står noget brugbart i type også selvom brugeren ikke har valgt noget
+  const type = typeInput ? (typeInput.value || 'Andet') : 'Andet';
+
   const description = document.getElementById('create-description');
   const place = document.getElementById('create-location');
-    const statusInput = document.getElementById('sager-create-status');
+  const statusInput = document.getElementById('create-status');
   // Sikrer at der står noget brugbart i status også selvom brugeren ikke har valgt noget
   const status = statusInput ? (statusInput.value || 'Ikke-startet') : 'Ikke-startet';
   
-  const priorityInput = document.getElementById('sager-create-priority');
+  const priorityInput = document.getElementById('create-priority');
   // Sikrer at der står noget brugbart i priority også selvom brugeren ikke har valgt noget
   const priority = priorityInput ? (priorityInput.value || 'Medium') : 'Medium';
   const createdby = document.getElementById('create-createdby');
@@ -39,7 +49,7 @@ async function handleCreateSagSubmit() {
   const created = document.getElementById('create-date');
 
    // Brug af den importerede addTicket funktion
-    const result = await addTicket(title.value, description.value, place.value, type.value, priority.value, createdby.value, assigned.value, status.value)
+    const result = await addTicket(title.value, description.value, place.value, type.value, priority, createdby.value, assigned.value, status)
       .then(result => {
         if (result === true) {
             showBottomMessage(`Sag ${title.value} oprettet`, 'success');

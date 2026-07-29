@@ -1,18 +1,36 @@
 <?php 
   include "includes/phpheader.php"; 
-  include "api/get_tickets.php";
 
-  $data = getTicketData(); 
-    
-  $technicians = getTechnicians();
-    
-  $status = getStatus();
+  if (!isset($_SESSION['logged_in'])) 
+  {
+    header('Location: login.php');
+    exit;
+  }
+  else
+  {
+    include "api/get_tickets.php";
 
-  $priorities = getPriority();
+    if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+    {
+      $role = $_SESSION['userRole_id'];
+    }
+    else
+    {
+      $role = 4;
+    }
 
-  $categories = getCategory();
+    $data = getTicketData(); 
+      
+    $technicians = getTechnicians();
+      
+    $status = getStatus();
 
-  $users = getUsers();
+    $priorities = getPriority();
+
+    $categories = getCategory();
+
+    $users = getUsers();
+  }
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +72,10 @@
             <?php 
               foreach($categories as $category)
                 {
-                  echo "<option value='{$category['name']}'>{$category['name']}</option>";
+                   if (!str_starts_with($category['name'], 'T') || $role == 2 || $role == 3) {
+                      echo "<option value='{$category['name']}'>{$category['name']}</option>";
+                  }
+
                 }
             ?>
           </select>
@@ -69,7 +90,7 @@
         </div>
         <div class="form-group">
           <label for="create-status" class="form-group__label">Status</label>
-          <select id="create-status" class="form-field">
+          <select id="create-status" class="form-field" <?= $permissions[$role]['restricted']; ?>>
             <?php 
               foreach($status as $thisstatus)
                 {
@@ -89,7 +110,7 @@
             ?>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group <?= $permissions[$role]['show']; ?>" >
           <input type="checkbox" class="show__users" id="chk-show-users">
           <label for="chk-show-users">Opret sag for bruger</label>
           <div class="created__by">
@@ -105,9 +126,9 @@
             </select>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group <?= $permissions[$role]['show']; ?>">
           <label for="create-assigned" class="form-group__label">Tildel Medarbejder</label>
-          <select id="create-assigned" class="form-field">
+          <select id="create-assigned" class="form-field" <?= $permissions[$role]['restricted']; ?>>
             <option value="">Vælg tekniker</option>
             <?php 
               foreach($technicians as $technician)

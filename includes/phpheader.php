@@ -13,3 +13,23 @@
     include realpath(__DIR__ . '/..') . "/includes/connect.php";
 
     $dbcon = new DbOperations;
+
+    // Globalt array til at bruge til at sætte rettigheder på klasser afhængigt af rolle
+    $permissions = [
+      1 => [
+        'show' => 'hidden',
+        'restricted' => 'disabled'
+      ],
+      4 => [
+        'show' => 'hidden',
+        'restricted' => 'disabled'
+      ],
+      2 => [
+        'show' => '',
+        'restricted' => ''
+      ],
+      3 => [
+          'show' => '',
+          'active' => ''
+      ]
+    ];

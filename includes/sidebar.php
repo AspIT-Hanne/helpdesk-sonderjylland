@@ -1,7 +1,6 @@
 <?php
 
   $username = $hidemenu = '';
-  $sager = $sagstavle = $brugere = $indstillinger = 'hidden';
 
   if(!isset($_SESSION['logged_in']))
   {
@@ -10,15 +9,15 @@
   else
   {
     $username = $_SESSION['username'];
-
-    if($_SESSION['userRole_id'] === 3)
+    if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
     {
-      $sager = $sagstavle = $brugere = $indstillinger = '';
+      $role = $_SESSION['userRole_id'];
     }
-    else if ($_SESSION['userRole_id'] === 2)
+    else
     {
-      $sager = $sagstavle = $brugere = '';
+      $role = 4;
     }
+    
   }
 ?>
 
@@ -29,25 +28,25 @@
     </div>
     <ul class="sidebar__nav <?= $hidemenu; ?>">
       <li>
-        <a href="index.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="index.php") {echo "sidebar__item--active";}?>">
+        <a href="index.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="index.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/house.svg" alt="" class="sidebar__icon">
           Dashboard
         </a>
       </li>
-      <li>
-        <a href="sager.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="sager.php") {echo "sidebar__item--active";} echo $sager; ?>">
+      <li class='<?= $permissions[$role]['show']; ?>'>
+        <a href="sager.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="sager.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/file.svg" alt="" class="sidebar__icon">
           Sager
         </a>
       </li>
-      <li>
-        <a href="sagstavle.php" class="sidebar__item <?= $sagstavle; ?>">
+      <li class='<?= $permissions[$role]['show']; ?>'>
+        <a href="sagstavle.php" class="sidebar__item">
           <img src="assets/board.svg" alt="" class="sidebar__icon">
           Sagstavle
         </a>
       </li>
-      <li>
-        <a href="brugere.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="brugere.php") {echo "sidebar__item--active";} echo $brugere;?>">
+      <li class='<?= $permissions[$role]['show']; ?>'>
+        <a href="brugere.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="brugere.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/users.svg" alt="" class="sidebar__icon">
           Brugere
         </a>
@@ -58,8 +57,8 @@
           Opret Sag
         </a>
       </li>
-      <li>
-        <a href="indstillinger.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="indstillinger.php") {echo "sidebar__item--active";} echo $indstillinger?>">
+      <li class='<?= $permissions[$role]['show']; ?>'>
+        <a href="indstillinger.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="indstillinger.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/settings.svg" alt="" class="sidebar__icon">
           Indstillinger
         </a>

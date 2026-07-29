@@ -7,6 +7,14 @@
   }
   else
   {
+    if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+    {
+      $role = $_SESSION['userRole_id'];
+    }
+    else
+    {
+      $role = 4;
+    }
 
     include "api/get_tickets.php";
 
@@ -77,11 +85,6 @@
       <p class="page-header__subtitle">Velkommen, <?= $_SESSION['username']; ?>! Her er en oversigt over dine support-sager.</p>
     </header>
 
-    <!--
-      TODO: When backend API is connected, replace hardcoded stats below
-      with live data. The JS in js/index.js will automatically toggle
-      stat-card--focus classes based on the numbers in these elements.
-    -->
     <section class="stats-grid" aria-label="Statistik">
       <article class="stat-card" id="stat-open">
         <span class="stat-card__label">Åbne</span>
@@ -149,7 +152,7 @@
             {
               if($ticket['ticketStatus_id'] != 4)
               {
-                  echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}' role='button' tabindex='0'>";
+                  echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-created-by='{$ticket['createdBy_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}' role='button' tabindex='0'>";
                     echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
                     echo "<td class='data-table__cell'>{$ticket['title']}</td>";
                     echo "<td class='data-table__cell'>{$ticket['location']}</td>";
@@ -187,7 +190,7 @@
         </div>
         <div class="form-group">
           <label for="modal-type" class="form-group__label">Type</label>
-          <select id="modal-type" class="form-field">
+          <select id="modal-type" class="form-field" <?= $permissions[$role]['restricted']; ?>>
           <?php 
               foreach($categories as $category)
                 {
@@ -206,7 +209,7 @@
         </div>
         <div class="form-group">
           <label for="modal-status" class="form-group__label">Status</label>
-          <select id="modal-status" class="form-field">
+          <select id="modal-status" class="form-field" <?= $permissions[$role]['restricted']; ?>>
             <?php 
               foreach($status as $thisstatus)
                 {
@@ -227,8 +230,12 @@
           </select>
         </div>
         <div class="form-group">
+          <label for="modal-created-date" class="form-group__label">Oprettet af</label>
+          <input type="text" id="modal-created-by" class="form-field" disabled>
+        </div>
+        <div class="form-group">
           <label for="modal-assigned" class="form-group__label">Tildelt Medarbejder</label>
-          <select id="modal-assigned" class="form-field">
+          <select id="modal-assigned" class="form-field" <?= $permissions[$role]['restricted']; ?>>
             <option value=''>Vælg tekniker</option>
             <?php 
               foreach($technicians as $technician)
