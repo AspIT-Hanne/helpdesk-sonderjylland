@@ -259,7 +259,7 @@ body.modal-open {
     flex: 1;
     min-height: 100vh;
     padding: var(--space-xl);
-    max-width: 1480px;
+    max-width: 95%;
 }
 
 /* Mobile Header */

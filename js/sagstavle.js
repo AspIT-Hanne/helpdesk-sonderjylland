@@ -21,7 +21,7 @@ function getCardsInColumns(columnSelectors) {
 
 function countHighPriority(cards) {
   return cards.filter((card) => {
-    return card.querySelector('[data-badge="priority:high"]') !== null;
+    return card.querySelector('[data-badge="priority:Høj"]') !== null;
   }).length;
 }
 
@@ -39,9 +39,12 @@ function countRecentCards(cards, days) {
 }
 
 function updateStatCards() {
-  const openCards = getCardsInColumns(['open', 'progress']);
-  const pendingCards = getCardsInColumns(['pending']);
-  const resolvedCards = getCardsInColumns(['resolved']);
+  const columns = document.querySelectorAll('[data-column]');
+  const columnNames = Array.from(columns, col => col.dataset.column);
+  // ColumnNames indeholder navnene på de oprettede kolonner, hvor navnet står i attributten data-column
+  const openCards = getCardsInColumns([columnNames[0], columnNames[1], columnNames[2]]);
+  const pendingCards = getCardsInColumns([columnNames[1]]);
+  const resolvedCards = getCardsInColumns([columnNames[3]]);
 
   const openCount = openCards.length;
   const urgentCount = countHighPriority(openCards);

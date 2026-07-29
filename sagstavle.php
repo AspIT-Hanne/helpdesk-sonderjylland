@@ -50,7 +50,7 @@
           { 
             $ticketsStatus = getTicketByStatus($status['id']);
           ?>
-            <section class="kanban-column" data-column="open">
+            <section class="kanban-column" data-column="<?= $status['name']; ?>">
               <header class="kanban-column__header kanban-column__header--<?= $status['name']; ?>">
                 <h2 class="kanban-column__title"><?= $status['name']; ?></h2>
                 <span class="kanban-column__count"><?= $column; ?></span>

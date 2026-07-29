@@ -71,8 +71,9 @@
               <th scope="col" class="data-table__header">Lokation</th>
               <th scope="col" class="data-table__header">Status</th>
               <th scope="col" class="data-table__header">Prioritet</th>
+              <th scope="col" class="data-table__header">Oprettet af</th>
               <th scope="col" class="data-table__header">Tildelt</th>
-              <th scope="col" class="data-table__header">Dato</th>
+              <th scope="col" class="data-table__header">Oprettet d.</th>
               <th scope="col" class="data-table__header">Handlinger</th>
             </tr>
           </thead>
@@ -87,6 +88,7 @@
               echo "<td class='data-table__cell'>{$ticket['location']}</td>";
               echo "<td class='data-table__cell'><span class='badge' data-badge='status:{$ticket['status_name']}' data-badge-color='{$ticket['status_color']}'>{$ticket['status_name']}</span></td>";
               echo "<td class='data-table__cell'><span class='priority' data-badge='priority:{$ticket['priority_name']}' data-badge-color='{$ticket['priority_color']}'>{$ticket['priority_name']}</span></td>";
+              echo "<td class='data-table__cell'>{$ticket['createdBy_name']}</td>";
               echo "<td class='data-table__cell'>{$ticket['assignedTo_name']}</td>";
               echo "<td class='data-table__cell'>" . date_format(new DateTime($ticket['created_at']), "d-m-y") . "</td>";
               echo "<td class='data-table__cell'>
