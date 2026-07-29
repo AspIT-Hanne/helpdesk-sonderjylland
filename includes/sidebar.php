@@ -33,6 +33,7 @@
           Dashboard
         </a>
       </li>
+      <!-- Filen genkender ikke $permissions fordi den genereres i phpheader.php, som inkluderes i alle de filer, der inkluderer sidebar.php -->
       <li class='<?= $permissions[$role]['show']; ?>'>
         <a href="sager.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="sager.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/file.svg" alt="" class="sidebar__icon">

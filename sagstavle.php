@@ -60,12 +60,16 @@
                 foreach ($ticketsStatus as $thisTicket)
                   { ?>
                     <article class="kanban-card" data-created-date="<?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?>">
-                      <h3 class="kanban-card__title"><?= $thisTicket['title']; ?></h3>
+                      <h3 class="kanban-card__title" data-badge="priority:<?= $thisTicket['priority_name']; ?>" data-badge-color="<?= $thisTicket['priority_color']; ?>"><span><?= $thisTicket['title']; ?></span><span><?= $thisTicket['priority_name']; ?></span></h3>
                       <div class="kanban-card__meta">
-                        <span class="kanban-card__author"><?= $thisTicket['createdBy_name']; ?></span>
-                        <span class="priority" data-badge="priority:<?= $thisTicket['priority_name']; ?>" data-badge-color="<?= $thisTicket['priority_color']; ?>"><?= $thisTicket['priority_name']; ?></span>
+                        <span class="kanban-card__author">Oprettet af: <?= $thisTicket['createdBy_name']; ?></span>
+                        <span class="kanban-card__author"><?php if(empty($thisTicket['assignedTo_name'])) { echo "Endnu ikke tildelt";} else { echo "Tildelt: {$thisTicket['assignedTo_name']}"; }?></span>
+                        
                       </div>
-                      <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>" data-badge-color="<?= $thisTicket['category_color']; ?>"><?= $thisTicket['category_name']; ?></span>
+                      <div class="kanban-card__meta">
+                        <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>" data-badge-color="<?= $thisTicket['category_color']; ?>"><?= $thisTicket['category_name']; ?></span>
+                        <span class="kanban-card__author">Oprettet: <?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?></span>
+                      </div>
                     </article>
               <?php } ?>
               </div>

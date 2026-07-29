@@ -202,6 +202,10 @@ body {
     font-weight: 600;
     margin-bottom: var(--space-md);
     line-height: 1.4;
+    border-radius: var(--radius-full);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.3rem;
 }
 
 .kanban-card__meta {
@@ -214,6 +218,7 @@ body {
 .kanban-card__author {
     font: var(--font-body-sm);
     color: var(--color-on-surface-variant);
+    padding: 0 0.3rem;
 }
 
 /* Category badge */
