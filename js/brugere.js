@@ -82,8 +82,6 @@ async function confirmDeleteUser() {
   const userId = modal.getAttribute('data-delete-user-id');
   const userName = modal.getAttribute('data-delete-user-name');
 
-   // const row = document.querySelector(`tr[data-user-id="${userId}"]`);
-  // if (row) row.remove();
   const result = await deleteUser(userId)
       .then(result => {
         if (result === true) {

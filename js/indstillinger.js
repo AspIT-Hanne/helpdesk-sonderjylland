@@ -2,12 +2,13 @@
 
 import { fetchSettings } from '../api/get_settings.js';
 import { updateSettings } from '../api/update_settings.js';
+import { deleteSettings } from '../api/delete_settings.js';
 
 const TAB_LABELS = {
-  types: { singular: 'Type', tabLabel: 'Typer', hasDesc: true },
-  statuses: { singular: 'Status', tabLabel: 'Statusser', hasDesc: true },
-  priorities: { singular: 'Prioritet', tabLabel: 'Prioriteter', hasDesc: false },
-  roles: { singular: 'Rolle', tabLabel: 'Roller', hasDesc: true }
+  types: { singular: 'Type', tabLabel: 'Typer', hasDesc: true, table: 'ticketCategory' },
+  statuses: { singular: 'Status', tabLabel: 'Statusser', hasDesc: true, table: 'ticketStatus' },
+  priorities: { singular: 'Prioritet', tabLabel: 'Prioriteter', hasDesc: false, table: 'ticketPriority' },
+  roles: { singular: 'Rolle', tabLabel: 'Roller', hasDesc: true, table: 'userRole' }
 };
 
 let activeKey = 'types';
@@ -60,22 +61,18 @@ function renderTab() {
     headers.map((h) => `<th scope="col" class="data-table__header">${h}</th>`).join('') +
     `</tr></thead>`;
 
-  const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => {
-    console.log(item);
-    // Første gang hvert item bliver hentet fra settingsData, erstattes farven fra databasen med farven fra variablen COLOR_PALETTE (fra badges.js)
-    // if(!item.color.hasOwnProperty("bg"))
-    // {
-    //   item.color = COLOR_PALETTE[item.color];
-    // }
-
+  const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => 
+  {
     const cells = [
       `<td class="data-table__cell"><span class="badge" data-badge="${item.name}" data-badge-color="${item.color}">${escapeHtml(item.name)}</span></td>`,
       //`<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
       `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
     ];
+    
     if (meta.hasDesc) {
       cells.push(`<td class="data-table__cell">${escapeHtml(item.description || '')}</td>`);
     }
+    
     cells.push(
       `<td class="data-table__cell">` +
         `<button type="button" class="action-btn" data-action="edit" data-id="${item.id}" aria-label="Redigér ${escapeHtml(item.name)}">` +
@@ -86,6 +83,7 @@ function renderTab() {
         `</button>` +
       `</td>`
     );
+    
     return `<tr class="data-table__row" data-id="${item.id}" data-name="${escapeHtml(item.name)}">${cells.join('')}</tr>`;
   }).join('') + `</tbody>`;
 
@@ -154,7 +152,7 @@ function renderColorPicker(containerId, selectedColor) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.innerHTML = Object.entries(COLOR_PALETTE).map(([name, color]) => {
-    const checked = selectedColor && color.bg === selectedColor.bg ? ' checked' : '';
+    const checked = selectedColor && color.bg === COLOR_PALETTE[selectedColor].bg ? ' checked' : '';
     return `<label class="color-picker__swatch">` +
       `<input type="radio" name="${containerId}-color" value="${name}" class="color-picker__input"${checked}>` +
       `<span class="color-picker__circle" style="background-color:${color.bg}"></span>` +
@@ -186,15 +184,29 @@ function closeDeleteModal() {
   document.body.classList.remove('modal-open');
 }
 
-function confirmDelete() {
+async function confirmDelete() {
   const modal = document.getElementById('settings-delete-modal');
   if (!modal) return;
   const id = Number(modal.getAttribute('data-delete-id'));
   const items = settingsData[activeKey];
-  const idx = items.findIndex((i) => i.id === id);
-  if (idx !== -1) items.splice(idx, 1);
-  closeDeleteModal();
-  renderTab();
+  // const idx = items.findIndex((i) => i.id === id);
+  // if (idx !== -1) items.splice(idx, 1);
+
+  try {
+      const result = await deleteSettings(TAB_LABELS[activeKey].table, id);
+      
+      if (result === true) {
+          closeDeleteModal();
+          showBottomMessage(`${TAB_LABELS[activeKey].singular} er blevet slettet.`, 'success');
+          renderTab();
+      } else {
+        console.log(result);
+          showBottomMessage('Der opstod en fejl ved sletning i databasen: ' + (result.error || ''), 'error');
+      }
+  } catch (error) {
+      showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
+  }
+    closeDeleteModal();
 }
 
 function initDeleteModal() {
@@ -202,10 +214,13 @@ function initDeleteModal() {
   const cancelBtn = document.getElementById('settings-delete-modal-cancel');
   const confirmBtn = document.getElementById('settings-delete-modal-confirm');
   const modal = document.getElementById('settings-delete-modal');
+  
   if (!modal) return;
+  
   if (closeBtn) closeBtn.addEventListener('click', closeDeleteModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeDeleteModal);
   if (confirmBtn) confirmBtn.addEventListener('click', confirmDelete);
+  
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closeDeleteModal();
   });
@@ -228,7 +243,7 @@ function openEditModal(id) {
   if (idInput) idInput.value = `#${item.id}`;
   if (nameInput) nameInput.value = item.name;
   if (descGroup) descGroup.style.display = meta.hasDesc ? '' : 'none';
-  if (descInput) descInput.value = item.desc || '';
+  if (descInput) descInput.value = item.description || '';
   modal.setAttribute('data-edit-id', String(id));
   renderColorPicker('edit-settings-color-picker', item.color);
   modal.classList.add('modal--open');
@@ -260,8 +275,6 @@ async function handleEditSubmit() {
     nameInput.focus();
     return;
   }
-
-  console.log(TAB_LABELS[activeKey].singular);
   
   item.name = nameInput.value.trim();
   
@@ -270,35 +283,12 @@ async function handleEditSubmit() {
     item.desc = descInput ? descInput.value.trim() : '';
   }
 
-  let table;
-
-  switch (TAB_LABELS[activeKey].singular) {
-    case "Type":
-      table = "ticketCategory";
-      break;
-    
-    case "Status":
-      table = "ticketStatus";
-      break;
-    
-    case "Prioritet":
-      table = "ticketPriority";
-      break;
-    
-    case "Rolle":
-      table = "userRole";
-      break;
-  
-  }
-
-
-  
   item.color = getSelectedColor('edit-settings-color-picker') || COLOR_PALETTE.red;
   // Da item.color er et array fra COLOR_PALETTE i badges, skal vi have fundet det tilhørende navn, som skal gemmes i databasen.
   const colorName = Object.entries(COLOR_PALETTE).find(([key, value]) => value.bg === item.color.bg)?.[0];
   
 try {
-    const result = await updateSettings(table, id, item.name, item.desc, colorName);
+    const result = await updateSettings(TAB_LABELS[activeKey].table, id, item.name, item.desc, colorName);
     
     if (result === true) {
         closeEditModal();

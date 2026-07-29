@@ -321,18 +321,32 @@
                 }
                 catch (PDOException $e) {
                     
-                    // Hvis brugeren har sager i systemet, kan vedkommende ikke slettes. Det giver en SQL fejl 23000, fordi der er fremmednøgler, som forhindrer den sletning
+                    // Standard fejlbesked
+                    $errorMsg = "Database fejl ved sletning: " . $e->getMessage();
+
+                    // Hvis det er en fremmednøgle-fejl (SQLSTATE 23000)
                     if ($e->getCode() == '23000') {
-                        throw new Exception("Brugeren kan ikke slettes, fordi vedkommende har oprettet sager i systemet.");
+                        $errorMsg = "Data kan ikke slettes, for de er forbundet til felter i en eller flere andre tabeller.";
                     }
-                    // Kast en Exception i stedet for at returnere false. Fanges af try/catch, som har kaldt denne funktion
-                    throw new Exception("Database fejl ved sletning: " . $e->getMessage());
+
+                    // Send JSON-svar med success = false og afslut scriptet pænt
+                    http_response_code(400); // 400 Bad Request (så JS fanger det som en klientfejl, men stadig kan læse JSON)
+                    echo json_encode([
+                        'success' => false,
+                        'error' => $errorMsg
+                    ]);
+                    exit;
                 }
             }
             else
             {
                 // Hvis tabellen ikke eksisterer.  Fanges af try/catch, som har kaldt denne funktion
-                throw new Exception("Tabellen '{$table}' eksisterer ikke.");
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error' => "Tabellen '{$table}' eksisterer ikke."
+                ]);
+                exit;
             }
         }
 
