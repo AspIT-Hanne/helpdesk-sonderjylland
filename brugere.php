@@ -36,6 +36,7 @@
     </header>
 
     <div class="filter-bar">
+      <button class="btn btn--primary" id="add-user-btn">Tilføj Bruger</button>
       <div class="filter-bar__group">
         <label for="user-search" class="filter-bar__label visually-hidden">Søg brugere</label>
         <input type="search" id="user-search" class="form-field" placeholder="Søg brugere efter navn eller email...">
@@ -52,7 +53,7 @@
             ?>
         </select>
       </div>
-      <button class="btn btn--primary" id="add-user-btn">Tilføj Bruger</button>
+      <button class="btn btn--secondary filter-bar__reset">Nulstil</button>
     </div>
 
     <section class="card">

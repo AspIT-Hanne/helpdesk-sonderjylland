@@ -6,6 +6,7 @@ import { deleteUser } from '../api/delete_user.js';
 function initUserFilters() {
   const searchInput = document.getElementById('user-search');
   const roleSelect = document.getElementById('filter-role');
+  const resetFilterBtn = document.querySelector('.filter-bar__reset');
   const tbody = document.getElementById('user-table-body');
   if (!tbody) return;
 
@@ -28,7 +29,11 @@ function initUserFilters() {
   }
 
   if (searchInput) searchInput.addEventListener('input', filterUsers);
-  if (roleSelect) roleSelect.addEventListener('change', filterUsers);
+  if (roleSelect) roleSelect.addEventListener('change', () => filterDataTable('rolle', roleSelect.value));
+  if (resetFilterBtn) resetFilterBtn.addEventListener('click', () => {
+    filterDataTable('rolle', '');
+    if (roleSelect) roleSelect.value = "";
+  });
 }
 
 function initUserActions() {

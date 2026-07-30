@@ -34,11 +34,11 @@
     </div>
 
     <div class="filter-bar">
+      <button class="btn btn--primary" id="add-settings-btn">Tilføj Type</button>
       <div class="filter-bar__group">
         <label for="settings-search" class="filter-bar__label visually-hidden">Søg</label>
         <input type="search" id="settings-search" class="form-field" placeholder="Søg efter navn...">
       </div>
-      <button class="btn btn--primary" id="add-settings-btn">Tilføj Type</button>
     </div>
 
     <section class="card">

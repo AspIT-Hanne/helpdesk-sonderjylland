@@ -41,6 +41,7 @@
     </header>
 
     <div class="filter-bar">
+      <button class="btn btn--primary" id="add-sag-btn">Tilføj Sag</button>
       <div class="filter-bar__group">
         <label for="sager-search" class="filter-bar__label visually-hidden">Søg sager</label>
         <input type="search" id="sager-search" class="form-field" placeholder="Søg sager efter ID, titel eller tildelt...">
@@ -57,7 +58,7 @@
             ?>
         </select>
       </div>
-      <button class="btn btn--primary" id="add-sag-btn">Tilføj Sag</button>
+       <button class="btn btn--secondary filter-bar__reset">Nulstil</button>
     </div>
 
     <section class="card">

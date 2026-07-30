@@ -15,8 +15,6 @@ function openModal(ticketId) {
 
   const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
 
-  console.log(row.dataset);
-
   if (row) {
     if (idDisplay) idDisplay.value = `#${ticketId}`;
     if (titleInput) titleInput.value = row.dataset.title || '';
@@ -57,6 +55,19 @@ function closeModal() {
 }
 
 function initTableRows() {
+  const filterStatus = document.getElementById('filter-status');
+  const filterAssigned = document.getElementById('filter-assigned');
+  const resetFilterBtn = document.querySelector('.filter-bar__reset');
+
+  if (filterStatus) filterStatus.addEventListener('change', () => filterDataTable('status', filterStatus.value));
+  if (filterAssigned) filterAssigned.addEventListener('change', () => filterDataTable('tildelt', filterAssigned.value));
+  if (resetFilterBtn) resetFilterBtn.addEventListener('click', () => {
+    filterDataTable('status', '');
+    filterDataTable('tildelt', '');
+    if (filterStatus) filterStatus.value = "";
+    if (filterAssigned) filterAssigned.value = "";
+  });
+  
   const tbody = document.getElementById('ticket-table-body');
   if (!tbody) return;
 

@@ -5,6 +5,7 @@ import { updateTicket } from '../api/update_ticket.js';
 function initSagerFilters() {
   const searchInput = document.getElementById('sager-search');
   const statusSelect = document.getElementById('filter-status');
+  const resetFilterBtn = document.querySelector('.filter-bar__reset');
   const tbody = document.getElementById('sager-table-body');
   if (!tbody) return;
 
@@ -28,7 +29,11 @@ function initSagerFilters() {
   }
 
   if (searchInput) searchInput.addEventListener('input', filterSager);
-  if (statusSelect) statusSelect.addEventListener('change', filterSager);
+  if (statusSelect) statusSelect.addEventListener('change', () => filterDataTable('status', statusSelect.value));
+    if (resetFilterBtn) resetFilterBtn.addEventListener('click', () => {
+    filterDataTable('status', '');
+    if (statusSelect) statusSelect.value = "";
+  });
 }
 
 function openSagerEditModal(ticketId) {

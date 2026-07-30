@@ -69,6 +69,85 @@ function hideBottomMessage(messageBar) {
     messageBar.classList.remove('show');
 }
 
+// Objekt til at holde styr på de aktiverede filtre
+const currentFilters = {
+    status: '',
+    tildelt: '',
+    rolle: ''
+};
+
+function filterDataTable(columnIdentifier, data) {
+    const table = document.querySelector('.data-table');
+    console.log("Tabel: " + table);
+    if (!table) return;
+
+    
+
+    // Gem den nye filterværdi i filter-objektete
+    currentFilters[columnIdentifier] = data;
+
+    const headers = Array.from(table.querySelectorAll('.data-table__header'));
+    const rows = table.querySelectorAll('tbody tr');
+    
+    const filterIndices = {};
+    Object.keys(currentFilters).forEach(key => {
+        filterIndices[key] = headers.findIndex(th => th.textContent.trim().toLowerCase() === key.toLowerCase());
+    });
+
+    rows.forEach(tr => {
+        let showRow = true;
+
+        // Tjek alle aktive filtre automatisk
+        for (const [key, filterValue] of Object.entries(currentFilters)) {
+            if (filterValue !== "") {
+                const columnIndex = filterIndices[key];
+                if (columnIndex !== -1) {
+                    const cell = tr.querySelectorAll('td')[columnIndex];
+                    if (cell && cell.textContent.trim() !== filterValue) {
+                        showRow = false;
+                        break; // Stop med at tjekke de andre filtre, hvis rækken allerede er afvist
+                    }
+                }
+            }
+        }
+
+        // Vis eller skjul rækken baseret på om den bestod alle aktive filtre
+        tr.style.display = showRow ? '' : 'none';
+    });
+}
+
+// function filterDataTable(row, data) {
+//     const table = document.querySelector('.data-table');
+
+//     if(!table) return;
+//     console.log(table);
+
+//     // 1. Find kolonne-indekset i thead baseret på 'row' (f.eks. 'status')
+//     const headers = Array.from(table.querySelectorAll('.data-table__header'));
+    
+//     const columnIndex = headers.findIndex(th => th.textContent.trim().toLowerCase() === row.toLowerCase());
+
+//     if (columnIndex === -1) return;
+
+//     // 2. Hent alle rækker i tbody
+//     const rows = table.querySelectorAll('tbody tr');
+
+//     // 3. Løb rækkerne igennem og skjul/vis dem
+//     rows.forEach(tr => {
+//         const cell = tr.querySelectorAll('td')[columnIndex];
+//         if (!cell) return;
+
+//         const cellValue = cell.textContent.trim();
+
+//         // Hvis data er tom (f.eks. "Alle" / "Vis alle"), eller værdien matcher, så vis rækken. Ellers skjul den.
+//         if (data === "" || cellValue === data) {
+//             tr.style.display = ''; // Vis rækken
+//         } else {
+//             tr.style.display = 'none'; // Skjul rækken
+//         }
+//     });
+// }
+
 (function init() {
   initMobileNav();
 })();
