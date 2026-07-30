@@ -65,7 +65,6 @@ function renderTab() {
   {
     const cells = [
       `<td class="data-table__cell"><span class="badge" data-badge="${item.name}" data-badge-color="${item.color}">${escapeHtml(item.name)}</span></td>`,
-      //`<td class="data-table__cell"><span class="badge" data-badge-bg="${item.color.bg}" data-badge-fg="${item.color.text}">${escapeHtml(item.name)}</span></td>`,
       `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
     ];
     
@@ -136,14 +135,28 @@ function updateAddButtonLabel() {
 function initSettingsActions() {
   const container = document.getElementById('settings-table-container');
   if (!container) return;
+  
   container.addEventListener('click', (event) => {
+    const row = event.target.closest('.data-table__row');
+    if (!row) return;
+
+    const id = Number(row.dataset.id);
     const btn = event.target.closest('.action-btn');
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    if (btn.classList.contains('action-btn--danger')) {
-      openDeleteModal(id);
-    } else {
-      openEditModal(id);
+
+    if(btn)
+    {
+      if (btn.classList.contains('action-btn--danger')) 
+      {
+        openDeleteModal(id);
+      } 
+      else
+      {
+        openEditModal(id);
+      }
+    } 
+    else
+    {
+      openEditModal(id);      
     }
   });
 }
