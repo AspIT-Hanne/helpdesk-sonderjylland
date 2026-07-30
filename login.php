@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($username) && !empty($password)) {
         try {
+            session_start();
             $userid = $dbcon->verifyLogin($username, $password);
 
             if ($userid) {
@@ -27,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         } catch (Exception $e) {
+            $_SESSION = array();
+            session_destroy();
             $errorMsg = $e->getMessage();
             $errorType = 'error';
         }

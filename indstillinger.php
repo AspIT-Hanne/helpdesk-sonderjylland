@@ -1,4 +1,4 @@
-<?php include "includes/phpheader.php"; ?>
+<?php include_once __DIR__ . '/includes/phpheader.php';  ?>
 
 <!DOCTYPE html>
 <html lang="da">

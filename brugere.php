@@ -1,5 +1,5 @@
 <?php 
-
+  include_once __DIR__ . '/includes/phpheader.php'; 
   include "api/get_users.php";
 
   $data = getUserData();

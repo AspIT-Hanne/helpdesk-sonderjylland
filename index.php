@@ -1,12 +1,6 @@
 <?php 
   include_once __DIR__ . '/includes/phpheader.php'; 
 
-  if (!isset($_SESSION['logged_in'])) {
-      header('Location: login.php');
-      exit;
-  }
-  else
-  {
     if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
     {
       $role = $_SESSION['userRole_id'];
@@ -27,7 +21,7 @@
     $categories = getCategory();
 
     $priorities = getPriority();
-  }
+  
 
   function getActiveTickets($data) {
     $active = array_filter($data, fn($ticket) => isset($ticket['ticketStatus_id']) && $ticket['ticketStatus_id'] != 4);

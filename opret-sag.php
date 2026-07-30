@@ -1,5 +1,5 @@
 <?php 
-  include "includes/phpheader.php"; 
+include_once __DIR__ . '/includes/phpheader.php';
 
   if (!isset($_SESSION['logged_in'])) 
   {

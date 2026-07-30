@@ -1,4 +1,6 @@
 <?php 
+  include_once __DIR__ . '/includes/phpheader.php';
+  
   include "api/get_tickets.php";
 
   $data = getTicketData(); 
