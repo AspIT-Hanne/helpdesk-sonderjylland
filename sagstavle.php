@@ -18,11 +18,9 @@
   <div class="kanban-page">
     <header class="kanban-header">
       <a href="index.php" class="kanban-header__back" aria-label="Til Dashboard">
-        <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
-      </a>
-      <a href="index.php" class="kanban-header__back" aria-label="Til Dashboard">
         <img src="assets/house.svg" alt="" class="kanban-header__icon">
       </a>
+      <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
     </header>
 
     <section class="stats-grid" aria-label="Statistik">
