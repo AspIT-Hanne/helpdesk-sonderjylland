@@ -82,7 +82,7 @@
             <?php  
             foreach($data as $ticket)
             {
-              echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}'>";
+              echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='{$ticket['description']}' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}'>";
               echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
               echo "<td class='data-table__cell'>{$ticket['title']}</td>";
               echo "<td class='data-table__cell'><span class='badge' data-badge='type:{$ticket['category_name']}' data-badge-color='{$ticket['category_color']}'>{$ticket['category_name']}</span></td>";
@@ -269,7 +269,11 @@
               <?php 
                 foreach($users as $user)
                   {
-                    echo "<option value='{$user['username']}'>{$user['username']}</option>";
+                    if($user['username'] != $_SESSION['username'])
+                    {
+                      echo "<option value='{$user['username']}'>{$user['username']}</option>";
+                    }
+                    
                   }
               ?>
             </select>

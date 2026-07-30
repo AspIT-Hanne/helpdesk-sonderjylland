@@ -355,17 +355,24 @@ function initSagerActions() {
   if (!tbody) return;
 
   tbody.addEventListener('click', (event) => {
-    const btn = event.target.closest('.action-btn');
-    if (!btn) return;
-
-    const row = btn.closest('.data-table__row');
+    const row = event.target.closest('.data-table__row');
     if (!row) return;
+    
+    const btn = event.target.closest('.action-btn');
 
-    if (btn.classList.contains('action-btn--danger')) {
+    if (btn)
+    {
+      if (btn.classList.contains('action-btn--danger')) {
       openSagerDeleteModal(row);
-    } else {
+      } else {
+        openSagerEditModal(row.dataset.ticketId);
+      }
+    }
+    else
+    {
       openSagerEditModal(row.dataset.ticketId);
     }
+    
   });
 }
 
