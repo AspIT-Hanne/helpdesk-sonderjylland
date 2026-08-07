@@ -12,6 +12,8 @@ export async function updateTicket(rawid, title, type, description, place, statu
         assigned: assigned
     };
 
+    console.log("Assigned to: " + assigned);
+
     try {
         const response = await fetch('api/update_ticket.php', {
             method: 'POST',

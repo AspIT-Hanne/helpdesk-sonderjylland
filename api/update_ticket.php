@@ -67,8 +67,10 @@ function updateUser($id, $title, $type, $description, $location, $status, $prior
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
         exit;
     }
+
+    $assigned = trim($assigned ?? '');
     
-    if($assigned){
+    if(!empty($assigned)){
         try {
             $assignedTo = $dbcon->getDataByField('users', 'username', $assigned);
             if (!$assignedTo) {
