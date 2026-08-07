@@ -116,7 +116,8 @@ function addTicket($title, $description, $location, $type, $priority, $assigned,
             'assigned_to' => $assigned_to,
             'created_by' => $created_by,
             'ticketStatus_id' => $ticketStatus_id,
-            'created_at' => $createDate
+            'created_at' => $createDate,
+            'location_id' => $_SESSION['location_id']
         ];
 
         $result = $dbcon->insertData($table, $data);

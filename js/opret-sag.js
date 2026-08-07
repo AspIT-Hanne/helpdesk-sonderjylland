@@ -20,6 +20,8 @@ async function handleCreateSagSubmit() {
   const title = document.getElementById('create-title');
   const typeInput = document.getElementById('create-type');
 
+ 
+
   if (title && !title.value.trim()) {
     showBottomMessage('Titel er et påkrævet felt.', 'warning');
     title.focus();
@@ -35,6 +37,8 @@ async function handleCreateSagSubmit() {
   // Sikrer at der står noget brugbart i type også selvom brugeren ikke har valgt noget
   const type = typeInput ? (typeInput.value || 'Andet') : 'Andet';
 
+   console.log("Type: " + type.value);
+
   const description = document.getElementById('create-description');
   const place = document.getElementById('create-location');
   const statusInput = document.getElementById('create-status');
@@ -49,20 +53,20 @@ async function handleCreateSagSubmit() {
   const created = document.getElementById('create-date');
 
    // Brug af den importerede addTicket funktion
-    const result = await addTicket(title.value, description.value, place.value, type.value, priority, createdby.value, assigned.value, status)
-      .then(result => {
-        if (result === true) {
-            showBottomMessage(`Sag ${title.value} oprettet`, 'success');
-            setTimeout(() => {
-                window.location.href = '/index.php';
-            }, 2000);
-        } else {
-          showBottomMessage('Der opstod en fejl ved oprettelse af sagen.' + result.error, 'error');
-        }
-      })
-      .catch(error => {
-        showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
-      });
+  const result = await addTicket(title.value, description.value, place.value, type, priority, createdby.value, assigned.value, status)
+    .then(result => {
+      if (result === true) {
+          showBottomMessage(`Sag ${title.value} oprettet`, 'success');
+          setTimeout(() => {
+              window.location.href = '/index.php';
+          }, 2000);
+      } else {
+        showBottomMessage('Der opstod en fejl ved oprettelse af sagen.' + result.error, 'error');
+      }
+    })
+    .catch(error => {
+      showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    });
 }
 
 function initAddSagButton() {

@@ -12,8 +12,9 @@ function getUserData()
         $rows = "users.id, users.username, users.email, userRole.name AS role_name, userRole.color AS role_color, userStatus.name AS status_name, userStatus.color AS status_color";
         $join = "LEFT JOIN userRole ON users.userRole_id = userRole.id 
                 LEFT JOIN userStatus ON users.userStatus_id = userStatus.id";
+        $where = "users.location_id = {$_SESSION['location_id']}";
 
-        $result = $dbcon->getDataWithJoins($table, $rows, $join);
+        $result = $dbcon->getDataWithJoinsWhere($table, $rows, $join, $where);
         
         return $result;
 

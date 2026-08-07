@@ -11,10 +11,10 @@ header('Content-Type: application/json');
 try {
     // Saml alle data fra de forskellige tabeller
     $settingsData = [
-        'types'      => $dbcon->getAllData("ticketCategory"),
-        'statuses'   => $dbcon->getAllData("ticketStatus"),
-        'priorities' => $dbcon->getAllData("ticketPriority"),
-        'roles'      => $dbcon->getAllData("userRole")
+        'types'      => $dbcon->getDataByField("ticketCategory", "location_id", "{$_SESSION['location_id']}"),
+        'statuses'   => $dbcon->getDataByField("ticketStatus", "location_id", "{$_SESSION['location_id']}"),
+        'priorities' => $dbcon->getDataByField("ticketPriority", "location_id", "{$_SESSION['location_id']}"),
+        'roles'      => $dbcon->getDataByField("userRole", "location_id", "{$_SESSION['location_id']}")
     ];
 
     echo json_encode($settingsData);

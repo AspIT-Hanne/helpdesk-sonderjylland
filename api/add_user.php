@@ -46,7 +46,8 @@ function addUser($username, $password, $email, $role)
             'password' => $hashedPassword,
             'email' => $email,
             'userRole_id' => $userRole_id,
-            'userStatus_id' => 1
+            'userStatus_id' => 1,
+            'location_id' => $_SESSION['location_id']
         ];
 
         $result = $dbcon->insertData($table, $data);

@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['userid'] = $userid;
                 $_SESSION['username'] = $username;
                 $_SESSION['userRole_id'] = $userdata['userRole_id'];
+                $_SESSION['location_id'] = $userdata['location_id'];
                 
                 // Send brugeren videre til forsiden
                 header('Location: index.php');

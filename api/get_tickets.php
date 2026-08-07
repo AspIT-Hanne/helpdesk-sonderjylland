@@ -41,7 +41,7 @@
                     LEFT JOIN ticketStatus ON tickets.ticketStatus_id = ticketStatus.id
                     LEFT JOIN users users1 ON tickets.assigned_to = users1.id
                     LEFT JOIN users users2 ON tickets.created_by = users2.id";
-            $where = "(tickets.created_by = {$_SESSION['userid']} OR tickets.assigned_to = {$_SESSION['userid']})";
+            $where = "((tickets.created_by = {$_SESSION['userid']} OR tickets.assigned_to = {$_SESSION['userid']})) AND tickets.location_id = {$_SESSION['location_id']}";
 
             $result = $dbcon->getDataWithJoinsWhere($table, $rows, $join, $where);
             

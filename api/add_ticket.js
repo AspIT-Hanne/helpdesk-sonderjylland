@@ -10,6 +10,8 @@ export async function addTicket(title, description, location, type, priority, cr
         status: status
     };
 
+    // console.log(userData);
+
     try {
         const response = await fetch('api/add_ticket.php', {
             method: 'POST',
