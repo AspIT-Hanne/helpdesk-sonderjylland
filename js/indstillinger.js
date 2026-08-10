@@ -46,8 +46,7 @@ async function loadTabLabels() {
         const result = await response.json();
 
         if (result.success) {
-            // Omdan det flade array fra databasen til et objekt, 
-            // så det matcher din nuværende struktur (hvis du foretrækker det)
+            // Omdan det flade array fra databasen til et objekt
             result.data.forEach(row => {
                 TAB_LABELS[row.tab_key] = {
                     singular: row.singular,
@@ -77,7 +76,7 @@ function renderTabButtons() {
     let html = '';
 
     for (const [key, value] of Object.entries(TAB_LABELS)) {
-        // Tjek om denne fane er den aktive (tilpas variabelnavnet efter hvad du bruger)
+        // Tjek om denne fane er den aktive
         const isActive = key === activeKey;
         const activeClass = isActive ? ' tabs__tab--active' : '';
         const ariaSelected = isActive ? 'true' : 'false';
