@@ -4,19 +4,12 @@ import { fetchSettings } from '../api/get_settings.js';
 import { updateSettings } from '../api/update_settings.js';
 import { deleteSettings } from '../api/delete_settings.js';
 
-const TAB_LABELS = {
-  types: { singular: 'Type', tabLabel: 'Typer', hasDesc: true, table: 'ticketCategory' },
-  statuses: { singular: 'Status', tabLabel: 'Statusser', hasDesc: true, table: 'ticketStatus' },
-  priorities: { singular: 'Prioritet', tabLabel: 'Prioriteter', hasDesc: false, table: 'ticketPriority' },
-  roles: { singular: 'Rolle', tabLabel: 'Roller', hasDesc: true, table: 'userRole' }
-};
 
-let activeKey = 'types';
+let activeKey = 'settings';
 let settingsData = {};
+let TAB_LABELS = {};
 
 function init() {
-  updateAddButtonLabel();
-  renderTab();
   initTabs();
   initSettingsFilters();
   initSettingsActions();
@@ -29,15 +22,45 @@ function init() {
 // Vent til at hele siden er loaded og så hent data med fetchSettings
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Vent på at data hentes       
-        settingsData = await fetchSettings(); 
+      // Hent tab-labels først og vent på at den er færdig
+      await loadTabLabels();
+      renderTabButtons();
+      
+      // Vent på at data hentes       
+      settingsData = await fetchSettings(); 
+
+      // Kald resten af funktionerne, når settingsData er hentet
         
-        // Kald resten af funktionerne, når settingsData er hentet
-        init(); 
+      init();
+      updateAddButtonLabel();
+      renderTab();
+
     } catch (error) {
         console.error("Fejl:", error);
     }
 });
+
+async function loadTabLabels() {
+    try {
+        const response = await fetch('../api/get_tabs.php');
+        const result = await response.json();
+
+        if (result.success) {
+            // Omdan det flade array fra databasen til et objekt, 
+            // så det matcher din nuværende struktur (hvis du foretrækker det)
+            result.data.forEach(row => {
+                TAB_LABELS[row.tab_key] = {
+                    singular: row.singular,
+                    tabLabel: row.tabLabel,
+                    hasDesc: Boolean(row.has_desc),
+                    table: row.tableName
+                };
+            });            
+        }
+    } catch (error) {
+        console.error("Kunne ikke indlæse tab-labels:", error);
+    }
+}
 
 function escapeHtml(str) {
   return String(str)
@@ -47,48 +70,103 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function renderTabButtons() {
+    const container = document.getElementById('tabs-container');
+    if (!container) return;
+
+    let html = '';
+
+    for (const [key, value] of Object.entries(TAB_LABELS)) {
+        // Tjek om denne fane er den aktive (tilpas variabelnavnet efter hvad du bruger)
+        const isActive = key === activeKey;
+        const activeClass = isActive ? ' tabs__tab--active' : '';
+        const ariaSelected = isActive ? 'true' : 'false';
+
+        html += `
+            <button type="button" class="tabs__tab${activeClass}" data-tab="${key}" role="tab" aria-selected="${ariaSelected}">
+                ${value.tabLabel}
+            </button>
+        `;
+    }
+
+    container.innerHTML = html;
+}
+
 function renderTab() {
   const container = document.getElementById('settings-table-container');
   if (!container) return;
-  const items = settingsData[activeKey];
+  const items = settingsData?.[activeKey] || [];
   const meta = TAB_LABELS[activeKey];
+  if(!meta) return;
 
-  const headers = ['Farve', 'Navn'];
-  if (meta.hasDesc) headers.push('Beskrivelse');
-  headers.push('Handlinger');
+  // Tjek om vi er på "settings"-fanen eller en af de andre tabeller
+  if (activeKey === 'settings') {
+    // --- RENDER CHECKBOXE FOR "SETTINGS" ---
+    const bodyHtml = items.map((item) => {
+      const isChecked = item.active ? 'checked' : '';
+      
+      return `
+        <label class="settings-checkbox-row" id="label${item.category_id}">
+          <input type="checkbox" class="setting-toggle" data-id="${item.category_id}" id="chkbox${item.category_id}" ${isChecked}>
+          <span class="settings-checkbox-label">${escapeHtml(TAB_LABELS[item.category_name].tabLabel)}</span>
+        </label>
+      `;
+    }).join('');
 
-  const headHtml = `<thead class="data-table__head"><tr class="data-table__row">` +
-    headers.map((h) => `<th scope="col" class="data-table__header">${h}</th>`).join('') +
-    `</tr></thead>`;
+    container.innerHTML = `
+      <div class="settings-checkbox-container">
+        <h3>${meta.tabLabel}</h3>
+        <p class="settings-subtitle">Vælg hvilke indstillinger der skal være aktive på denne lokation.</p>
+        <div class="settings-checkbox-list">
+          ${bodyHtml}
+        </div>
+        <div class="settings-actions">
+          <button type="button" id="save-settings-btn" class="btn btn--primary" disabled>Gem ændringer</button>
+        </div>
+      </div>
+    `;
 
-  const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => 
-  {
-    const cells = [
-      `<td class="data-table__cell"><span class="badge" data-badge="${item.name}" data-badge-color="${item.color}">${escapeHtml(item.name)}</span></td>`,
-      `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
-    ];
-    
-    if (meta.hasDesc) {
-      cells.push(`<td class="data-table__cell">${escapeHtml(item.description || '')}</td>`);
-    }
-    
-    cells.push(
-      `<td class="data-table__cell">` +
-        `<button type="button" class="action-btn" data-action="edit" data-id="${item.id}" aria-label="Redigér ${escapeHtml(item.name)}">` +
-          `<img src="assets/pencil.svg" alt="" class="action-btn__icon">` +
-        `</button>` +
-        `<button type="button" class="action-btn action-btn--danger" data-action="delete" data-id="${item.id}" aria-label="Slet ${escapeHtml(item.name)}">` +
-          `<img src="assets/trash.svg" alt="" class="action-btn__icon">` +
-        `</button>` +
-      `</td>`
-    );
-    
-    return `<tr class="data-table__row" data-id="${item.id}" data-name="${escapeHtml(item.name)}">${cells.join('')}</tr>`;
-  }).join('') + `</tbody>`;
+    initSettingTypes();
 
-  container.innerHTML = `<table class="data-table" aria-label="${meta.tabLabel}">${headHtml}${bodyHtml}</table>`;
-  applyBadges(container);
-  applySearch();
+  } else {
+
+    const headers = ['Farve', 'Navn'];
+    if (meta.hasDesc) headers.push('Beskrivelse');
+    headers.push('Handlinger');
+
+    const headHtml = `<thead class="data-table__head"><tr class="data-table__row">` +
+      headers.map((h) => `<th scope="col" class="data-table__header">${h}</th>`).join('') +
+      `</tr></thead>`;
+
+    const bodyHtml = `<tbody id="settings-table-body">` + items.map((item) => 
+    {
+      const cells = [
+        `<td class="data-table__cell"><span class="badge" data-badge="${item.name}" data-badge-color="${item.color}">${escapeHtml(item.name)}</span></td>`,
+        `<td class="data-table__cell">${escapeHtml(item.name)}</td>`
+      ];
+      
+      if (meta.hasDesc) {
+        cells.push(`<td class="data-table__cell">${escapeHtml(item.description || '')}</td>`);
+      }
+      
+      cells.push(
+        `<td class="data-table__cell">` +
+          `<button type="button" class="action-btn" data-action="edit" data-id="${item.id}" aria-label="Redigér ${escapeHtml(item.name)}">` +
+            `<img src="assets/pencil.svg" alt="" class="action-btn__icon">` +
+          `</button>` +
+          `<button type="button" class="action-btn action-btn--danger" data-action="delete" data-id="${item.id}" aria-label="Slet ${escapeHtml(item.name)}">` +
+            `<img src="assets/trash.svg" alt="" class="action-btn__icon">` +
+          `</button>` +
+        `</td>`
+      );
+      
+      return `<tr class="data-table__row" data-id="${item.id}" data-name="${escapeHtml(item.name)}">${cells.join('')}</tr>`;
+    }).join('') + `</tbody>`;
+
+    container.innerHTML = `<table class="data-table" aria-label="${meta.tabLabel}">${headHtml}${bodyHtml}</table>`;
+    applyBadges(container);
+    applySearch();
+  }
 }
 
 function applySearch() {
@@ -109,6 +187,7 @@ function initSettingsFilters() {
 }
 
 function initTabs() {
+  renderTabButtons();
   const tabs = document.querySelectorAll('.tabs__tab');
   if (!tabs.length) return;
   tabs.forEach((tab) => {
@@ -129,7 +208,22 @@ function initTabs() {
 function updateAddButtonLabel() {
   const btn = document.getElementById('add-settings-btn');
   if (!btn) return;
-  btn.textContent = `Tilføj ${TAB_LABELS[activeKey].singular}`;
+    if(activeKey === 'settings')
+  {
+    if(!btn.classList.contains('hide-field'))
+    {
+      btn.classList.toggle('hide-field');
+    }
+  }
+  else
+  {
+    if(btn.classList.contains('hide-field'))
+    {
+      btn.classList.toggle('hide-field');
+    }
+
+    btn.textContent = `Tilføj ${TAB_LABELS[activeKey].singular}`;
+  }
 }
 
 function initSettingsActions() {
@@ -162,10 +256,14 @@ function initSettingsActions() {
 }
 
 function renderColorPicker(containerId, selectedColor) {
+  console.log("ContainerID: " + containerId);
+  console.log("SelectedColor: ", selectedColor);
   const container = document.getElementById(containerId);
   if (!container) return;
+  console.log("Prøver at finde:", selectedColor, COLOR_PALETTE[selectedColor]);
   container.innerHTML = Object.entries(COLOR_PALETTE).map(([name, color]) => {
     const checked = selectedColor && color.bg === COLOR_PALETTE[selectedColor].bg ? ' checked' : '';
+    console.log("Checked = " + checked);
     return `<label class="color-picker__swatch">` +
       `<input type="radio" name="${containerId}-color" value="${name}" class="color-picker__input"${checked}>` +
       `<span class="color-picker__circle" style="background-color:${color.bg}"></span>` +
@@ -213,7 +311,7 @@ async function confirmDelete() {
           showBottomMessage(`${TAB_LABELS[activeKey].singular} er blevet slettet.`, 'success');
           renderTab();
       } else {
-        console.log(result);
+        
           showBottomMessage('Der opstod en fejl ved sletning i databasen: ' + (result.error || ''), 'error');
       }
   } catch (error) {
@@ -352,7 +450,7 @@ function openCreateModal() {
   if (nameInput) nameInput.value = '';
   if (descGroup) descGroup.style.display = meta.hasDesc ? '' : 'none';
   if (descInput) descInput.value = '';
-  renderColorPicker('create-settings-color-picker', COLOR_PALETTE.red);
+  renderColorPicker('create-settings-color-picker', "red");
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
 }
@@ -405,7 +503,47 @@ function initCreateModal() {
 function initAddButton() {
   const btn = document.getElementById('add-settings-btn');
   if (!btn) return;
+
   btn.addEventListener('click', openCreateModal);
 }
+
+function initSettingTypes() {
+  const chkBoxes = document.querySelectorAll('.setting-toggle');
+  chkBoxes.forEach(chk => {
+  chk.addEventListener('change', activateSaveButton);
+});
+}
+
+function activateSaveButton(e)
+{
+  const saveBtn = document.getElementById('save-settings-btn');
+  const chkBoxes = document.querySelectorAll('.setting-toggle');
+  let disable = true;
+
+  chkBoxes.forEach(item => {
+    const targetActive = item.checked ? 1 : 0
+    
+    settingsData['settings'].forEach(setting => {
+      
+      if(item.dataset.id == setting.category_id)
+      {
+        if(targetActive != setting.active)
+        {
+          disable = false;
+        }
+      }
+    });
+
+    if(!disable)
+    {
+      saveBtn.disabled = false;
+    }
+    else
+    {
+      saveBtn.disabled = true;
+    }
+  });
+} 
+ 
 
 

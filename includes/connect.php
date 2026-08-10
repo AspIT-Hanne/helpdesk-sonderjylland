@@ -146,6 +146,30 @@
             }
          }
 
+         // Metode til at hente en post fra en tabel baseret på et bestemt felt og værdien i feltet
+         public function getAllDataByField($table, $fieldname, $fielddata)
+         {
+             if ($this->tableExists($table))
+             {
+                 // Opret WHERE-statement med det overførte felt og den overførte værdi
+                 $sqlWhere = "$fieldname = '$fielddata'";
+ 
+                 // Kald den private metode getData for at hente data med de overførte værdier i det overførte felt
+                 $dataResult = $this->getData($table, "*", null, $sqlWhere);
+ 
+                 // Tjek om vi rent faktisk fik et resultat tilbage!
+                if (!empty($dataResult)) {
+                    return $dataResult;
+                }
+
+                throw new Exception("Der blev ikke fundet nogen data.");
+             }
+             else
+            {
+                throw new Exception("Tabellen '{$table}'' eksisterer ikke.");
+            }
+         }
+
         public function getSortedData($table, $sortBy)
         {
             if ($this->tableExists($table))

@@ -146,7 +146,7 @@
             {
               if($ticket['ticketStatus_id'] != 4)
               {
-                  echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-created-by='{$ticket['createdBy_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}' role='button' tabindex='0'>";
+                  echo "<tr class='data-table__row' data-ticket-id='{$ticket['id']}' data-description='{$ticket['description']}' data-title='{$ticket['title']}' data-type='{$ticket['category_name']}' data-location='{$ticket['location']}' data-status='{$ticket['status_name']}' data-priority='{$ticket['priority_name']}' data-created-by='{$ticket['createdBy_name']}' data-assigned='{$ticket['assignedTo_name']}' data-created-date='{$ticket['created_at']}' role='button' tabindex='0'>";
                     echo "<td class='data-table__cell'>#{$ticket['id']}</td>";
                     echo "<td class='data-table__cell'>{$ticket['title']}</td>";
                     echo "<td class='data-table__cell'>{$ticket['location']}</td>";

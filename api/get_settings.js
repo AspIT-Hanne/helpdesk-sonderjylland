@@ -1,6 +1,7 @@
 export async function fetchSettings() {
     try {
-        const response = await fetch('api/get_settings.php');
+        const response = await fetch('../api/get_settings.php');
+
         if (!response.ok) throw new Error('Kunne ikke hente settings');
         return await response.json();
     } catch (error) {

@@ -1,4 +1,17 @@
-<?php include_once __DIR__ . '/includes/phpheader.php';  ?>
+<?php include_once __DIR__ . '/includes/phpheader.php';  
+
+if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+{
+  $role = $_SESSION['userRole_id'];
+}
+else
+{
+  $role = 4;
+}
+
+
+    
+  ?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -26,11 +39,8 @@
       <p class="page-header__subtitle">Administrer tilgængelige typer, statusser, prioriteter og roller.</p>
     </header>
 
-    <div class="tabs" role="tablist" aria-label="Indstillinger">
-      <button type="button" class="tabs__tab tabs__tab--active" data-tab="types" role="tab" aria-selected="true">Typer</button>
-      <button type="button" class="tabs__tab" data-tab="statuses" role="tab" aria-selected="false">Statusser</button>
-      <button type="button" class="tabs__tab" data-tab="priorities" role="tab" aria-selected="false">Prioriteter</button>
-      <button type="button" class="tabs__tab" data-tab="roles" role="tab" aria-selected="false">Roller</button>
+    <div class="tabs" id="tabs-container" role="tablist" aria-label="Indstillinger">
+      
     </div>
 
     <div class="filter-bar">

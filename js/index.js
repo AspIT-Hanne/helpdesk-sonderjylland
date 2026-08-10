@@ -15,6 +15,7 @@ function openModal(ticketId) {
 
   const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
 
+
   if (row) {
     if (idDisplay) idDisplay.value = `#${ticketId}`;
     if (titleInput) titleInput.value = row.dataset.title || '';

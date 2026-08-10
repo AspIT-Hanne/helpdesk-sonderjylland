@@ -76,6 +76,43 @@
     outline: none;
 }
 
+.settings-checkbox-list
+{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.settings-checkbox-list input[type="checkbox"]
+{
+    width: 1.5rem;
+    height: 1.5rem;
+    accent-color: var(--color-accent);
+}
+
+.settings-checkbox-list input[type="checkbox"]:checked
+{
+    color: var(--color-secondary);
+}
+
+.settings-actions
+{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.hide-field
+{
+    display: none;
+}
+
+#save-settings-btn:disabled
+{
+    background-color: var(--color-outline-variant);
+    cursor:default;
+}
+
 @media (max-width: 767px) {
     .tabs__tab {
         padding: var(--space-sm) var(--space-md);
