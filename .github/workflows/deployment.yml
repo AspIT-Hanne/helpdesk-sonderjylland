@@ -1,0 +1,25 @@
+name: Deploy to cPanel via FTP
+
+on:
+  push:
+    branches:
+      - main # Kører automatisk, hver gang der pushes eller merges til main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy site to cPanel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 📂 Sync files via FTP
+        uses: SamKirsch/ftp-deploy-action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          password: ${{ secrets.CPANEL_PASSWORD }}
+          server-dir: ${{ secrets.TARGET_DIR }}
+          protocol: ftps # Sikker FTP. Hvis din server mod forventning ikke understøtter FTPS, kan linjen ændres til protocol: ftp
+          port: ${{ secrets.CPANEL_PORT }}
