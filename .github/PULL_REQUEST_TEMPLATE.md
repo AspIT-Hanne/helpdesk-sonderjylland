@@ -2,7 +2,7 @@
 - Kort forklaring af, hvad der er blevet tilføjet, ændret eller rettet.
 
 ## 🎯 Formål / Opgave
-- [ ] Opgave/funktion som denne PR løser.
+- [ ] Issue som denne PR løser.
 
 ## 🧪 Test & Kontrol
 - [ ] Koden kører lokalt uden fejl.
