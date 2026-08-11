@@ -26,3 +26,6 @@ To ensure a smooth learning environment and maintain code quality on the primary
 - Always create a new branch for your work:
   ```bash
   git checkout -b feature/your-feature-name
+
+### 2. Making Pull requests
+- Fill out the template for PR to document your work
