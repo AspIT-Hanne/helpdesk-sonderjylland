@@ -103,6 +103,7 @@
                     LEFT JOIN users users1 ON tickets.assigned_to = users1.id
                     LEFT JOIN users users2 ON tickets.created_by = users2.id";
             $fieldname = "ticketStatus_id";
+            $fielddata .= "' AND tickets.location_id = '{$_SESSION['location_id']}";
             $sortBy ="id";
 
             $result = $dbcon->getDataByFieldSortedWithJoins($table, $rows, $join, $fieldname, $fielddata, $sortBy);
