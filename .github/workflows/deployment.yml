@@ -23,3 +23,8 @@ jobs:
           server-dir: ${{ secrets.TARGET_DIR }}
           protocol: ftp # Sikker FTP. Hvis din server mod forventning ikke understøtter FTPS, kan linjen ændres til protocol: ftp
           port: ${{ secrets.CPANEL_PORT }}
+          exclude: |
+            **/.git**
+            **/.git**/**
+            **/.github**/**
+            README.md
