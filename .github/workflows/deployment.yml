@@ -21,5 +21,5 @@ jobs:
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}
           server-dir: ${{ secrets.TARGET_DIR }}
-          protocol: ftps # Sikker FTP. Hvis din server mod forventning ikke understøtter FTPS, kan linjen ændres til protocol: ftp
+          protocol: ftp # Sikker FTP. Hvis din server mod forventning ikke understøtter FTPS, kan linjen ændres til protocol: ftp
           port: ${{ secrets.CPANEL_PORT }}
