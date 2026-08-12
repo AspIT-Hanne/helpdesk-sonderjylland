@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <header class="page-header">
-            <h1 class="page-header__title">Login til AspIT Demo Help Desk - Sønderjylland</h1>
+            <h1 class="page-header__title">Login til AspIT Demo Help Desk</h1>
             <p class="page-header__subtitle">For at få adgang til sager, skal du logge ind her.</p>
         </header>
 
