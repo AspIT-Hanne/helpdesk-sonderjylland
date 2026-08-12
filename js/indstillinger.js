@@ -25,10 +25,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // Hent tab-labels først og vent på at den er færdig
       await loadTabLabels();
-      renderTabButtons();
+      
       
       // Vent på at data hentes       
       settingsData = await fetchSettings(); 
+      renderTabButtons();
 
       // Kald resten af funktionerne, når settingsData er hentet
         
@@ -77,16 +78,24 @@ function renderTabButtons() {
     let html = '';
 
     for (const [key, value] of Object.entries(TAB_LABELS)) {
-        // Tjek om denne fane er den aktive
-        const isActive = key === activeKey;
-        const activeClass = isActive ? ' tabs__tab--active' : '';
-        const ariaSelected = isActive ? 'true' : 'false';
+        const list = Array.isArray(settingsData) ? settingsData : (settingsData?.settings || []);
+    
+        const setting = list.find(s => s.category_name === key);
+        
+        if (setting && setting.active === 1)
+        {
+          // Tjek om denne fane er den aktive
+          const isActive = key === activeKey;
+          const activeClass = isActive ? ' tabs__tab--active' : '';
+          const ariaSelected = isActive ? 'true' : 'false';
 
-        html += `
-            <button type="button" class="tabs__tab${activeClass}" data-tab="${key}" role="tab" aria-selected="${ariaSelected}">
-                ${value.tabLabel}
-            </button>
+          html += `
+              <button type="button" class="tabs__tab${activeClass}" data-tab="${key}" role="tab" aria-selected="${ariaSelected}">
+                  ${value.tabLabel}
+              </button> 
         `;
+        }
+        
     }
 
     container.innerHTML = html;
@@ -102,16 +111,19 @@ function renderTab() {
   // Tjek om vi er på "settings"-fanen eller en af de andre tabeller
   if (activeKey === 'settings') {
     // --- RENDER CHECKBOXE FOR "SETTINGS" ---
-    const bodyHtml = items.map((item) => {
-      const isChecked = item.active ? 'checked' : '';
+    const bodyHtml = items
+      .filter((item) => item.category_id != 1) // Filtrer category_id 1 fra først for "Indstillinger" skal ikke vises som checkbox - kun som tab
+      .map((item) => 
+      {
+        const isChecked = item.active ? 'checked' : '';
       
-      return `
-        <label class="settings-checkbox-row" id="label${item.category_id}">
-          <input type="checkbox" class="setting-toggle" data-id ="${item.id}" data-location="${item.location_id}" data-category_id="${item.category_id}" id="chkbox${item.category_id}" ${isChecked}>
-          <span class="settings-checkbox-label">${escapeHtml(TAB_LABELS[item.category_name].tabLabel)}</span>
-        </label>
-      `;
-    }).join('');
+        return `
+          <label class="settings-checkbox-row" id="label${item.category_id}">
+            <input type="checkbox" class="setting-toggle" data-id ="${item.id}" data-location="${item.location_id}" data-category_id="${item.category_id}" id="chkbox${item.category_id}" ${isChecked}>
+            <span class="settings-checkbox-label">${escapeHtml(TAB_LABELS[item.category_name].tabLabel)}</span>
+          </label>
+        `;
+      }).join('');
 
     container.innerHTML = `
       <div class="settings-checkbox-container">
@@ -543,6 +555,7 @@ async function handleSaveSettingsTypes()
       if (result.success === true) {
           showBottomMessage(`Indstillinger er blevet opdateret.`, 'success');
           settingsData = await fetchSettings(); 
+          initTabs();
           renderTab();
       } else {
         
