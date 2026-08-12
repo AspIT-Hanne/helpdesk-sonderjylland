@@ -157,12 +157,7 @@
                  // Kald den private metode getData for at hente data med de overførte værdier i det overførte felt
                  $dataResult = $this->getData($table, "*", null, $sqlWhere);
  
-                 // Tjek om vi rent faktisk fik et resultat tilbage!
-                if (!empty($dataResult)) {
-                    return $dataResult;
-                }
-
-                throw new Exception("Der blev ikke fundet nogen data.");
+                return $dataResult ?: [];
              }
              else
             {
