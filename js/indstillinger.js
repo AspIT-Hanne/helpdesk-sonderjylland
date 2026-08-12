@@ -2,6 +2,7 @@
 
 import { fetchSettings } from '../api/get_settings.js';
 import { updateSettings } from '../api/update_settings.js';
+import { updateSettingTypes } from '../api/update_settings.js';
 import { deleteSettings } from '../api/delete_settings.js';
 
 
@@ -106,7 +107,7 @@ function renderTab() {
       
       return `
         <label class="settings-checkbox-row" id="label${item.category_id}">
-          <input type="checkbox" class="setting-toggle" data-id="${item.category_id}" id="chkbox${item.category_id}" ${isChecked}>
+          <input type="checkbox" class="setting-toggle" data-id ="${item.id}" data-location="${item.location_id}" data-category_id="${item.category_id}" id="chkbox${item.category_id}" ${isChecked}>
           <span class="settings-checkbox-label">${escapeHtml(TAB_LABELS[item.category_name].tabLabel)}</span>
         </label>
       `;
@@ -299,8 +300,6 @@ async function confirmDelete() {
   if (!modal) return;
   const id = Number(modal.getAttribute('data-delete-id'));
   const items = settingsData[activeKey];
-  // const idx = items.findIndex((i) => i.id === id);
-  // if (idx !== -1) items.splice(idx, 1);
 
   try {
       const result = await deleteSettings(TAB_LABELS[activeKey].table, id);
@@ -511,6 +510,48 @@ function initSettingTypes() {
   chkBoxes.forEach(chk => {
   chk.addEventListener('change', activateSaveButton);
 });
+
+  const saveBtn = document.getElementById('save-settings-btn');
+  if (!saveBtn) return;
+
+  saveBtn.addEventListener('click', handleSaveSettingsTypes);
+}
+
+async function handleSaveSettingsTypes()
+{
+  const chkBoxes = document.querySelectorAll('.setting-toggle');
+  let updateData = [];
+
+  chkBoxes.forEach(item => {
+    const targetActive = item.checked ? 1 : 0
+    
+    const setting = settingsData['settings'].find(s => s.category_id == item.dataset.category_id);
+
+    if (setting && targetActive != setting.active) 
+    {
+      updateData.push(
+      {
+        id: item.dataset.id,
+        category_id: item.dataset.category_id,
+        active: targetActive
+      });
+    }
+  });
+  try {
+      const result = await updateSettingTypes(updateData);
+      
+      if (result.success === true) {
+          showBottomMessage(`Indstillinger er blevet opdateret.`, 'success');
+          settingsData = await fetchSettings(); 
+          renderTab();
+      } else {
+        
+          showBottomMessage('Der opstod en fejl ved opdatering i databasen: ' + (result.error || ''), 'error');
+      }
+  } catch (error) {
+      showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
+  }
+
 }
 
 function activateSaveButton(e)
@@ -524,7 +565,7 @@ function activateSaveButton(e)
     
     settingsData['settings'].forEach(setting => {
       
-      if(item.dataset.id == setting.category_id)
+      if(item.dataset.category_id == setting.category_id)
       {
         if(targetActive != setting.active)
         {
