@@ -23,7 +23,7 @@ export async function updateSettings(table, id, name, desc, color) {
         }
 
         const result = await response.json();
-                console.log('API result: ' + result);
+
         return result;
 
     } catch (error) {
@@ -49,7 +49,6 @@ export async function updateSettingTypes(updateData) {
         }
 
         const result = await response.json();
-                console.log('API result: ' + result);
         return result;
 
     } catch (error) {
