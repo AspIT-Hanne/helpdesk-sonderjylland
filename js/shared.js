@@ -148,6 +148,46 @@ function filterDataTable(columnIdentifier, data) {
 //     });
 // }
 
+/* ============================
+   Dark Mode Toggle
+   ============================ */
+function initDarkModeToggle() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (!darkModeToggle) return;
+
+    // Check localStorage for saved preference
+    const savedMode = localStorage.getItem('darkMode');
+    
+    // If no preference is saved, check system preference
+    if (savedMode === null) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+            document.body.classList.add('dark-mode');
+        }
+    } else if (savedMode === 'true') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Add click listener to toggle
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    });
+
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('darkMode') === null) {
+            if (e.matches) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+    });
+}
+
 (function init() {
   initMobileNav();
+  initDarkModeToggle();
 })();

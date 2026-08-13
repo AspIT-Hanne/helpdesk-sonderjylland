@@ -168,6 +168,7 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    flex: 1;
 }
 
 .sidebar__item {
@@ -215,7 +216,33 @@ body.modal-open {
 
 .sidebar__nav:last-of-type li:first-of-type
 {
-    padding: 0 var(--space-lg) var(--space-md) var(--space-lg);
+    /* padding: 0 var(--space-lg) var(--space-md) var(--space-lg); */
+}
+
+/* Sidebar Footer */
+.sidebar__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    /* padding: var(--space-lg); */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar__footer.hidden {
+    display: none;
+}
+
+.sidebar__user-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.sidebar__user-text {
+    font: var(--font-body-sm);
+    color: var(--color-on-primary-container);
+    padding: 0 var(--space-lg);
+    word-break: break-word;
 }
 
 .sidebar__logout a
@@ -656,6 +683,114 @@ body.modal-open {
     padding: 0 4px;
 }
 
+/* ============================
+   Dark Mode Toggle Button
+   ============================ */
+.sidebar__dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    height: auto;
+    padding: var(--space-md) var(--space-lg);
+    background-color: transparent;
+    border: none;
+    color: var(--color-on-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font: var(--font-body-lg);
+    font-weight: 400;
+    text-align: left;
+}
+
+.sidebar__dark-mode-toggle:hover {
+    background-color: var(--color-secondary);
+}
+
+.sidebar__dark-mode-toggle span {
+    flex: 1;
+}
+
+.sidebar__dark-mode-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar__dark-mode-icon--sun {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+.sidebar__dark-mode-icon--moon {
+    opacity: 0;
+    transform: rotate(-180deg);
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Dark mode is active */
+body.dark-mode .sidebar__dark-mode-icon--sun {
+    opacity: 0;
+    transform: rotate(180deg);
+    position: absolute;
+    pointer-events: none;
+}
+
+body.dark-mode .sidebar__dark-mode-icon--moon {
+    opacity: 1;
+    transform: rotate(0deg);
+    position: static;
+}
+
+/* ============================
+   Dark Mode Theme
+   ============================ */
+body.dark-mode {
+    --color-surface: #1a1a1a;
+    --color-surface-container-lowest: #2a2a2a;
+    --color-surface-container-low: #333333;
+    --color-surface-container: #3d3d3d;
+    --color-surface-container-high: #474747;
+    --color-surface-variant: #5a5a5a;
+    --color-on-surface: #e8e8e8;
+    --color-on-surface-variant: #b0b0b0;
+    --color-primary: #004d49;
+    --color-primary-container: #1a6a63;
+    --color-on-primary: #e8f5f3;
+    --color-on-primary-container: #7dd9ce;
+    --color-secondary: #338b7d;
+    --color-secondary-container: #0f5447;
+    --color-on-secondary-container: #9dd9cf;
+    --color-accent: #ff7964;
+    --color-error: #ff6b6b;
+    --color-error-container: #8a1f17;
+    --color-on-error: #ffffff;
+    --color-on-error-container: #ffb4a8;
+    --color-outline-variant: #5a5a5a;
+    
+    /* Badge & priority colors - adjusted for dark mode */
+    --color-warning-bg: #6b5914;
+    --color-warning-text: #ffd699;
+    --color-muted-bg: #4a5555;
+    --color-info-bg: #0b3d5c;
+    --color-info-text: #7fc7f5;
+    --color-accent-hover: #ff9580;
+    --color-row-hover: #2a3a3a;
+}
+
+/* Success colors for dark mode */
+body.dark-mode #bottom-message-bar.success {
+    --color-success-container: #1a4d2e;
+    --color-success: #7dd8c2;
+    background-color: var(--color-success-container);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
 /* Responsive: Tablet */
 @media (max-width: 1024px) {
     .main {
@@ -710,6 +845,19 @@ body.modal-open {
     .data-table__header,
     .data-table__cell {
         padding: var(--space-sm) var(--space-md);
+    }
+
+    .sidebar__dark-mode-toggle {
+        padding: var(--space-md) var(--space-md);
+    }
+
+    .sidebar__dark-mode-toggle span {
+        display: none;
+    }
+
+    .sidebar__dark-mode-icon {
+        width: 24px;
+        height: 24px;
     }
 }
 
