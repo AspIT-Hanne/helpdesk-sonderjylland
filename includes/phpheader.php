@@ -27,21 +27,29 @@ if (session_status() === PHP_SESSION_NONE) {
 
     // Globalt array til at bruge til at sætte rettigheder på klasser afhængigt af rolle
     $permissions = [
+      // Role: Bruger
       1 => [
         'show' => 'hidden',
+        'settings' => 'hidden',
         'restricted' => 'disabled'
       ],
+      // Role: Læserettigheder
       4 => [
         'show' => 'hidden',
+        'settings' => 'hidden',
         'restricted' => 'disabled'
       ],
+      // Role: Tekniker
       2 => [
         'show' => '',
+        'settings' => 'hidden',
         'restricted' => ''
       ],
+      // Role: Admin
       3 => [
-          'show' => '',
-          'active' => ''
+        'show' => '',
+        'settings' => '',
+        'restricted' => ''
       ]
     ];
   }
