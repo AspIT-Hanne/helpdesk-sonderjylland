@@ -58,7 +58,7 @@
           Opret Sag
         </a>
       </li>
-      <li class='<?= $permissions[$role]['show']; ?>'>
+      <li class='<?= $permissions[$role]['settings']; ?>'>
         <a href="indstillinger.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="indstillinger.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/settings.svg" alt="" class="sidebar__icon">
           Indstillinger
