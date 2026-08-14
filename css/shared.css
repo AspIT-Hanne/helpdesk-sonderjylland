@@ -750,36 +750,36 @@ body.dark-mode .sidebar__dark-mode-icon--moon {
    Dark Mode Theme
    ============================ */
 body.dark-mode {
-    --color-surface: #1a1a1a;
-    --color-surface-container-lowest: #2a2a2a;
-    --color-surface-container-low: #333333;
-    --color-surface-container: #3d3d3d;
-    --color-surface-container-high: #474747;
-    --color-surface-variant: #5a5a5a;
-    --color-on-surface: #e8e8e8;
-    --color-on-surface-variant: #b0b0b0;
-    --color-primary: #004d49;
-    --color-primary-container: #1a6a63;
+    --color-surface: #0a0a0a;
+    --color-surface-container-lowest: #1a1a1a;
+    --color-surface-container-low: #242424;
+    --color-surface-container: #2e2e2e;
+    --color-surface-container-high: #383838;
+    --color-surface-variant: #4a4a4a;
+    --color-on-surface: #f0f0f0;
+    --color-on-surface-variant: #b8b8b8;
+    --color-primary: #0d3d3d;
+    --color-primary-container: #1a5f5f;
     --color-on-primary: #e8f5f3;
     --color-on-primary-container: #7dd9ce;
-    --color-secondary: #338b7d;
-    --color-secondary-container: #0f5447;
+    --color-secondary: #2d7a6f;
+    --color-secondary-container: #1a4d42;
     --color-on-secondary-container: #9dd9cf;
     --color-accent: #ff7964;
     --color-error: #ff6b6b;
     --color-error-container: #8a1f17;
     --color-on-error: #ffffff;
     --color-on-error-container: #ffb4a8;
-    --color-outline-variant: #5a5a5a;
+    --color-outline-variant: #4a4a4a;
     
     /* Badge & priority colors - adjusted for dark mode */
     --color-warning-bg: #6b5914;
     --color-warning-text: #ffd699;
-    --color-muted-bg: #4a5555;
+    --color-muted-bg: #3a4a4a;
     --color-info-bg: #0b3d5c;
     --color-info-text: #7fc7f5;
     --color-accent-hover: #ff9580;
-    --color-row-hover: #2a3a3a;
+    --color-row-hover: #1a2a2a;
 }
 
 /* Success colors for dark mode */
