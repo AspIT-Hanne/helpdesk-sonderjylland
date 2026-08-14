@@ -11,13 +11,13 @@
     --color-surface-variant: #e0e3e2;
     --color-on-surface: #181c1c;
     --color-on-surface-variant: #404847;
-    --color-primary: #4a2870;
-    --color-primary-container: #7d4fa8;
+    --color-primary: #002e2b;
+    --color-primary-container: #194541;
     --color-on-primary: #ffffff;
-    --color-on-primary-container: #e8d5f5;
-    --color-secondary: #7d4fa8;
-    --color-secondary-container: #e8d5f5;
-    --color-on-secondary-container: #5d2f7d;
+    --color-on-primary-container: #86b2ac;
+    --color-secondary: #2b685b;
+    --color-secondary-container: #b0efde;
+    --color-on-secondary-container: #316f61;
     --color-accent: #ff5747;
     --color-error: #ba1a1a;
     --color-error-container: #ffdad6;
@@ -758,13 +758,13 @@ body.dark-mode {
     --color-surface-variant: #4a4a4a;
     --color-on-surface: #f0f0f0;
     --color-on-surface-variant: #b8b8b8;
-    --color-primary: #2d1b4e;
-    --color-primary-container: #483366;
-    --color-on-primary: #f3e8f5;
-    --color-on-primary-container: #d9b5e8;
-    --color-secondary: #6d4a8f;
-    --color-secondary-container: #483366;
-    --color-on-secondary-container: #d9b5e8;
+    --color-primary: #0a2a2a;
+    --color-primary-container: #0f3c3c;
+    --color-on-primary: #e8f5f3;
+    --color-on-primary-container: #7dd9ce;
+    --color-secondary: #1a5a52;
+    --color-secondary-container: #0f3530;
+    --color-on-secondary-container: #9dd9cf;
     --color-accent: #ff7964;
     --color-error: #ff6b6b;
     --color-error-container: #8a1f17;
@@ -779,7 +779,7 @@ body.dark-mode {
     --color-info-bg: #0b3d5c;
     --color-info-text: #7fc7f5;
     --color-accent-hover: #ff9580;
-    --color-row-hover: #1a1a2a;
+    --color-row-hover: #1a2a2a;
 }
 
 /* Success colors for dark mode */
