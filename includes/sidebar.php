@@ -1,8 +1,9 @@
 <?php
 
   $username = $hidemenu = '';
-  $role = 4; // Default role
-  
+  $permissions = [];
+  $role = 4;
+
   if(!isset($_SESSION['logged_in']))
   {
     $hidemenu = 'hidden';
@@ -18,11 +19,7 @@
     {
       $role = 4;
     }
-  }
-  
-  // Initialize $permissions if not set (from phpheader.php)
-  if (!isset($permissions)) {
-    $permissions = [];
+    
   }
 ?>
 
@@ -52,7 +49,7 @@
         </a>
       </li>
       <li class='<?= $permissions[$role]['show'] ?? ''; ?>'>
-        <a href="brugere.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="brugere.php") {echo "sidebar__item--active ";}?>"
+        <a href="brugere.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="brugere.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/users.svg" alt="" class="sidebar__icon">
           Brugere
         </a>
@@ -64,7 +61,7 @@
         </a>
       </li>
       <li class='<?= $permissions[$role]['show'] ?? ''; ?>'>
-        <a href="indstillinger.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="indstillinger.php") {echo "sidebar__item--active ";}?>"
+        <a href="indstillinger.php" class="sidebar__item <?php if(basename($_SERVER['PHP_SELF'])=="indstillinger.php") {echo "sidebar__item--active ";}?>">
           <img src="assets/settings.svg" alt="" class="sidebar__icon">
           Indstillinger
         </a>

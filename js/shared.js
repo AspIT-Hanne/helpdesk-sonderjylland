@@ -116,78 +116,43 @@ function filterDataTable(columnIdentifier, data) {
     });
 }
 
-// function filterDataTable(row, data) {
-//     const table = document.querySelector('.data-table');
-
-//     if(!table) return;
-//     console.log(table);
-
-//     // 1. Find kolonne-indekset i thead baseret på 'row' (f.eks. 'status')
-//     const headers = Array.from(table.querySelectorAll('.data-table__header'));
-    
-//     const columnIndex = headers.findIndex(th => th.textContent.trim().toLowerCase() === row.toLowerCase());
-
-//     if (columnIndex === -1) return;
-
-//     // 2. Hent alle rækker i tbody
-//     const rows = table.querySelectorAll('tbody tr');
-
-//     // 3. Løb rækkerne igennem og skjul/vis dem
-//     rows.forEach(tr => {
-//         const cell = tr.querySelectorAll('td')[columnIndex];
-//         if (!cell) return;
-
-//         const cellValue = cell.textContent.trim();
-
-//         // Hvis data er tom (f.eks. "Alle" / "Vis alle"), eller værdien matcher, så vis rækken. Ellers skjul den.
-//         if (data === "" || cellValue === data) {
-//             tr.style.display = ''; // Vis rækken
-//         } else {
-//             tr.style.display = 'none'; // Skjul rækken
-//         }
-//     });
-// }
 
 /* ============================
-   Dark Mode Toggle
+   Dark Mode
    ============================ */
+
+function applyDarkModePreference() {
+    const savedMode = localStorage.getItem('darkMode');
+
+    if (savedMode === null) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.body.classList.toggle('dark-mode', prefersDark);
+    } else {
+        document.body.classList.toggle('dark-mode', savedMode === 'true');
+    }
+}
+
 function initDarkModeToggle() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     if (!darkModeToggle) return;
 
-    // Check localStorage for saved preference
-    const savedMode = localStorage.getItem('darkMode');
-    
-    // If no preference is saved, check system preference
-    if (savedMode === null) {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (prefersDark) {
-            document.body.classList.add('dark-mode');
-        }
-    } else if (savedMode === 'true') {
-        document.body.classList.add('dark-mode');
-    }
-
-    // Add click listener to toggle
     darkModeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         const isDarkMode = document.body.classList.contains('dark-mode');
         localStorage.setItem('darkMode', isDarkMode);
     });
-
-    // Listen for system preference changes
+}
+function initSystemThemeListener() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (localStorage.getItem('darkMode') === null) {
-            if (e.matches) {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
+            document.body.classList.toggle('dark-mode', e.matches);
         }
     });
 }
 
 (function init() {
+  applyDarkModePreference();
   initMobileNav();
   initDarkModeToggle();
+  initSystemThemeListener();
 })();
