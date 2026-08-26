@@ -727,6 +727,21 @@ body.modal-open {
 }
 
 /* Action buttons */
+.action-cell {
+    display: inline-grid;
+    grid-template-columns: repeat(3, 32px);
+    align-items: center;
+    column-gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+.data-table__header--actions,
+.data-table__cell--actions {
+    width: 144px;
+    min-width: 144px;
+    white-space: nowrap;
+}
+
 .action-btn {
     display: inline-flex;
     align-items: center;
@@ -737,6 +752,7 @@ body.modal-open {
     background-color: transparent;
     border: none;
     padding: 0;
+    flex: 0 0 auto;
     transition: background-color 0.2s ease;
 }
 
@@ -748,12 +764,21 @@ body.modal-open {
     background-color: var(--color-error-container);
 }
 
+.action-btn--take:hover {
+    background-color: var(--color-secondary-container);
+}
+
+.action-btn--take:hover .action-btn__icon {
+    filter: brightness(0) saturate(100%) invert(32%) sepia(38%) saturate(697%) hue-rotate(119deg) brightness(91%) contrast(89%);
+}
+
 .action-btn--danger:hover .action-btn__icon {
     filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(2605%) hue-rotate(354deg) brightness(96%) contrast(104%);
 }
 
-.action-btn + .action-btn {
-    margin-left: var(--space-sm);
+.action-btn:disabled {
+    cursor: wait;
+    opacity: 0.5;
 }
 
 .action-btn__icon {
