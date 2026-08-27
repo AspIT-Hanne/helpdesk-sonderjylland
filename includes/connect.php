@@ -533,9 +533,11 @@
             // Hent alle tabeller som et fladt array (PDO::FETCH_COLUMN henter kolonne nr. 0 direkte)
             $dbTables = $result->fetchAll(PDO::FETCH_COLUMN);
 
-            // Case-insensitive table name comparison
+            // Hvis tabelnavnet findes i kolonne 0 (tabelnavne) af alle tabelinformationer
+            // Gør sammenligningen case-insensitive ved at konvertere alt til lowercase
+            $tableLower = strtolower($table);
             foreach ($dbTables as $dbTable) {
-                if (strtolower($dbTable) === strtolower($table)) {
+                if (strtolower($dbTable) === $tableLower) {
                     return true;
                 }
             }

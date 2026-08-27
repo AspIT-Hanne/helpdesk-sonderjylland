@@ -116,38 +116,43 @@ function filterDataTable(columnIdentifier, data) {
     });
 }
 
-// function filterDataTable(row, data) {
-//     const table = document.querySelector('.data-table');
 
-//     if(!table) return;
-//     console.log(table);
+/* ============================
+   Dark Mode
+   ============================ */
 
-//     // 1. Find kolonne-indekset i thead baseret på 'row' (f.eks. 'status')
-//     const headers = Array.from(table.querySelectorAll('.data-table__header'));
-    
-//     const columnIndex = headers.findIndex(th => th.textContent.trim().toLowerCase() === row.toLowerCase());
+function applyDarkModePreference() {
+    const savedMode = localStorage.getItem('darkMode');
 
-//     if (columnIndex === -1) return;
+    if (savedMode === null) {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.body.classList.toggle('dark-mode', prefersDark);
+    } else {
+        document.body.classList.toggle('dark-mode', savedMode === 'true');
+    }
+}
 
-//     // 2. Hent alle rækker i tbody
-//     const rows = table.querySelectorAll('tbody tr');
+function initDarkModeToggle() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (!darkModeToggle) return;
 
-//     // 3. Løb rækkerne igennem og skjul/vis dem
-//     rows.forEach(tr => {
-//         const cell = tr.querySelectorAll('td')[columnIndex];
-//         if (!cell) return;
-
-//         const cellValue = cell.textContent.trim();
-
-//         // Hvis data er tom (f.eks. "Alle" / "Vis alle"), eller værdien matcher, så vis rækken. Ellers skjul den.
-//         if (data === "" || cellValue === data) {
-//             tr.style.display = ''; // Vis rækken
-//         } else {
-//             tr.style.display = 'none'; // Skjul rækken
-//         }
-//     });
-// }
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    });
+}
+function initSystemThemeListener() {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('darkMode') === null) {
+            document.body.classList.toggle('dark-mode', e.matches);
+        }
+    });
+}
 
 (function init() {
+  applyDarkModePreference();
   initMobileNav();
+  initDarkModeToggle();
+  initSystemThemeListener();
 })();
