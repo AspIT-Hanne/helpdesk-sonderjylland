@@ -756,27 +756,27 @@ body.dark-mode .sidebar__dark-mode-icon--moon {
    Dark Mode Theme
    ============================ */
 body.dark-mode {
-    --color-surface: #05080b;
-    --color-surface-container-lowest: #0d1116;
-    --color-surface-container-low: #14181d;
-    --color-surface-container: #1b2025;
-    --color-surface-container-high: #242a30;
-    --color-surface-variant: #3a4247;
-    --color-on-surface: #f0f0f0;
-    --color-on-surface-variant: #b8c0c2;
+    --color-surface: #070b0f;
+    --color-surface-container-lowest: #10161c;
+    --color-surface-container-low: #192127;
+    --color-surface-container: #242e36;
+    --color-surface-container-high: #303c46;
+    --color-surface-variant: #45545f;
+    --color-on-surface: #f5f7f8;
+    --color-on-surface-variant: #c4cdd1;
     --color-primary: #0b1f20;
-    --color-primary-container: #12363b;
+    --color-primary-container: #8ed8cf;
     --color-on-primary: #e8f5f3;
     --color-on-primary-container: #b8d8d4;
-    --color-secondary: #1e3d41;
-    --color-secondary-container: #112d2d;
+    --color-secondary: #2b6768;
+    --color-secondary-container: #173f41;
     --color-on-secondary-container: #9dd9cf;
     --color-accent: #ff7a59;
     --color-error: #ff6b6b;
     --color-error-container: #8a1f17;
     --color-on-error: #ffffff;
     --color-on-error-container: #ffb4a8;
-    --color-outline-variant: #262d33;
+    --color-outline-variant: #4b5b66;
 
     /* Sidebar (dark mode) */
     --color-sidebar-bg: #051618;
@@ -794,7 +794,16 @@ body.dark-mode {
     --color-info-bg: #0b3d5c;
     --color-info-text: #7fc7f5;
     --color-accent-hover: #f66d4e;
-    --color-row-hover: #10181a;
+    --color-row-hover: #1b252c;
+}
+
+body.dark-mode .btn--secondary {
+    color: var(--color-on-surface);
+    border-color: var(--color-outline-variant);
+}
+
+body.dark-mode .action-btn__icon {
+    filter: brightness(0) invert(1);
 }
 
 /* Success colors for dark mode */
