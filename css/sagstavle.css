@@ -175,7 +175,8 @@ body {
     font-size: 14px;
 }
 
-.kanban-column__header--resolved .kanban-column__count {
+/* Fixed: markup outputs --Løst, not --resolved, so target the real modifier */
+.kanban-column__header--Løst .kanban-column__count {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -187,6 +188,23 @@ body {
     flex-direction: column;
     gap: var(--space-lg);
     background-color: inherit;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-outline-variant) transparent;
+}
+
+.kanban-column__cards::-webkit-scrollbar {
+    width: 10px;
+}
+
+.kanban-column__cards::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.kanban-column__cards::-webkit-scrollbar-thumb {
+    background-color: var(--color-outline-variant);
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    background-clip: content-box;
 }
 
 /* Card */
@@ -226,6 +244,25 @@ body {
     text-transform: none;
     font-weight: 400;
     letter-spacing: normal;
+}
+
+/* ============================
+   Dark Mode
+   ============================ */
+body.dark-mode {
+    --color-secondary: #2c5c53;
+}
+
+body.dark-mode .kanban-column {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+body.dark-mode .kanban-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .kanban-column__header--Løst .kanban-column__count {
+    background-color: rgba(0, 0, 0, 0.25);
 }
 
 /* Responsive */

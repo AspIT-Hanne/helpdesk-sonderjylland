@@ -77,6 +77,11 @@ function openSagerEditModal(ticketId) {
   
   }
 
+  const takeBtn = document.getElementById('sager-modal-take-btn');
+  if (takeBtn) {
+    takeBtn.disabled = false;
+  }
+
   modal.setAttribute('data-current-ticket-id', ticketId);
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
@@ -95,12 +100,18 @@ function initSagerEditModal() {
   const cancelBtn = document.getElementById('sager-modal-cancel');
   const modal = document.getElementById('sager-edit-modal');
   const saveBtn = modal.querySelector('.modal__footer .btn--primary');
+  const takeBtn = document.getElementById('sager-modal-take-btn');
 
   if (!modal) return;
 
   if (closeBtn) closeBtn.addEventListener('click', closeSagerEditModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeSagerEditModal);
   if (saveBtn) saveBtn.addEventListener('click', handleUpdateSagSubmit);
+  if (takeBtn) takeBtn.addEventListener('click', () => {
+    const ticketId = modal.getAttribute('data-current-ticket-id');
+    const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+    if (row) handleTakeTicket(row, takeBtn);
+  });
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
@@ -155,6 +166,69 @@ async function handleUpdateSagSubmit() {
     .catch(error => {
       showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
     });
+}
+
+function getCurrentUsername() {
+  const main = document.querySelector('.main');
+  return main ? (main.dataset.currentUser || '').trim() : '';
+}
+
+function getCurrentUserRole() {
+  const main = document.querySelector('.main');
+  return main ? Number(main.dataset.currentRole) : 0;
+}
+
+async function handleTakeTicket(row, button) {
+  const currentUser = getCurrentUsername();
+  const currentRole = getCurrentUserRole();
+
+  if (![2, 3].includes(currentRole)) {
+    showBottomMessage('Kun admin og teknikere kan tage sager.', 'warning');
+    return;
+  }
+
+  if (!currentUser) {
+    showBottomMessage('Kunne ikke finde den aktuelle bruger.', 'error');
+    return;
+  }
+
+  if (row.dataset.assigned) {
+    showBottomMessage('Sagen er allerede tildelt.', 'warning');
+    return;
+  }
+
+  button.disabled = true;
+  let ticketTaken = false;
+
+  try {
+    const result = await updateTicket(
+      `#${row.dataset.ticketId}`,
+      row.dataset.title || '',
+      row.dataset.type || '',
+      row.dataset.description || '',
+      row.dataset.location || '',
+      'Åben',
+      row.dataset.priority || '',
+      currentUser
+    );
+
+    if (result === true) {
+      ticketTaken = true;
+      showBottomMessage(`Sag #${row.dataset.ticketId} er nu tildelt til ${currentUser}.`, 'success');
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+      return;
+    }
+
+    showBottomMessage('Der opstod en fejl ved tildeling af sagen: ' + (result.error || ''), 'error');
+  } catch (error) {
+    showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
+  } finally {
+    if (!ticketTaken) {
+      button.disabled = false;
+    }
+  }
 }
 
 function openSagerDeleteModal(row) {
@@ -362,8 +436,10 @@ function initSagerActions() {
 
     if (btn)
     {
-      if (btn.classList.contains('action-btn--danger')) {
-      openSagerDeleteModal(row);
+      if (btn.classList.contains('action-btn--take')) {
+        handleTakeTicket(row, btn);
+      } else if (btn.classList.contains('action-btn--danger')) {
+        openSagerDeleteModal(row);
       } else {
         openSagerEditModal(row.dataset.ticketId);
       }
