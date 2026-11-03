@@ -9,6 +9,8 @@ function initSagerFilters() {
   const tbody = document.getElementById('sager-table-body');
   if (!tbody) return;
 
+  filterSager();
+
   function filterSager() {
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     const status = statusSelect ? statusSelect.value.trim().toLowerCase() : '';
@@ -33,11 +35,15 @@ function initSagerFilters() {
   }
 
   if (searchInput) searchInput.addEventListener('input', filterSager);
-  if (statusSelect) statusSelect.addEventListener('change', () => filterDataTable('status', statusSelect.value));
-    if (resetFilterBtn) resetFilterBtn.addEventListener('click', () => {
-    filterDataTable('status', '');
-    if (statusSelect) statusSelect.value = "";
-  });
+  if (statusSelect) statusSelect.addEventListener('change', () => filterSager('status', statusSelect.value));
+  if (resetFilterBtn) {
+      resetFilterBtn.addEventListener('click', () => {
+          if (statusSelect) statusSelect.value = "";
+          if (searchInput) searchInput.value = ""; // Hvis søgefeltet også skal nulstilles
+          filterSager(); // Kør filteret bagefter, så tabellen opdateres med det samme!
+      });
+  }
+
 }
 
 function openSagerEditModal(ticketId) {
