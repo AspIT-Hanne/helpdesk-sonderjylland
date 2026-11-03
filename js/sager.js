@@ -27,6 +27,8 @@ function initSagerFilters() {
                         ? ["ikke-startet", "afventer", "åben"].includes(rowStatus) 
                         : rowStatus === status);
 
+      console.log(matchesSearch, matchesStatus, rowStatus, status);
+
       row.style.display = matchesSearch && matchesStatus ? '' : 'none';
     });
   }
