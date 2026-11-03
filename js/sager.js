@@ -12,7 +12,7 @@ function initSagerFilters() {
   function filterSager() {
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     const status = statusSelect ? statusSelect.value.trim().toLowerCase() : '';
-
+    console.log(status);
     const rows = tbody.querySelectorAll('.data-table__row');
     rows.forEach((row) => {
       const id = (row.dataset.ticketId || '').toLowerCase();
@@ -26,8 +26,7 @@ function initSagerFilters() {
                       (status === "ikke-løst" 
                         ? ["ikke-startet", "afventer", "åben"].includes(rowStatus) 
                         : rowStatus === status);
-
-      console.log(matchesSearch, matchesStatus, rowStatus, status);
+                          console.log(matchesStatus);
 
       row.style.display = matchesSearch && matchesStatus ? '' : 'none';
     });
