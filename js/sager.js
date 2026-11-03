@@ -22,7 +22,8 @@ function initSagerFilters() {
       const rowStatus = row.dataset.status || '';
 
       const matchesSearch = !query || id.includes(query) || title.includes(query) || location.includes(query) || assigned.includes(query);
-      const matchesStatus = !status || rowStatus === status;
+      const matchesStatus = !status || 
+                      (status === "ikke-løst" ? rowStatus !== "Løst" : rowStatus === status);
 
       row.style.display = matchesSearch && matchesStatus ? '' : 'none';
     });
