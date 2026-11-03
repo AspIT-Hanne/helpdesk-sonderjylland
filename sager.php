@@ -56,10 +56,11 @@ header('Cache-Control: no-store, max-age=0');
         <label for="filter-status" class="filter-bar__label">Status</label>
         <select id="filter-status" class="form-field filter-bar__select">
           <option value="">Alle</option>
+          <option value="ikke-løst" selected>Ikke løst</option>
           <?php
-          foreach ($status as $thisstatus) {
-            echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
-          }
+            foreach ($status as $thisstatus) {
+              echo "<option value='{$thisstatus['name']}'>{$thisstatus['name']}</option>";
+            }
           ?>
         </select>
       </div>
