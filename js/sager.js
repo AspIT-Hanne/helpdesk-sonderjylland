@@ -11,7 +11,7 @@ function initSagerFilters() {
 
   function filterSager() {
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-    const status = statusSelect ? statusSelect.value : '';
+    const status = statusSelect ? statusSelect.value.trim().toLowerCase() : '';
 
     const rows = tbody.querySelectorAll('.data-table__row');
     rows.forEach((row) => {
@@ -19,7 +19,7 @@ function initSagerFilters() {
       const title = (row.dataset.title || '').toLowerCase();
       const location = (row.dataset.location || '').toLowerCase();
       const assigned = (row.dataset.assigned || '').toLowerCase();
-      const rowStatus = row.dataset.status || '';
+      const rowStatus = (row.dataset.status || '').trim().toLowerCase();
 
       const matchesSearch = !query || id.includes(query) || title.includes(query) || location.includes(query) || assigned.includes(query);
       const matchesStatus = !status || 
