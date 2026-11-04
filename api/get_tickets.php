@@ -60,15 +60,14 @@
         
         try {
             $table = "users";
-            $fieldname = "userRole_id";
-            $fielddata1 = "2"; // Søger både efter rolle 2 (tekniker) og 3 (admin)
-            $fielddata2 = "3";
+            $fieldname = "(userRole_id";
+            $fielddata = "2' OR userRole_id = '3') AND location_id = '{$_SESSION['location_id']}"; // Søger både efter rolle 2 (tekniker) og 3 (admin)
             $sortBy = "id";
 
-            $result1 = $dbcon->getDataByFieldSorted($table, $fieldname, $fielddata1, $sortBy);
-            $result2 = $dbcon->getDataByFieldSorted($table, $fieldname, $fielddata2, $sortBy);
+            $result = $dbcon->getDataByFieldSorted($table, $fieldname, $fielddata, $sortBy);
 
-            return array_merge($result1, $result2);
+            return $result;
+
         } catch (Exception $e) {
              throw new Exception("Der blev ikke fundet nogle teknikere." . $e->getMessage());
         }
