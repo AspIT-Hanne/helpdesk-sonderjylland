@@ -1,3 +1,4 @@
 /.vscode
 .env
 /includes/php_error.log
+/sessions
