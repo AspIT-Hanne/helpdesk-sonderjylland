@@ -9,7 +9,7 @@
   $lifetime = 7 * 60 * 60;
   ini_set('session.gc_maxlifetime', $lifetime);
 
-// 3. Opret privat sessionsmappe i roden (ét niveau op fra /includes)
+  // 3. Opret privat sessionsmappe i roden (ét niveau op fra /includes)
   $sessionPath = __DIR__ . '/../sessions'; 
   if (!is_dir($sessionPath)) {
       mkdir($sessionPath, 0777, true);
@@ -41,7 +41,7 @@
   }
   else
   {
-    include realpath(__DIR__ . '/..') . "/includes/connect.php";
+    include_once realpath(__DIR__ . '/..') . "/includes/connect.php";
 
     $dbcon = new DbOperations;
 
@@ -73,6 +73,28 @@
       ]
     ];
   }
+
+  // 7. Tjek om vi er på localhost (XAMPP) eller online på webhotellet
+  $is_local = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1');
+
+  // Definer din base URL (tilpas navnet 'helpdesk-sonderjylland' hvis din XAMPP-mappe hedder noget andet)
+  $base_url = $is_local ? '/helpdesk-sonderjylland/' : '/';
+
+  // Gør den tilgængelig som en konstant i al din PHP-kode
+  if (!defined('BASE_URL')) {
+    define('BASE_URL', $base_url);
+  }
+  
+  // Tjek om det aktuelle script ligger i en 'api'-mappe
+  $is_api = (strpos($_SERVER['PHP_SELF'], '/api/') !== false);
+
+  // KUN hvis det IKKE er et API-kald, må headeren udskrive HTML og JavaScript til browseren
+  if (!$is_api):
+  ?>
+  <script>
+      window.BASE_URL = "<?php echo BASE_URL; ?>";
+  </script>
+  <?php endif; ?>
   
 
 

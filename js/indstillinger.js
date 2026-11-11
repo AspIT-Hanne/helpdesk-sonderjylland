@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadTabLabels() {
     try {
-        const response = await fetch('../api/get_tabs.php');
+        const response = await fetch(window.BASE_URL + 'api/get_tabs.php');
         const result = await response.json();
 
         if (result.success) {
