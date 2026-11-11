@@ -1,8 +1,9 @@
 <?php 
   // Test change for branch 16-create-darktheme
+  include_once __DIR__ . '/includes/phpsession.php';
   include_once __DIR__ . '/includes/phpheader.php'; 
 
-    if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+    if($_SESSION['userRole_id'] == 1 || $_SESSION['userRole_id'] == 2 || $_SESSION['userRole_id'] == 3 || $_SESSION['userRole_id'] == 5)
     {
       $role = $_SESSION['userRole_id'];
     }

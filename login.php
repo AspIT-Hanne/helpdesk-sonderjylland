@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . '/includes/phpheader.php';
+include_once __DIR__ . '/includes/phpsession.php';
 
 $errorMsg = '';
 $errorType = 'warning';
@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($username) && !empty($password)) {
         try {
-            session_start();
+            require_once __DIR__ . '/includes/connect.php';
+            $dbcon = new DbOperations();
             $userid = $dbcon->verifyLogin($username, $password);
 
             if ($userid) {
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php');
                 exit;
             }
+
         } catch (Exception $e) {
             $_SESSION = array();
             session_destroy();
@@ -46,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 }
+include_once __DIR__ . '/includes/phpheader.php';
 ?>
 <!DOCTYPE html>
 <html lang="da">
