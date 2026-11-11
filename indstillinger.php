@@ -1,6 +1,9 @@
-<?php include_once __DIR__ . '/includes/phpheader.php';  
+<?php 
 
-if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+include_once realpath(__DIR__ ) . "/includes/phpheader.php";
+include "api/get_features.php";
+
+if($_SESSION['userRole_id'] == 1 || $_SESSION['userRole_id'] == 2 || $_SESSION['userRole_id'] == 3 || $_SESSION['userRole_id'] == 5)
 {
   $role = $_SESSION['userRole_id'];
 }
@@ -9,9 +12,9 @@ else
   $role = 4;
 }
 
+$data = getFeaturesData();
 
-    
-  ?>
+?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -53,6 +56,53 @@ else
 
     <section class="card">
       <div class="table-container" id="settings-table-container"></div>
+    </section>
+
+    <section class="card superadmin-only <?php echo ($_SESSION['userRole_id'] === 5) ? '' : 'hidden'; ?>" id="settings-superadmin-section">
+      <h3 class="card__title">Ny release</h3>
+      <form id="create-ticket-form">
+        <div class="form-group">
+          <label for="create-release" class="form-group__label">Version</label>
+          <input type="text" id="create-release" class="form-field" placeholder="Versionsnummer..." required>
+        </div>
+        <div class="form-group">
+          <label for="create-description" class="form-group__label">Beskrivelse</label>
+          <textarea id="create-description" class="form-field" rows="4" placeholder="Indhold i denne version..." required></textarea>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn--primary" id="add-feature-btn">Opret ny version</button>
+          <button type="button" class="btn btn--secondary" id="cancel-feature-btn">Annullēr</button>
+        </div>
+      </form>
+  </section>
+  <section class="card superadmin-only <?php echo ($_SESSION['userRole_id'] === 5) ? '' : 'hidden'; ?>" id="features-superadmin-section">
+    <h3 class="card__title">Tidligere releases</h3>
+            
+      <div class="table-container" id="settings-previous-features">
+        <table class="data-table" aria-label="Sager">
+          <thead class="data-table__head">
+            <tr class="data-table__row">
+              <th scope="col" class="data-table__header">ID</th>
+              <th scope="col" class="data-table__header">Version</th>
+              <th scope="col" class="data-table__header">Beskrivelse</th>
+              <th scope="col" class="data-table__header">Oprettet d.</th>
+          
+            </tr>
+          </thead>
+          <tbody id="sager-table-body">
+            <?php
+            foreach ($data as $feature) {
+              echo "<tr class='data-table__row' data-ticket-id='{$feature['id']}' data-description='{$feature['content']}' data-type='{$feature['version']}' data-created-date='{$feature['created_at']}'>";
+              echo "<td class='data-table__cell'>#{$feature['id']}</td>";
+              echo "<td class='data-table__cell'>{$feature['version']}</td>";
+              echo "<td class='data-table__cell'>{$feature['content']}</td>";
+              echo "<td class='data-table__cell'>" . date_format(new DateTime($feature['created_at']), "d-m-y") . "</td>";
+              echo "</tr>";
+            }
+            ?>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
 
@@ -129,6 +179,8 @@ else
       </footer>
     </div>
   </div>
+
+
 
   <script src="js/shared.js"></script>
   <script src="js/badges.js"></script>

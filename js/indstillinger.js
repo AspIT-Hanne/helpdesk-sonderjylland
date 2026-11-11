@@ -18,6 +18,7 @@ function init() {
   initEditModal();
   initDeleteModal();
   initAddButton();
+  initFeatures();
 }
 
 // Vent til at hele siden er loaded og så hent data med fetchSettings
@@ -597,6 +598,96 @@ function activateSaveButton(e)
     }
   });
 } 
+
+function initFeatures() {
+  const saveBtn = document.getElementById('add-feature-btn');
+  if (!saveBtn) return;
+
+  saveBtn.addEventListener('click', handleSaveFeature);
+
+  const cancelBtn = document.getElementById('cancel-feature-btn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', handleCancelFeature);
+  }
+}
  
+async function handleSaveFeature() {
+  const releaseVersion = document.getElementById('create-release');
+  if (!releaseVersion.value.trim()) {
+    
+    releaseVersion.focus();
+    
+    let errorMsg = releaseVersion.parentElement.querySelector('.field-error-text');
 
+    if (!errorMsg) {
+        errorMsg = document.createElement('p');
+        errorMsg.className = 'field-error-text'; // Tildel CSS-klassen her
+        errorMsg.textContent = 'Dette felt er påkrævet.';
 
+        releaseVersion.insertAdjacentElement('afterend', errorMsg);
+      }
+      return;
+    } else {
+        // Fjern fejlmeddelelsen, hvis feltet er udfyldt igen
+        const existingError = releaseVersion.parentElement.querySelector('.field-error-text');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+  
+    const releaseDescription = document.getElementById('create-description');
+  
+    if (!releaseDescription.value.trim()) {
+    
+    releaseDescription.focus();
+    
+    let errorMsg = releaseDescription.parentElement.querySelector('.field-error-text');
+
+    if (!errorMsg) {
+        errorMsg = document.createElement('p');
+        errorMsg.className = 'field-error-text'; // Tildel CSS-klassen her
+        errorMsg.textContent = 'Dette felt er påkrævet.';
+
+        releaseDescription.insertAdjacentElement('afterend', errorMsg);
+      }
+      return;
+    } else {
+        // Fjern fejlmeddelelsen, hvis feltet er udfyldt igen
+        const existingError = releaseDescription.parentElement.querySelector('.field-error-text');
+        if (existingError) {
+            existingError.remove();
+        }
+    }
+  try {
+        const result = await addFeature(document.getElementById('create-release').value, document.getElementById('create-description').value);
+        
+        if (result.success === true) {
+            showBottomMessage(`Feature er tilføjet og aktiveret.`, 'success');
+        } else {
+          
+            showBottomMessage('Der opstod en fejl ved opdatering i databasen: ' + (result.error || ''), 'error');
+        }
+    } catch (error) {
+        showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
+    }
+  }
+
+  function handleCancelFeature() {
+    const releaseVersion = document.getElementById('create-release');
+    const releaseDescription = document.getElementById('create-description');
+    const existingVersionError = releaseVersion.parentElement.querySelector('.field-error-text');
+    const existingDescriptionError = releaseDescription.parentElement.querySelector('.field-error-text');
+
+    if (existingVersionError) {
+        existingVersionError.remove();
+    }
+
+    if (existingDescriptionError) {
+        existingDescriptionError.remove();
+    }
+
+    if (releaseVersion) releaseVersion.value = '';
+    if (releaseDescription) releaseDescription.value = '';
+
+  }
+    

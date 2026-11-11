@@ -94,7 +94,59 @@
   <script>
       window.BASE_URL = "<?php echo BASE_URL; ?>";
   </script>
-  <?php endif; ?>
+  <?php endif; 
+
+  // Håndtering af nye release versioner og indhold
+
+  // Sørg for at den KUN kører på almindelige sider, og IKKE på API-kald
+  if (isset($dbcon) && (empty($is_api) || $is_api === false)) {
+    
+    // Hent den seneste feature fra databasen
+    $latestFeature = method_exists($dbcon, 'getSortedData') ? $dbcon->getSortedData("systemFeatures", "id DESC") : null;
+
+    if ($latestFeature && isset($latestFeature[0])) {
+        $latestVersion = $latestFeature[0]['version'] ?? '1.0';
+        $latestContent = $latestFeature[0]['content'] ?? '';
+        
+        $userSeenVersion = $_COOKIE['seen_feature_version'] ?? '';
+        $showPopup = ($userSeenVersion !== $latestVersion);
+
+        if ($showPopup):
+?>
+
+ <!-- Opret HTML til bunden af siden for at vise den seneste release, hvis brugeren ikke har set den endnu -->
+<div id="bottom-message-bar" class="success">
+    <div id="bottom-message-text">
+        <strong>🚀 Nyeste release (v. <?= htmlspecialchars($latestVersion) ?>):</strong> <?= nl2br(htmlspecialchars($latestContent)) ?>
+    </div>
+    <button id="bottom-message-close" title="Luk">&times;</button>
+</div>
+
+<script>
+  // Sæt den aktuelle version som en global variabel, så vi kan bruge den i JavaScript
+  window.CURRENT_FEATURE_VERSION = "<?php echo $latestVersion; ?>";
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const bar = document.getElementById('bottom-message-bar');
+    const closeBtn = document.getElementById('bottom-message-close');
+
+    setTimeout(() => {
+        bar.classList.add('show');
+    }, 100);
+    
+    // Når brugeren klikker på luk-knappen, gemmes den aktuelle version i en cookie, og baren fjernes
+    closeBtn.addEventListener('click', function() {
+        document.cookie = "seen_feature_version=" + window.CURRENT_FEATURE_VERSION + "; path=/; max-age=" + (60*60*24*365) + "; SameSite=Lax";
+        bar.classList.remove('show');
+        setTimeout(() => bar.remove(), 300);
+    });
+});
+</script>
+<?php 
+        endif;
+    }
+} 
+?>
   
 
 

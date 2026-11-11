@@ -113,6 +113,24 @@
     cursor:default;
 }
 
+#settings-superadmin-section.hidden
+{
+    display: none;
+}
+
+.superadmin-only
+{
+    margin-top: 2rem;
+}
+
+.field-error-text
+{
+    color: var(--color-error);
+    font-size: 0.8rem;
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
 @media (max-width: 767px) {
     .tabs__tab {
         padding: var(--space-sm) var(--space-md);
