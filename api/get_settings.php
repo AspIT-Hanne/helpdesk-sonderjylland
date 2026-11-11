@@ -1,14 +1,15 @@
 <?php 
-// Output buffer start. Opsamler al output, som phpheader (og connect, som includes i phpheader) måtte generere.
-// Udfordringen er, at når jeg bruger header() i linje 9, så må der ikke have været noget output først, så for at undgå det, 
-// bruger jeg en output buffer, som opsamler det hele og så sletter det i linje 7.
-ob_start();
-    require_once('../includes/phpheader.php');
-ob_end_clean();
+require_once(__DIR__ . '/../includes/phpsession.php');
+
 
 header('Content-Type: application/json');
 
+// 3. Inkluder databaseforbindelsen (så $dbcon er tilgængelig)
+include_once __DIR__ . '/../includes/connect.php';
+$dbcon = new DbOperations();
 
+// 4. Sæt headeren til JSON
+header('Content-Type: application/json');
 
 try {
         $table = "settings";
@@ -33,4 +34,4 @@ try {
     echo json_encode(['error' => $e->getMessage()]);
 }
 
-?>
+?> 

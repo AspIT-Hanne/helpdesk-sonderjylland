@@ -1,5 +1,5 @@
 <?php 
-
+include_once __DIR__ . '/includes/phpsession.php';
 include_once realpath(__DIR__ ) . "/includes/phpheader.php";
 include "api/get_features.php";
 

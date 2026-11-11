@@ -1,4 +1,5 @@
 <?php 
+include_once __DIR__ . '/includes/phpsession.php';
 include_once __DIR__ . '/includes/phpheader.php';
 
   if (!isset($_SESSION['logged_in'])) 
