@@ -73,7 +73,7 @@ if (isset($dbcon) && (empty($is_api) || $is_api === false)) {
         if ($showPopup):
 ?>
 <!-- HTML til bunden af siden for at vise den seneste release -->
-<div id="bottom-message-bar" class="success">
+<div id="bottom-message-bar" class="warning">
     <div id="bottom-message-text">
         <strong>🚀 Nyeste release (v. <?= htmlspecialchars($latestVersion) ?>):</strong> <?= nl2br(htmlspecialchars($latestContent)) ?>
     </div>

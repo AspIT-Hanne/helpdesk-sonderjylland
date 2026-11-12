@@ -23,13 +23,10 @@ function addFeature($version, $content)
 
 
     try {
-
-        // Hash passwordet før det gemmes i databasen
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
         $data = [
             'version' => $version,
-            'content' => $content
+            'content' => $content,
             'created_at' => date('Y-m-d H:i:s')
         ];
 
