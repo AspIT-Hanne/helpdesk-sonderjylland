@@ -4,6 +4,7 @@ import { fetchSettings } from '../api/get_settings.js';
 import { updateSettings } from '../api/update_settings.js';
 import { updateSettingTypes } from '../api/update_settings.js';
 import { deleteSettings } from '../api/delete_settings.js';
+import { addFeature } from '../api/add_feature.js';
 
 
 let activeKey = 'settings';
@@ -659,13 +660,14 @@ async function handleSaveFeature() {
         }
     }
   try {
+    console.log("Tilføjer feature med version:", document.getElementById('create-release').value, "og beskrivelse:", document.getElementById('create-description').value);
         const result = await addFeature(document.getElementById('create-release').value, document.getElementById('create-description').value);
-        
-        if (result.success === true) {
+
+        if (result === true) {
             showBottomMessage(`Feature er tilføjet og aktiveret.`, 'success');
         } else {
           
-            showBottomMessage('Der opstod en fejl ved opdatering i databasen: ' + (result.error || ''), 'error');
+            showBottomMessage('Der opstod en fejl ved opdatering i databasen', 'error');
         }
     } catch (error) {
         showBottomMessage('Der opstod en uventet fejl: ' + error.message, 'error');
