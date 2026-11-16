@@ -1,6 +1,6 @@
 <?php
 include_once __DIR__ . '/includes/phpsession.php';
-include_once __DIR__ . '/includes/phpheader.php';
+
 
 include "api/get_tickets.php";
 
@@ -17,6 +17,8 @@ $categories = getCategory();
 $users = getUsers();
 
 header('Cache-Control: no-store, max-age=0');
+
+include_once __DIR__ . '/includes/phpheader.php';
 ?>
 
 <!DOCTYPE html>

@@ -11,7 +11,7 @@ include_once __DIR__ . '/includes/phpheader.php';
   {
     include "api/get_tickets.php";
 
-    if($_SESSION['userRole_id'] > 0 && $_SESSION['userRole_id'] < 4)
+    if($_SESSION['userRole_id'] == 1 || $_SESSION['userRole_id'] == 2 || $_SESSION['userRole_id'] == 3 || $_SESSION['userRole_id'] == 5)
     {
       $role = $_SESSION['userRole_id'];
     }
