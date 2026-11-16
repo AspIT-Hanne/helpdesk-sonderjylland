@@ -216,14 +216,18 @@ body {
 }
 
 .kanban-card__title {
-    font: var(--font-body-lg);
+    font: var(--font-body-xl);
     font-weight: 600;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     line-height: 1.4;
     border-radius: var(--radius-full);
     display: flex;
     justify-content: space-between;
     padding: 0 0.3rem;
+}
+
+.kanban-card__title + .badge {
+    margin-bottom: var(--space-md);
 }
 
 .kanban-card__meta {

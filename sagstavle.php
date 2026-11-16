@@ -28,7 +28,7 @@ $statusser = getStatus();
       <img src="assets/logo.svg" alt="AspIT" class="kanban-header__logo">
     </header>
 
-    <section class="stats-grid" aria-label="Statistik">
+    <!-- <section class="stats-grid" aria-label="Statistik">
       <article class="stat-card" id="stat-open">
         <span class="stat-card__label">Åbne</span>
         <span class="stat-card__value">0</span>
@@ -44,41 +44,83 @@ $statusser = getStatus();
         <span class="stat-card__value">0</span>
         <span class="stat-card__sublabel">0 seneste 30 dage</span>
       </article>
-    </section>
+    </section> -->
 
     <main class="kanban-board">
       <?php
       $column = 0;
-      foreach ($statusser as $status) {
-        $ticketsStatus = getTicketByStatus($status['id']);
-      ?>
-        <section class="kanban-column" data-column="<?= $status['name']; ?>">
-          <header class="kanban-column__header kanban-column__header--<?= $status['name']; ?>">
-            <h2 class="kanban-column__title"><?= $status['name']; ?></h2>
-            <span class="kanban-column__count"><?= $column; ?></span>
-          </header>
-          <div class="kanban-column__cards">
-            <?php
-            foreach ($ticketsStatus as $thisTicket) { ?>
-              <article class="kanban-card" data-created-date="<?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?>">
-                <h3 class="kanban-card__title" data-badge="priority:<?= $thisTicket['priority_name']; ?>" data-badge-color="<?= $thisTicket['priority_color']; ?>"><span><?= $thisTicket['title']; ?></span><span><?= $thisTicket['priority_name']; ?></span></h3>
-                <div class="kanban-card__meta">
-                  <span class="kanban-card__author">Oprettet af: <?= $thisTicket['createdBy_name']; ?></span>
-                  <span class="kanban-card__author"><?php if (empty($thisTicket['assignedTo_name'])) {
-                                                      echo "Endnu ikke tildelt";
-                                                    } else {
-                                                      echo "Tildelt: {$thisTicket['assignedTo_name']}";
-                                                    } ?></span>
+      foreach ($statusser as $status) 
+      {
+        $isResolved = ($status['name'] === 'Løst');
+        $hiddenClass = $isResolved ? 'hidden' : '';
+        
+        $ticketsStatus = getTicketByStatus($status['id']); 
+        
+        usort($ticketsStatus, function($a, $b) {
+          // Sorter nyeste først (faldende / descending)
+          return strtotime($b['created_at']) <=> strtotime($a['created_at']);
+        });
+        
+        if($status['name'] === 'Ikke-startet' && count($ticketsStatus) > 5) {
+          
+          $counter = 2;
+          $ticketsStatus1 = array_slice($ticketsStatus, 0, 5); // Begræns til de 5 nyeste sager
+          $ticketsStatus2 = array_slice($ticketsStatus, 5); // Resten af sagerne
+          $column = count($ticketsStatus1) + count($ticketsStatus2);
+        }
+        else
+        {
+          $ticketsStatus2 = $ticketsStatus;
+          $counter = 1;
+        }
 
-                </div>
-                <div class="kanban-card__meta">
-                  <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>" data-badge-color="<?= $thisTicket['category_color']; ?>"><?= $thisTicket['category_name']; ?></span>
-                  <span class="kanban-card__author">Oprettet: <?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?></span>
-                </div>
-              </article>
-            <?php } ?>
-          </div>
-        </section>
+        $i = 0;
+        while($i < $counter)
+        {
+          if($status['name'] === 'Ikke-startet' && $i === 0) {
+            $ticketsStatus = $ticketsStatus1;
+          }
+          else
+          {
+            $ticketsStatus = $ticketsStatus2;
+          }
+
+      ?>
+          <section class="kanban-column <?php echo $hiddenClass; ?>" data-column="<?= $status['name']; ?>">
+            <header class="kanban-column__header kanban-column__header--<?= $status['name']; ?>">
+              <h2 class="kanban-column__title"><?= $status['name']; ?></h2>
+              <span class="kanban-column__count"><?= $column; ?></span>
+            </header>
+            <div class="kanban-column__cards">
+              <?php
+              foreach ($ticketsStatus as $thisTicket) 
+              { ?>
+                <article class="kanban-card" data-created-date="<?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?>">
+                  <h3 class="kanban-card__title" " ><span><?= $thisTicket['title']; ?></span></h3>
+                  <div class="badge badge--category"data-badge="priority:<?= $thisTicket['priority_name']; ?>" data-badge-color="<?= $thisTicket['priority_color']; ?>"><?= $thisTicket['priority_name']; ?></div>
+                  <div class="kanban-card__meta">
+                    <span class="kanban-card__author">Oprettet af: <?= $thisTicket['createdBy_name']; ?></span>
+                    <span class="kanban-card__author"><?php if (empty($thisTicket['assignedTo_name'])) {
+                        echo "Endnu ikke tildelt";
+                      } else {
+                        echo "Tildelt: {$thisTicket['assignedTo_name']}";
+                      } ?>
+                    </span>
+
+                  </div>
+                  <div class="kanban-card__meta">
+                    <span class="badge badge--category" data-badge="type:<?= $thisTicket['category_name']; ?>" data-badge-color="<?= $thisTicket['category_color']; ?>"><?= $thisTicket['category_name']; ?></span>
+                    <span class="kanban-card__author">Oprettet: <?= date_format(new DateTime($thisTicket['created_at']), 'd-m-y'); ?></span>
+                  </div>
+                </article>
+              <?php 
+              } ?>
+            </div>
+          </section>
+         
+        <?php 
+          $i++;
+        } ?>
 
 
       <?php
