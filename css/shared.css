@@ -46,6 +46,7 @@
     --font-headline-lg: 700 32px / 1.2 var(--font-family);
     --font-headline-md: 600 24px / 1.3 var(--font-family);
     --font-headline-sm: 600 20px / 1.4 var(--font-family);
+    --font-body-xl: 400 20px / 1.8 var(--font-family);
     --font-body-lg: 400 16px / 1.6 var(--font-family);
     --font-body-sm: 400 14px / 1.5 var(--font-family);
     --font-label-bold: 600 12px / 1 var(--font-family);
@@ -271,7 +272,7 @@ body.modal-open {
 /* Styles to hide items depending on userrole */
 .hidden
 {
-    display: none;
+    display: none !important;
 }
 
 /* Overlay */
