@@ -16,8 +16,6 @@ $categories = getCategory();
 
 $users = getUsers();
 
-header('Cache-Control: no-store, max-age=0');
-
 include_once __DIR__ . '/includes/phpheader.php';
 ?>
 
