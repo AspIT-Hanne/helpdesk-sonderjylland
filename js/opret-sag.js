@@ -58,7 +58,7 @@ async function handleCreateSagSubmit() {
       if (result === true) {
           showBottomMessage(`Sag ${title.value} oprettet`, 'success');
           setTimeout(() => {
-              window.location.href = '/index.php';
+              window.location.href = window.BASE_URL + '/sager.php';
           }, 2000);
       } else {
         showBottomMessage('Der opstod en fejl ved oprettelse af sagen.' + result.error, 'error');

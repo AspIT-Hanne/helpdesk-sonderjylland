@@ -1,5 +1,5 @@
 <?php 
-
+require_once __DIR__ . '/../includes/phpsession.php';
 require_once __DIR__ . '/../includes/phpheader.php';
 
 // Hent den rå JSON-data fra request kroppen
