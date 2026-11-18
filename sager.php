@@ -3,6 +3,7 @@ include_once __DIR__ . '/includes/phpsession.php';
 
 
 include "api/get_tickets.php";
+include "api/get_ticketnotes.php";
 
 $data = getTicketData();
 
@@ -17,6 +18,8 @@ $categories = getCategory();
 $users = getUsers();
 
 include_once __DIR__ . '/includes/phpheader.php';
+
+print_r($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -98,6 +101,8 @@ include_once __DIR__ . '/includes/phpheader.php';
               echo "<td class='data-table__cell'>{$ticket['createdBy_name']}</td>";
               echo "<td class='data-table__cell'>{$ticket['assignedTo_name']}</td>";
               echo "<td class='data-table__cell'>" . date_format(new DateTime($ticket['created_at']), "d-m-y") . "</td>";
+             
+              // Kontrollér om den nuværende bruger har tilladelse til at tage sagen, og om sagen ikke allerede er tildelt og ellers tilføj knappen
               $takeTicketButton = '';
               $canTakeTicket = in_array((int)$_SESSION['userRole_id'], [2, 3], true);
               if ($canTakeTicket && trim((string)($ticket['assignedTo_name'] ?? '')) === '') {
@@ -105,15 +110,26 @@ include_once __DIR__ . '/includes/phpheader.php';
                         <img src='assets/user-plus.svg' alt='' class='action-btn__icon'>
                       </button>";
               }
+              
+              // Kontrollér om der er noter for denne sag og tilføj knappen, hvis der er
+              $hasNotesBtn = '';
+              $notes = getTicketNotes($ticket['id']);
+              if (!empty($notes)) {
+                $hasNotesBtn = "<button type='button' class='action-btn action-btn--has-notes' aria-label='Se noter {$ticket['id']}' title='Se noter'>
+                        <img src='assets/detail.svg' alt='' class='action-btn__icon'>
+                      </button>";
+              }
+
               echo "<td class='data-table__cell data-table__cell--actions'>
                       <div class='action-cell'>
-                      {$takeTicketButton}
-                      <button type='button' class='action-btn' aria-label='Redigér sag {$ticket['id']}'>
-                        <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
-                      </button>
-                      <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag {$ticket['id']}'>
-                        <img src='assets/trash.svg' alt='' class='action-btn__icon'>
-                      </button>
+                        {$hasNotesBtn}
+                        {$takeTicketButton}
+                        <button type='button' class='action-btn' aria-label='Redigér sag {$ticket['id']}'>
+                          <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
+                        </button>
+                        <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag {$ticket['id']}'>
+                          <img src='assets/trash.svg' alt='' class='action-btn__icon'>
+                        </button>
                       </div>
                     </td>
                 </tr>";
@@ -124,6 +140,8 @@ include_once __DIR__ . '/includes/phpheader.php';
       </div>
     </section>
   </main>
+
+  <!-- Redigér Sag Modal -->
 
   <div class="modal" id="sager-edit-modal" role="dialog" aria-modal="true" aria-labelledby="sager-modal-title-heading">
     <div class="modal__container">
@@ -194,14 +212,61 @@ include_once __DIR__ . '/includes/phpheader.php';
           <label for="sager-modal-created-date" class="form-group__label">Oprettelsesdato</label>
           <input type="text" id="sager-modal-created-date" class="form-field" disabled>
         </div>
-      </div>
+        <div class="form-group">
+          <?php
+            $notes = getTicketNotes($ticket['id']);
+
+            if (!empty($notes)) {
+              ?>
+              <div class="table-container noter-table">
+                <table class="data-table" aria-label="Noter">
+                  <thead class="data-table__head">
+                    <tr class="data-table__row">
+                      <th scope="col" class="data-table__header">Dato</th>
+                      <th scope="col" class="data-table__header">Oprettet af</th>
+                      <th scope="col" class="data-table__header">Note</th>
+                      <th scope="col" class="data-table__header data-table__header--actions">Handlinger</th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody id="noter-table-body">
+                  <?php
+                  // Hvordan får jeg adgang til $ticket['id'] her? Jeg vil gerne hente noter for den specifikke sag, men $ticket['id'] er ikke tilgængelig i denne kontekst. 
+                  // Jeg skal bruge en måde at få adgang til den aktuelle sags ID, når jeg henter noter.
+                    foreach ($notes as $note) {
+                      echo "<tr class='data-table__row'>";
+                        echo "<td class='data-table__cell'>" . date_format(new DateTime($note['created_at']), "d-m-y") . "</td>";
+                        echo "<td class='data-table__cell'>{$note['username']}</td>";
+                        echo "<td class='data-table__cell notetext'>{$note['notetext']}</td>";
+                        echo "<td class='data-table__cell data-table__cell--actions'>
+                                <div class='action-cell'>
+                                  <button type='button' class='action-btn' aria-label='Redigér sag {$note['id']}'>
+                                    <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
+                                  </button>
+                                  <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag {$ticket['id']}'>
+                                    <img src='assets/trash.svg' alt='' class='action-btn__icon'>
+                                  </button>
+                                </div>
+                              </td>
+                          </tr>";
+                      } ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+            <?php } ?>
+
       <footer class="modal__footer">
         <button class="btn btn--secondary" id="sager-modal-cancel">Annullér</button>
         <button type="button" class="btn btn--secondary" id="sager-modal-take-btn">Tag sag</button>
+        <button type="button" class="btn btn--secondary" id="sager-modal-create-note-btn">Opret note</button>
         <button class="btn btn--primary">Gem ændringer</button>
       </footer>
     </div>
   </div>
+
+  <!-- Slet Sag Modal -->
 
   <div class="modal modal--danger" id="sager-delete-modal" role="alertdialog" aria-modal="true" aria-labelledby="sager-delete-modal-title">
     <div class="modal__container">
@@ -218,6 +283,8 @@ include_once __DIR__ . '/includes/phpheader.php';
       </footer>
     </div>
   </div>
+
+  <!-- Opret Ny Sag Modal -->
 
   <div class="modal" id="sager-create-modal" role="dialog" aria-modal="true" aria-labelledby="sager-create-modal-title-heading">
     <div class="modal__container">
@@ -308,6 +375,28 @@ include_once __DIR__ . '/includes/phpheader.php';
       <footer class="modal__footer">
         <button class="btn btn--secondary" id="sager-create-modal-cancel">Annullér</button>
         <button class="btn btn--primary" id="sager-create-modal-save">Opret Sag</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Tilføj note Modal -->
+
+  <div class="modal" id="notes-create-modal" role="dialog" aria-modal="true" aria-labelledby="notes-create-modal-title-heading">
+    <div class="modal__container">
+      <header class="modal__header">
+        <h2 class="modal__title" id="notes-create-modal-title-heading">Tilføj Note</h2>
+        <button class="modal__close" id="notes-create-modal-close" aria-label="Luk">&times;</button>
+      </header>
+      <input type="hidden" id="notes-create-ticket-id">
+      <div class="modal__body">
+        <div class="form-group">
+          <label for="notes-create-modal-text" class="form-group__label">Note til sagen</label>
+          <textarea id="notes-create-modal-text" class="form-field" rows="4" placeholder="Tilføj note til sagen..."></textarea>
+        </div>
+      </div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary" id="notes-create-modal-cancel">Annullér</button>
+        <button type="button" class="btn btn--secondary" id="notes-create-modal-save">Tilføj note</button>
       </footer>
     </div>
   </div>

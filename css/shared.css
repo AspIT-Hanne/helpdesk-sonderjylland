@@ -368,6 +368,7 @@ body.modal-open {
     text-align: left;
     padding: var(--space-md) var(--space-lg);
     background-color: var(--color-surface-container-low);
+    vertical-align: top;
 }
 
 .data-table__cell {
@@ -375,6 +376,7 @@ body.modal-open {
     font: var(--font-body-lg);
     border-bottom: 1px solid var(--color-outline-variant);
      color: var(--color-on-surface-variant);
+     vertical-align: top;
 }
 
 .data-table__row {
@@ -903,9 +905,9 @@ body.dark-mode #bottom-message-bar.success {
 /* Action buttons */
 .action-cell {
     display: inline-grid;
-    grid-template-columns: repeat(3, 32px);
+    grid-template-columns: repeat(4, 30px);
     align-items: center;
-    column-gap: var(--space-sm);
+    
     white-space: nowrap;
 }
 

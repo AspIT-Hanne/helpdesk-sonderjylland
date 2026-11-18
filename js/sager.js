@@ -1,6 +1,9 @@
 import { addTicket } from '../api/add_ticket.js';
 import { deleteTicket } from '../api/delete_ticket.js';
 import { updateTicket } from '../api/update_ticket.js';
+import { addTicketnote } from '../api/add_ticketnote.js';
+
+// Håndtering af Sager filter
 
 function initSagerFilters() {
   const searchInput = document.getElementById('sager-search');
@@ -44,6 +47,45 @@ function initSagerFilters() {
       });
   }
 
+}
+
+// Håndtering af Redigér Sag modal (init, open, close, submit)
+
+function initSagerEditModal() {
+  const closeBtn = document.getElementById('sager-modal-close');
+  const cancelBtn = document.getElementById('sager-modal-cancel');
+  const modal = document.getElementById('sager-edit-modal');
+  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
+  const takeBtn = document.getElementById('sager-modal-take-btn');
+  const createNoteBtn = document.getElementById('sager-modal-create-note-btn');
+
+  if (!modal) return;
+
+  if (closeBtn) closeBtn.addEventListener('click', closeSagerEditModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeSagerEditModal);
+  if (saveBtn) saveBtn.addEventListener('click', handleUpdateSagSubmit);
+  if (takeBtn) takeBtn.addEventListener('click', () => {
+    const ticketId = modal.getAttribute('data-current-ticket-id');
+    const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
+    if (row) handleTakeTicket(row, takeBtn);
+  });
+
+  if (createNoteBtn) createNoteBtn.addEventListener('click', () => {
+    const ticketId = modal.getAttribute('data-current-ticket-id');
+    openCreateNoteModal(ticketId);
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.classList.contains('modal')) {
+      closeSagerEditModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeSagerEditModal();
+    }
+  });
 }
 
 function openSagerEditModal(ticketId) {
@@ -105,37 +147,6 @@ function closeSagerEditModal() {
   document.body.classList.remove('modal-open');
 }
 
-function initSagerEditModal() {
-  const closeBtn = document.getElementById('sager-modal-close');
-  const cancelBtn = document.getElementById('sager-modal-cancel');
-  const modal = document.getElementById('sager-edit-modal');
-  const saveBtn = modal.querySelector('.modal__footer .btn--primary');
-  const takeBtn = document.getElementById('sager-modal-take-btn');
-
-  if (!modal) return;
-
-  if (closeBtn) closeBtn.addEventListener('click', closeSagerEditModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeSagerEditModal);
-  if (saveBtn) saveBtn.addEventListener('click', handleUpdateSagSubmit);
-  if (takeBtn) takeBtn.addEventListener('click', () => {
-    const ticketId = modal.getAttribute('data-current-ticket-id');
-    const row = document.querySelector(`tr[data-ticket-id="${ticketId}"]`);
-    if (row) handleTakeTicket(row, takeBtn);
-  });
-
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal || event.target.classList.contains('modal')) {
-      closeSagerEditModal();
-    }
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
-      closeSagerEditModal();
-    }
-  });
-}
-
 async function handleUpdateSagSubmit() {
 
   const id = document.getElementById('sager-modal-id');
@@ -177,6 +188,8 @@ async function handleUpdateSagSubmit() {
       showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
     });
 }
+
+// Håndtering af Tag Sag knap
 
 function getCurrentUsername() {
   const main = document.querySelector('.main');
@@ -241,6 +254,33 @@ async function handleTakeTicket(row, button) {
   }
 }
 
+// Håndtering af Delete Sag modal (init, open, close, confirm)
+
+function initSagerDeleteModal() {
+  const closeBtn = document.getElementById('sager-delete-modal-close');
+  const cancelBtn = document.getElementById('sager-delete-modal-cancel');
+  const confirmBtn = document.getElementById('sager-delete-modal-confirm');
+  const modal = document.getElementById('sager-delete-modal');
+
+  if (!modal) return;
+
+  if (closeBtn) closeBtn.addEventListener('click', closeSagerDeleteModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeSagerDeleteModal);
+  if (confirmBtn) confirmBtn.addEventListener('click', confirmSagerDelete);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.classList.contains('modal')) {
+      closeSagerDeleteModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeSagerDeleteModal();
+    }
+  });
+}
+
 function openSagerDeleteModal(row) {
   const modal = document.getElementById('sager-delete-modal');
   const message = document.getElementById('sager-delete-modal-message');
@@ -294,27 +334,30 @@ async function confirmSagerDelete() {
   closeSagerDeleteModal();
 }
 
-function initSagerDeleteModal() {
-  const closeBtn = document.getElementById('sager-delete-modal-close');
-  const cancelBtn = document.getElementById('sager-delete-modal-cancel');
-  const confirmBtn = document.getElementById('sager-delete-modal-confirm');
-  const modal = document.getElementById('sager-delete-modal');
+// Håndtering af Create Sag modal (init, open, close, submit)
+
+function initCreateSagModal() {
+  const closeBtn = document.getElementById('sager-create-modal-close');
+  const cancelBtn = document.getElementById('sager-create-modal-cancel');
+  const modal = document.getElementById('sager-create-modal');
 
   if (!modal) return;
 
-  if (closeBtn) closeBtn.addEventListener('click', closeSagerDeleteModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeSagerDeleteModal);
-  if (confirmBtn) confirmBtn.addEventListener('click', confirmSagerDelete);
+  if (closeBtn) closeBtn.addEventListener('click', closeCreateSagModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeCreateSagModal);
+
+  const saveBtn = document.getElementById('sager-create-modal-save');
+  if (saveBtn) saveBtn.addEventListener('click', handleCreateSagSubmit);
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
-      closeSagerDeleteModal();
+      closeCreateSagModal();
     }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
-      closeSagerDeleteModal();
+      closeCreateSagModal();
     }
   });
 }
@@ -408,31 +451,84 @@ async function handleCreateSagSubmit() {
       });
 }
 
-function initCreateSagModal() {
-  const closeBtn = document.getElementById('sager-create-modal-close');
-  const cancelBtn = document.getElementById('sager-create-modal-cancel');
-  const modal = document.getElementById('sager-create-modal');
+// Håndtering af Notes modal (init, open, close, submit)
+
+function initCreateNoteModal() {
+  const closeBtn = document.getElementById('notes-create-modal-close');
+  const cancelBtn = document.getElementById('notes-create-modal-cancel');
+  const modal = document.getElementById('notes-create-modal');
 
   if (!modal) return;
 
-  if (closeBtn) closeBtn.addEventListener('click', closeCreateSagModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeCreateSagModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeCreateNoteModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeCreateNoteModal);
 
-  const saveBtn = document.getElementById('sager-create-modal-save');
-  if (saveBtn) saveBtn.addEventListener('click', handleCreateSagSubmit);
+  const saveBtn = document.getElementById('notes-create-modal-save');
+  if (saveBtn) saveBtn.addEventListener('click', handleCreateNoteSubmit);
 
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.classList.contains('modal')) {
-      closeCreateSagModal();
+      closeCreateNoteModal();
     }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
-      closeCreateSagModal();
+      closeCreateNoteModal();
     }
   });
 }
+
+function openCreateNoteModal(ticketId) {
+  const modal = document.getElementById('notes-create-modal');
+  if (!modal) return;
+
+  const ticketIdInput = document.getElementById('notes-create-ticket-id');
+  if (ticketIdInput) ticketIdInput.value = ticketId;
+
+  const textInput = document.getElementById('notes-create-modal-text');
+  if (textInput) textInput.value = '';
+
+  modal.classList.add('modal--open');
+  document.body.classList.add('modal-open');
+}
+
+function closeCreateNoteModal() {
+  const modal = document.getElementById('notes-create-modal');
+  if (!modal) return;
+  modal.classList.remove('modal--open');
+  document.body.classList.remove('modal-open');
+}
+
+async function handleCreateNoteSubmit() {
+  const noteText = document.getElementById('notes-create-modal-text');
+  const ticketId = document.getElementById('notes-create-ticket-id');
+
+  if (noteText && !noteText.value.trim()) {
+    showBottomMessage('Note er et påkrævet felt.', 'warning');
+    noteText.focus();
+    return;
+  }
+
+   // Brug af den importerede addTicketnote funktion
+    const result = await addTicketnote(noteText.value, ticketId.value)
+      .then(result => {
+        if (result === true) {
+            closeCreateNoteModal();
+            showBottomMessage(`Note oprettet`, 'success');
+            setTimeout(() => {
+              location.reload();
+            }, 2000);
+        } else {
+          showBottomMessage('Der opstod en fejl ved oprettelse af noten.' + result.error, 'error');
+        }
+      })
+      .catch(error => {
+        showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+      });
+}
+
+// Initialiseringsfunktioner
 
 function initSagerActions() {
   const tbody = document.getElementById('sager-table-body');
@@ -475,4 +571,5 @@ function initAddSagButton() {
   initSagerDeleteModal();
   initCreateSagModal();
   initAddSagButton();
+  initCreateNoteModal();
 })();
