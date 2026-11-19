@@ -23,7 +23,7 @@ body {
     background-color: var(--color-primary-container);
     color: var(--color-on-primary);
     flex-shrink: 0;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-md);
 }
 
 .kanban-header__logo {
@@ -115,7 +115,7 @@ body {
     gap: var(--space-md);
     flex: 1;
     overflow: hidden;
-    margin: 0 var(--space-xl) var(--space-xl);
+    margin: 0 var(--space-md) var(--space-md);
     min-height: 0;
 }
 
