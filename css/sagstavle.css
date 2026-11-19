@@ -119,6 +119,10 @@ body {
     min-height: 0;
 }
 
+.kanban-board section[data-column="Ikke-startet"]:nth-of-type(2) .kanban-column__header h2::after {
+    content: " (fortsat)";
+}
+
 /* Column */
 .kanban-column {
     display: flex;

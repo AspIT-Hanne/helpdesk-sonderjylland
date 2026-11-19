@@ -82,10 +82,6 @@ $statusser = getStatus();
           }
           else
           {
-            if($status['name'] === 'Ikke-startet')
-            {
-              $status['name'] = 'Ikke-startet (fortsat)';
-            }
             $ticketsStatus = $ticketsStatus2;
           }
 
