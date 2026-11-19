@@ -1,5 +1,7 @@
 <?php 
 
+include_once __DIR__ . '/../includes/phpsession.php';
+
 // Hent den rå JSON-data fra request kroppen
 $json = file_get_contents('php://input');
 
