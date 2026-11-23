@@ -1,11 +1,11 @@
-export async function deleteUser(id) {
+export async function deleteTicketNote(id) {
    
     const userData = {
         id: id
     };
 
     try {
-        const response = await fetch('api/delete_user.php', {
+        const response = await fetch('api/delete_ticketnote.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

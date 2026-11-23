@@ -3,6 +3,7 @@ import { deleteTicket } from '../api/delete_ticket.js';
 import { updateTicket } from '../api/update_ticket.js';
 import { addTicketnote } from '../api/add_ticketnote.js';
 import { getTicketNotes } from '../api/get_ticketnotes.js';
+import { deleteTicketNote } from '../api/delete_ticketnote.js';
 
 // Håndtering af Sager filter
 
@@ -451,7 +452,7 @@ async function handleCreateSagSubmit() {
       });
 }
 
-// Håndtering af Notes modal (init, open, close, submit, loadNotes)
+// Håndtering af Create Note modal (init, open, close, submit, loadNotes)
 
 function initCreateNoteModal() {
   const closeBtn = document.getElementById('notes-create-modal-close');
@@ -510,22 +511,110 @@ async function handleCreateNoteSubmit() {
     return;
   }
 
-   // Brug af den importerede addTicketnote funktion
-    const result = await addTicketnote(noteText.value, ticketId.value)
-      .then(result => {
-        if (result === true) {
-            closeCreateNoteModal();
-            showBottomMessage(`Note oprettet`, 'success');
-            setTimeout(() => {
-              location.reload();
-            }, 2000);
-        } else {
-          showBottomMessage('Der opstod en fejl ved oprettelse af noten.' + result.error, 'error');
-        }
-      })
-      .catch(error => {
-        showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
-      });
+  const sagId = ticketId.value;
+  const noteIndhold = noteText.value;
+  let result;
+
+  try {
+    result = await addTicketnote(noteIndhold, sagId);
+  } catch (error) {
+    showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    return;
+  }
+
+  if (result === true) {
+    closeCreateNoteModal();
+    showBottomMessage('Note oprettet', 'success');
+
+    setTimeout(() => {
+      openSagerEditModal(sagId);
+    }, 2000);
+  } else {
+    showBottomMessage(
+      'Der opstod en fejl ved oprettelse af noten.' + (result?.error ? ' ' + result.error : ''),
+      'error'
+    );
+  }
+}
+
+// Håndtering af Delete Note modal (init, open, close, confirm)
+
+function initNoteDeleteModal() {
+  const closeBtn = document.getElementById('note-delete-modal-close');
+  const cancelBtn = document.getElementById('note-delete-modal-cancel');
+  const confirmBtn = document.getElementById('note-delete-modal-confirm');
+  const modal = document.getElementById('note-delete-modal');
+
+  if (!modal) return;
+
+  if (closeBtn) closeBtn.addEventListener('click', closeNoteDeleteModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeNoteDeleteModal);
+  if (confirmBtn) confirmBtn.addEventListener('click', confirmNoteDelete);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.classList.contains('modal')) {
+      closeNoteDeleteModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeNoteDeleteModal();
+    }
+  });
+}
+
+function openNoteDeleteModal(row) {
+  const modal = document.getElementById('note-delete-modal');
+  const message = document.getElementById('note-delete-modal-message');
+  if (!modal) return;
+
+  const title = row.dataset.title || 'denne note';
+
+  if (message) message.textContent = `Er du sikker på, at du vil slette ${title}? Denne handling kan ikke fortrydes.`;
+
+  modal.setAttribute('data-delete-ticket-id', row.dataset.ticketId);
+  modal.setAttribute('data-delete-note-id', row.dataset.noteId);
+  modal.setAttribute('data-delete-ticket-title', title);
+  modal.classList.add('modal--open');
+  document.body.classList.add('modal-open');
+}
+
+function closeNoteDeleteModal() {
+  const modal = document.getElementById('note-delete-modal');
+  if (!modal) return;
+  modal.classList.remove('modal--open');
+  modal.removeAttribute('data-delete-ticket-id');
+  document.body.classList.remove('modal-open');
+}
+
+async function confirmNoteDelete() {
+  const modal = document.getElementById('note-delete-modal');
+  if (!modal) return;
+
+  const ticketId = modal.getAttribute('data-delete-ticket-id');
+  const noteId = modal.getAttribute('data-delete-note-id');
+  const title = modal.getAttribute('data-delete-ticket-title');
+
+  let result;
+
+  try {
+    result = await deleteTicketNote(noteId);
+  } catch (error) {
+    showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    return;
+  }
+
+  if (result === true) {
+    closeNoteDeleteModal();
+    showBottomMessage(`${title} er blevet slettet.`, 'success');
+
+    setTimeout(() => {
+      openSagerEditModal(ticketId);
+    }, 2000);
+  } else {
+    showBottomMessage('Der opstod en fejl ved sletning af noten.', 'error');
+  }
 }
 
   async function loadTicketNotes(ticketId) {
@@ -555,6 +644,8 @@ console.log("Åbner redigeringsmodal for sag med ID:", ticketId);
   notes.forEach((note) => {
     const tr = document.createElement('tr');
     tr.className = 'data-table__row';
+    tr.dataset.ticketId = note.ticket_id;
+    tr.dataset.noteId = note.id;
 
     const dateTd = document.createElement('td');
     dateTd.className = 'data-table__cell';
@@ -583,7 +674,11 @@ console.log("Åbner redigeringsmodal for sag med ID:", ticketId);
 
     tr.append(dateTd, userTd, textTd, actionsTd);
     tbody.appendChild(tr);
+
+    initNoteDeleteModal();
   });
+
+  initTicketNotesActions();
 }
 
 // Initialiseringsfunktioner
@@ -611,6 +706,32 @@ function initSagerActions() {
     else
     {
       openSagerEditModal(row.dataset.ticketId);
+    }
+    
+  });
+}
+
+function initTicketNotesActions() {
+  const notestbody = document.getElementById('noter-table-container');
+  if (!notestbody) return;
+
+  notestbody.addEventListener('click', (event) => {
+    const row = event.target.closest('.data-table__row');
+    if (!row) return;
+    
+    const btn = event.target.closest('.action-btn');
+
+    if (btn)
+    {
+      if (btn.classList.contains('action-btn--danger')) {
+        openNoteDeleteModal(row);
+      } else {
+        openNoteEditModal(row.dataset.noteId);
+      }
+    }
+    else
+    {
+      openNoteEditModal(row.dataset.noteId);
     }
     
   });

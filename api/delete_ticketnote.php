@@ -8,17 +8,17 @@ $transferdata = json_decode($json, true);
 // Hent værdierne ud fra det dekodede array
 $id = $transferdata['id'] ?? '';
 
-deleteUser($id);
+deleteTicketNote($id);
 
 
 
-function deleteUser($id)
+function deleteTicketNote($id)
 {
     global $dbcon;
     require_once __DIR__ . '/../includes/phpheader.php';
 
     try {
-        $table = "users";
+        $table = "note";
         
         $result = $dbcon->deleteData($table, $id);
         

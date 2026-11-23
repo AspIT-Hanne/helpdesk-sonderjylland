@@ -212,7 +212,7 @@ print_r($_SESSION);
           <input type="text" id="sager-modal-created-date" class="form-field" disabled>
         </div>
         <div class="form-group">
-              <div class="table-container noter-table">
+              <div class="table-container noter-table" id="noter-table-container">
                 <table class="data-table" aria-label="Noter">
                   <thead class="data-table__head">
                     <tr class="data-table__row">
@@ -388,6 +388,44 @@ print_r($_SESSION);
       </footer>
     </div>
   </div>
+
+  <!-- Slet Note Modal -->
+
+  <div class="modal modal--danger" id="note-delete-modal" role="alertdialog" aria-modal="true" aria-labelledby="note-delete-modal-title">
+    <div class="modal__container">
+      <header class="modal__header">
+        <h2 class="modal__title" id="note-delete-modal-title">Slet Note</h2>
+        <button class="modal__close" id="note-delete-modal-close" aria-label="Luk">&times;</button>
+      </header>
+      <div class="modal__body">
+        <p id="note-delete-modal-message">Er du sikker på, at du vil slette denne note? Denne handling kan ikke fortrydes.</p>
+      </div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary" id="note-delete-modal-cancel">Annullér</button>
+        <button class="btn btn--danger" id="note-delete-modal-confirm">Slet Note</button>
+      </footer>
+    </div>
+  </div>
+
+    <!-- Redigér Note Modal -->
+
+  <div class="modal" id="notes-edit-modal" role="dialog" aria-modal="true" aria-labelledby="notes-modal-title-heading">
+    <div class="modal__container">
+      <header class="modal__header">
+        <h2 class="modal__title" id="notes-modal-title-heading">Redigér Note</h2>
+        <button class="modal__close" id="notes-modal-close" aria-label="Luk">&times;</button>
+      </header>
+      <div class="modal__body">
+        <div class="form-group">
+          <label for="notes-edit-modal-text" class="form-group__label">Note til sagen</label>
+          <textarea id="notes-edit-modal-text" class="form-field" rows="4" placeholder="Redigér note til sagen..."></textarea>
+        </div>
+      </div>
+      <footer class="modal__footer">
+        <button class="btn btn--secondary" id="notes-edit-modal-cancel">Annullér</button>
+        <button type="button" class="btn btn--secondary" id="notes-edit-modal-save">Gem ændringer</button>
+      </footer>
+    </div>
 
   <script src="js/shared.js?v=<?= filemtime(__DIR__ . '/js/shared.js'); ?>"></script>
   <script src="js/badges.js?v=<?= filemtime(__DIR__ . '/js/badges.js'); ?>"></script>
