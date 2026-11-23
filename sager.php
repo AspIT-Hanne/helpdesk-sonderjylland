@@ -3,7 +3,6 @@ include_once __DIR__ . '/includes/phpsession.php';
 
 
 include "api/get_tickets.php";
-include "api/get_ticketnotes.php";
 
 $data = getTicketData();
 
@@ -112,17 +111,17 @@ print_r($_SESSION);
               }
               
               // Kontrollér om der er noter for denne sag og tilføj knappen, hvis der er
-              $hasNotesBtn = '';
-              $notes = getTicketNotes($ticket['id']);
-              if (!empty($notes)) {
-                $hasNotesBtn = "<button type='button' class='action-btn action-btn--has-notes' aria-label='Se noter {$ticket['id']}' title='Se noter'>
-                        <img src='assets/detail.svg' alt='' class='action-btn__icon'>
-                      </button>";
-              }
+              // $hasNotesBtn = '';
+              // $notes = getTicketNotes($ticket['id']);
+              // if (!empty($notes)) {
+              //   $hasNotesBtn = "<button type='button' class='action-btn action-btn--has-notes' aria-label='Se noter {$ticket['id']}' title='Se noter'>
+              //           <img src='assets/detail.svg' alt='' class='action-btn__icon'>
+              //         </button>";
+              // }
 
               echo "<td class='data-table__cell data-table__cell--actions'>
                       <div class='action-cell'>
-                        {$hasNotesBtn}
+                        
                         {$takeTicketButton}
                         <button type='button' class='action-btn' aria-label='Redigér sag {$ticket['id']}'>
                           <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
@@ -213,11 +212,6 @@ print_r($_SESSION);
           <input type="text" id="sager-modal-created-date" class="form-field" disabled>
         </div>
         <div class="form-group">
-          <?php
-            $notes = getTicketNotes($ticket['id']);
-
-            if (!empty($notes)) {
-              ?>
               <div class="table-container noter-table">
                 <table class="data-table" aria-label="Noter">
                   <thead class="data-table__head">
@@ -230,32 +224,26 @@ print_r($_SESSION);
                   </thead>
                   
                   <tbody id="noter-table-body">
-                  <?php
-                  // Hvordan får jeg adgang til $ticket['id'] her? Jeg vil gerne hente noter for den specifikke sag, men $ticket['id'] er ikke tilgængelig i denne kontekst. 
-                  // Jeg skal bruge en måde at få adgang til den aktuelle sags ID, når jeg henter noter.
-                    foreach ($notes as $note) {
-                      echo "<tr class='data-table__row'>";
-                        echo "<td class='data-table__cell'>" . date_format(new DateTime($note['created_at']), "d-m-y") . "</td>";
-                        echo "<td class='data-table__cell'>{$note['username']}</td>";
-                        echo "<td class='data-table__cell notetext'>{$note['notetext']}</td>";
-                        echo "<td class='data-table__cell data-table__cell--actions'>
-                                <div class='action-cell'>
-                                  <button type='button' class='action-btn' aria-label='Redigér sag {$note['id']}'>
-                                    <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
-                                  </button>
-                                  <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag {$ticket['id']}'>
-                                    <img src='assets/trash.svg' alt='' class='action-btn__icon'>
-                                  </button>
-                                </div>
-                              </td>
-                          </tr>";
-                      } ?>
+                    <tr class='data-table__row'>
+                      <td class='data-table__cell'></td>
+                      <td class='data-table__cell'></td>
+                      <td class='data-table__cell notetext'></td>
+                      <td class='data-table__cell data-table__cell--actions'>
+                        <div class='action-cell'>
+                          <button type='button' class='action-btn' aria-label='Redigér sag'>
+                            <img src='assets/pencil.svg' alt='' class='action-btn__icon'>
+                          </button>
+                          <button type='button' class='action-btn action-btn--danger' aria-label='Slet sag'>
+                            <img src='assets/trash.svg' alt='' class='action-btn__icon'>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
-            <?php } ?>
 
       <footer class="modal__footer">
         <button class="btn btn--secondary" id="sager-modal-cancel">Annullér</button>

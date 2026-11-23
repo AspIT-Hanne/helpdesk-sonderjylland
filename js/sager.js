@@ -2,6 +2,7 @@ import { addTicket } from '../api/add_ticket.js';
 import { deleteTicket } from '../api/delete_ticket.js';
 import { updateTicket } from '../api/update_ticket.js';
 import { addTicketnote } from '../api/add_ticketnote.js';
+import { getTicketNotes } from '../api/get_ticketnotes.js';
 
 // Håndtering af Sager filter
 
@@ -17,7 +18,6 @@ function initSagerFilters() {
   function filterSager() {
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     const status = statusSelect ? statusSelect.value.trim().toLowerCase() : '';
-    console.log(status);
     const rows = tbody.querySelectorAll('.data-table__row');
     rows.forEach((row) => {
       const id = (row.dataset.ticketId || '').toLowerCase();
@@ -31,7 +31,6 @@ function initSagerFilters() {
                       (status === "ikke-løst" 
                         ? ["ikke-startet", "afventer", "åben"].includes(rowStatus) 
                         : rowStatus === status);
-                          console.log(matchesStatus);
 
       row.style.display = matchesSearch && matchesStatus ? '' : 'none';
     });
@@ -137,6 +136,7 @@ function openSagerEditModal(ticketId) {
   modal.setAttribute('data-current-ticket-id', ticketId);
   modal.classList.add('modal--open');
   document.body.classList.add('modal-open');
+  loadTicketNotes(ticketId);
 }
 
 function closeSagerEditModal() {
@@ -451,7 +451,7 @@ async function handleCreateSagSubmit() {
       });
 }
 
-// Håndtering af Notes modal (init, open, close, submit)
+// Håndtering af Notes modal (init, open, close, submit, loadNotes)
 
 function initCreateNoteModal() {
   const closeBtn = document.getElementById('notes-create-modal-close');
@@ -526,6 +526,64 @@ async function handleCreateNoteSubmit() {
       .catch(error => {
         showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
       });
+}
+
+  async function loadTicketNotes(ticketId) {
+
+  const tbody = document.getElementById('noter-table-body');
+  if (!tbody) return;
+console.log("Åbner redigeringsmodal for sag med ID:", ticketId);
+  tbody.innerHTML = `<tr class="data-table__row"><td class="data-table__cell" colspan="4">Indlæser noter...</td></tr>`;
+
+  const data = await getTicketNotes(ticketId);
+
+  if (!data) {
+    tbody.innerHTML = `<tr class="data-table__row"><td class="data-table__cell" colspan="4">Fejl ved indlæsning af noter.</td></tr>`;
+    return;
+  }
+
+  const notes = Array.isArray(data) ? data : (data.notes || []);
+  tbody.innerHTML = '';
+
+  console.log("Indlæste noter:", notes);
+
+  if (notes.length === 0) {
+    tbody.innerHTML = `<tr class="data-table__row"><td class="data-table__cell" colspan="4">Ingen noter på denne sag endnu.</td></tr>`;
+    return;
+  }
+
+  notes.forEach((note) => {
+    const tr = document.createElement('tr');
+    tr.className = 'data-table__row';
+
+    const dateTd = document.createElement('td');
+    dateTd.className = 'data-table__cell';
+    dateTd.textContent = note.created_at ? new Date(note.created_at).toLocaleDateString('da-DK', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '';
+
+    const userTd = document.createElement('td');
+    userTd.className = 'data-table__cell';
+    userTd.textContent = note.username || '';
+
+    const textTd = document.createElement('td');
+    textTd.className = 'data-table__cell notetext';
+    textTd.textContent = note.notetext || '';
+
+    const actionsTd = document.createElement('td');
+    actionsTd.className = 'data-table__cell data-table__cell--actions';
+    actionsTd.innerHTML = `
+      <div class="action-cell">
+        <button type="button" class="action-btn" data-note-id="${note.id}" aria-label="Redigér note ${note.id}">
+          <img src="${window.BASE_URL}assets/pencil.svg" alt="" class="action-btn__icon">
+        </button>
+        <button type="button" class="action-btn action-btn--danger" data-note-id="${note.id}" data-ticket-id="${ticketId}" aria-label="Slet note ${note.id}">
+          <img src="${window.BASE_URL}assets/trash.svg" alt="" class="action-btn__icon">
+        </button>
+      </div>
+    `;
+
+    tr.append(dateTd, userTd, textTd, actionsTd);
+    tbody.appendChild(tr);
+  });
 }
 
 // Initialiseringsfunktioner
