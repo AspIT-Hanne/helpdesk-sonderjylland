@@ -78,7 +78,7 @@ $statusser = getStatus();
         while($i < $counter)
         {
           if($status['name'] === 'Ikke-startet' && $i === 0 && $counter === 2) {
-            $ticketsStatus = $ticketsStatus1; 
+            $ticketsStatus = $ticketsStatus1;
           }
           else
           {
