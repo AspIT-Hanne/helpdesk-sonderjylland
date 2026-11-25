@@ -409,21 +409,21 @@ print_r($_SESSION);
 
     <!-- Redigér Note Modal -->
 
-  <div class="modal" id="notes-edit-modal" role="dialog" aria-modal="true" aria-labelledby="notes-modal-title-heading">
+  <div class="modal" id="note-edit-modal" role="dialog" aria-modal="true" aria-labelledby="note-modal-title-heading">
     <div class="modal__container">
       <header class="modal__header">
-        <h2 class="modal__title" id="notes-modal-title-heading">Redigér Note</h2>
-        <button class="modal__close" id="notes-modal-close" aria-label="Luk">&times;</button>
+        <h2 class="modal__title" id="note-modal-title-heading">Redigér Note</h2>
+        <button class="modal__close" id="note-modal-close" aria-label="Luk">&times;</button>
       </header>
       <div class="modal__body">
         <div class="form-group">
-          <label for="notes-edit-modal-text" class="form-group__label">Note til sagen</label>
-          <textarea id="notes-edit-modal-text" class="form-field" rows="4" placeholder="Redigér note til sagen..."></textarea>
+          <label for="note-edit-modal-text" class="form-group__label">Note til sagen</label>
+          <textarea id="note-edit-modal-text" class="form-field" rows="4" placeholder="Redigér note til sagen..."></textarea>
         </div>
       </div>
       <footer class="modal__footer">
-        <button class="btn btn--secondary" id="notes-edit-modal-cancel">Annullér</button>
-        <button type="button" class="btn btn--secondary" id="notes-edit-modal-save">Gem ændringer</button>
+        <button class="btn btn--secondary" id="note-edit-modal-cancel">Annullér</button>
+        <button type="button" class="btn btn--secondary" id="note-edit-modal-save">Gem ændringer</button>
       </footer>
     </div>
 

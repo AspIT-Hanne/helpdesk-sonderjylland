@@ -4,6 +4,7 @@ import { updateTicket } from '../api/update_ticket.js';
 import { addTicketnote } from '../api/add_ticketnote.js';
 import { getTicketNotes } from '../api/get_ticketnotes.js';
 import { deleteTicketNote } from '../api/delete_ticketnote.js';
+import { editTicketNote } from '../api/update_ticketnote.js';
 
 // Håndtering af Sager filter
 
@@ -429,18 +430,13 @@ async function handleCreateSagSubmit() {
   const assigned = document.getElementById('sager-create-assigned');
   const created = document.getElementById('sager-create-created');
 
-  console.log(created.value);
-
    // Brug af den importerede addTicket funktion
     const result = await addTicket(title.value, description.value, place.value, type.value, priority, created.value, assigned.value, status)
       .then(result => {
         if (result === true) {
-          console.log("1. Kom ind i if-sætning");
             closeCreateSagModal();
             showBottomMessage(`Sag ${title.value} oprettet`, 'success');
-            console.log("2. sætter timer til genindlæsning");
             setTimeout(() => {
-              console.log("3. genindlæser nu");
               location.reload();
             }, 2000);
         } else {
@@ -452,7 +448,7 @@ async function handleCreateSagSubmit() {
       });
 }
 
-// Håndtering af Create Note modal (init, open, close, submit, loadNotes)
+// Håndtering af Create Note modal (init, open, close, submit)
 
 function initCreateNoteModal() {
   const closeBtn = document.getElementById('notes-create-modal-close');
@@ -617,11 +613,99 @@ async function confirmNoteDelete() {
   }
 }
 
+// Håndtering af Redigér Note modal (init, open, close, submit)
+
+function initNoteEditModal() {
+  const closeBtn = document.getElementById('note-edit-modal-close');
+  const cancelBtn = document.getElementById('note-edit-modal-cancel');
+  const saveBtn = document.getElementById('note-edit-modal-save');
+  const modal = document.getElementById('note-edit-modal');
+
+  if (!modal) return;
+
+  if (closeBtn) closeBtn.addEventListener('click', closeNoteEditModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeNoteEditModal);
+  if (saveBtn) saveBtn.addEventListener('click', confirmNoteEdit);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.classList.contains('modal')) {
+      closeNoteEditModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.classList.contains('modal--open')) {
+      closeNoteEditModal();
+    }
+  });
+}
+
+function openNoteEditModal(row) {
+  const modal = document.getElementById('note-edit-modal');
+  const textArea = document.getElementById('note-edit-modal-text');
+  if (!modal) return;
+
+  const noteId = row.dataset.noteId;
+  const ticketId = row.dataset.ticketId;
+  const noteContent = row.dataset.noteContent || '';
+
+  if (textArea) textArea.value = noteContent;
+
+  modal.setAttribute('data-edit-note-id', noteId);
+  modal.setAttribute('data-edit-ticket-id', ticketId);
+  modal.classList.add('modal--open');
+  document.body.classList.add('modal-open');
+}
+
+function closeNoteEditModal() {
+  const modal = document.getElementById('note-edit-modal');
+  if (!modal) return;
+  modal.classList.remove('modal--open');
+  modal.removeAttribute('data-edit-note-id');
+  document.body.classList.remove('modal-open');
+}
+
+async function confirmNoteEdit() {
+  const modal = document.getElementById('note-edit-modal');
+  if (!modal) return;
+
+  const noteId = modal.getAttribute('data-edit-note-id');
+  const ticketId = modal.getAttribute('data-edit-ticket-id');
+  const textArea = document.getElementById('note-edit-modal-text');
+  const newContent = textArea ? textArea.value : '';
+
+  let result;
+
+  try {
+    result = await updateTicketNote(noteId, newContent);
+  } catch (error) {
+    showBottomMessage('Der opstod en uventet fejl: ' + error, 'error');
+    return;
+  }
+
+  if (result === true) {
+    closeNoteEditModal();
+    showBottomMessage('Noten er blevet opdateret.', 'success');
+
+    setTimeout(() => {
+      openSagerEditModal(ticketId);
+    }, 2000);
+  } else {
+    showBottomMessage('Der opstod en fejl ved redigering af noten.', 'error');
+  }
+
+  modal.setAttribute('data-edit-ticket-id', row.dataset.ticketId);
+  modal.setAttribute('data-edit-note-id', row.dataset.noteId);
+  modal.setAttribute('data-edit-ticket-title', title);
+  modal.classList.add('modal--open');
+  document.body.classList.add('modal-open');
+}
+
+// Funktion til at indlæse noter for en given sag
   async function loadTicketNotes(ticketId) {
 
   const tbody = document.getElementById('noter-table-body');
   if (!tbody) return;
-console.log("Åbner redigeringsmodal for sag med ID:", ticketId);
   tbody.innerHTML = `<tr class="data-table__row"><td class="data-table__cell" colspan="4">Indlæser noter...</td></tr>`;
 
   const data = await getTicketNotes(ticketId);
@@ -633,8 +717,6 @@ console.log("Åbner redigeringsmodal for sag med ID:", ticketId);
 
   const notes = Array.isArray(data) ? data : (data.notes || []);
   tbody.innerHTML = '';
-
-  console.log("Indlæste noter:", notes);
 
   if (notes.length === 0) {
     tbody.innerHTML = `<tr class="data-table__row"><td class="data-table__cell" colspan="4">Ingen noter på denne sag endnu.</td></tr>`;

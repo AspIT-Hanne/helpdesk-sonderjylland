@@ -1,21 +1,17 @@
-export async function updateUser(rawid, name, email, role, status) {
-    const id = parseInt(rawid.replace('#', ''), 10);
+export async function updateTicketNote(id, content) {
     
-    const userData = {
+    const noteData = {
         id: id,
-        name: name,
-        email: email,
-        role: role,
-        status: status
+        text: content
     };
 
     try {
-        const response = await fetch('api/update_user.php', {
+        const response = await fetch('api/update_ticketnote.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(noteData)
         });
 
         // Tjek om HTTP-statuskoden er ok (f.eks. 200 OK)
@@ -28,39 +24,7 @@ export async function updateUser(rawid, name, email, role, status) {
         return result;
 
     } catch (error) {
-        console.error('Fejl i updateUser API-kald:', error);
-        return false;
-    }
-}
-
-export async function changePassword(password, id) {
-    
-    const userData = {
-        id: parseInt(id),
-        password: password
-    };
-
-    console.log(userData);
-
-    try {
-        const response = await fetch('api/change_password.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        });
-
-        // Tjek om HTTP-statuskoden er ok (f.eks. 200 OK)
-        if (!response.ok) {
-            throw new Error(`HTTP fejl! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        return result;
-
-    } catch (error) {
-        console.error('Fejl i changePassword API-kald:', error);
+        console.error('Fejl i updateTicketNote API-kald:', error);
         return false;
     }
 }
